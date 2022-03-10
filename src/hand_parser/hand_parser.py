@@ -18,7 +18,7 @@ def get_hand_from_code(code: str) -> Hand:
     else:
         draw_tile = None
 
-    return Hand(tiles=tiles, calls=calls, draw_tile=draw_tile)
+    return Hand(concealed_tiles=tiles, calls=calls, draw_tile=draw_tile)
 
 
 def get_tiles_from_code(code: str) -> list[Tile]:
