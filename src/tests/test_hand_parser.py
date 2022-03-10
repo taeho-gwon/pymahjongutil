@@ -13,7 +13,7 @@ from src.schema.tile import Tile
         (
             "123p45699s,chi123s,pon5-55z",
             Hand(
-                tiles=[
+                concealed_tiles=[
                     Tile(type=TileType.PIN, value=1),
                     Tile(type=TileType.PIN, value=2),
                     Tile(type=TileType.PIN, value=3),
@@ -48,7 +48,7 @@ from src.schema.tile import Tile
         (
             "19m19p19s1234567z",
             Hand(
-                tiles=[
+                concealed_tiles=[
                     Tile(type=TileType.MAN, value=1),
                     Tile(type=TileType.MAN, value=9),
                     Tile(type=TileType.PIN, value=1),
