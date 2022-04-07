@@ -1,6 +1,7 @@
 import pytest
 
 from src.agari_checker.agari_checker import (
+    check_agari_normal,
     check_agari_seven_pair,
     check_agari_thirteen_orphans,
 )
@@ -47,4 +48,4 @@ def test_check_agari_thirteen_orphans(test_input, expected):
 )
 def test_check_agari_normal(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert check_agari_thirteen_orphans(hand) == expected
+    assert check_agari_normal(hand) == expected
