@@ -1,5 +1,6 @@
 import re
 from itertools import chain
+from typing import Optional
 
 from src.enum.common import CallType, TileType
 from src.exception.exception import TileInputError
@@ -12,13 +13,12 @@ def get_hand_from_code(code: str) -> Hand:
     tiles_code, *call_codes = code.split(",")
     tiles = get_tiles_from_code(tiles_code)
     calls = [get_call_from_code(call_code) for call_code in call_codes]
+    last_tile: Optional[Tile] = None
 
     if len(tiles) % 3 == 2:
-        *tiles, draw_tile = tiles
-    else:
-        draw_tile = None
+        *tiles, last_tile = tiles
 
-    return Hand(concealed_tiles=tiles, calls=calls, draw_tile=draw_tile)
+    return Hand(concealed_tiles=tiles, calls=calls, last_tile=last_tile)
 
 
 def get_tiles_from_code(code: str) -> list[Tile]:

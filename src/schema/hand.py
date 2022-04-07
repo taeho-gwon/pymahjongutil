@@ -13,7 +13,7 @@ from src.schema.tile import Tile
 class Hand(BaseModel):
     concealed_tiles: list[Tile]
     calls: list[Call]
-    draw_tile: Optional[Tile]
+    last_tile: Optional[Tile]
 
     @property
     def is_opened(self) -> bool:
@@ -26,11 +26,20 @@ class Hand(BaseModel):
         for call in self.calls:
             ret.extend(call.tiles)
 
-        if self.draw_tile is not None:
-            ret.append(self.draw_tile)
+        if self.last_tile is not None:
+            ret.append(self.last_tile)
 
         return ret
 
     @property
     def counts(self) -> dict[Tile, int]:
         return Counter(self.tiles)
+
+    @property
+    def concealed_counts(self) -> dict[Tile, int]:
+        ret = self.concealed_tiles[:]
+
+        if self.last_tile is not None:
+            ret.append(self.last_tile)
+
+        return Counter(self.concealed_tiles)
