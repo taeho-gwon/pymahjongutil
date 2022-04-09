@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from src.enum.common import CallType
 from src.schema.call import Call
-from src.schema.tile import Tile
+from src.schema.tile import Tile, TileCount
 
 
 class Hand(BaseModel):
@@ -32,14 +32,14 @@ class Hand(BaseModel):
         return ret
 
     @property
-    def counts(self) -> dict[Tile, int]:
-        return Counter(self.tiles)
+    def counts(self) -> TileCount:
+        return TileCount(Counter(self.tiles))
 
     @property
-    def concealed_counts(self) -> dict[Tile, int]:
+    def concealed_counts(self) -> TileCount:
         ret = self.concealed_tiles[:]
 
         if self.last_tile is not None:
             ret.append(self.last_tile)
 
-        return Counter(self.concealed_tiles)
+        return TileCount(Counter(self.concealed_tiles))

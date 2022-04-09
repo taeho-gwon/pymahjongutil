@@ -1,3 +1,4 @@
+import collections
 from itertools import product
 from typing import Any
 
@@ -53,3 +54,10 @@ class Tile(BaseModel):
     def terminals_and_honors():
         yield from Tile.terminals()
         yield from Tile.honors()
+
+
+class TileCount(collections.UserDict):
+    def __setitem__(self, key: Tile, value: int):
+        if value not in range(0, 5):
+            raise ValueError
+        self.data[key] = value
