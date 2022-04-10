@@ -1,5 +1,4 @@
 import collections
-from itertools import product
 from typing import Any
 
 from pydantic import BaseModel, root_validator
@@ -28,32 +27,6 @@ class Tile(BaseModel):
         if v < 1 or v > TILE_TYPE_CNT[t]:
             raise ValueError("Not Exist Tile")
         return values
-
-    @staticmethod
-    def all():
-        for tile_type, cnt in TILE_TYPE_CNT.items():
-            yield from (
-                Tile(type=tile_type, value=value) for value in range(1, cnt + 1)
-            )
-
-    @staticmethod
-    def terminals():
-        yield from (
-            Tile(type=tile_type, value=value)
-            for tile_type, value in product(
-                (TileType.MAN, TileType.PIN, TileType.SOU), (1, 9)
-            )
-        )
-
-    @staticmethod
-    def honors():
-        yield from (Tile(type=TileType.WIND, value=value) for value in range(1, 5))
-        yield from (Tile(type=TileType.DRAGON, value=value) for value in range(1, 4))
-
-    @staticmethod
-    def terminals_and_honors():
-        yield from Tile.terminals()
-        yield from Tile.honors()
 
 
 class TileCount(collections.UserDict):
