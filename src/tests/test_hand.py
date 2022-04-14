@@ -137,5 +137,6 @@ def test_hand_tiles(test_input, expected):
     ],
 )
 def test_hand_counts(test_input, expected):
-    hand = get_hand_from_code(test_input)
-    assert hand.counts == expected
+    hand_counts = get_hand_from_code(test_input).counts
+    for key, val in expected.items():
+        assert hand_counts[key] == val

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import Counter
 from typing import Optional
 
 from pydantic import BaseModel
@@ -33,13 +32,12 @@ class Hand(BaseModel):
 
     @property
     def counts(self) -> TileCount:
-        return TileCount(Counter(self.tiles))
+        return TileCount(self.tiles)
 
     @property
     def concealed_counts(self) -> TileCount:
-        ret = self.concealed_tiles[:]
+        counts = TileCount(self.concealed_tiles)
+        if self.last_tile:
+            counts[self.last_tile] += 1
 
-        if self.last_tile is not None:
-            ret.append(self.last_tile)
-
-        return TileCount(Counter(self.concealed_tiles))
+        return counts
