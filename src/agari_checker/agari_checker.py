@@ -4,11 +4,7 @@ from src.schema.tile import TileCount, Tiles
 
 def check_agari_normal(hand: Hand) -> bool:
     hand_counts = hand.concealed_counts
-    return _check_agari_tile_normal_rec(
-        0,
-        hand_counts,
-        False,
-    )
+    return _check_agari_tile_normal_rec(0, hand_counts, False)
 
 
 def _check_agari_tile_normal_rec(idx: int, hand_counts: TileCount, has_head: bool):
