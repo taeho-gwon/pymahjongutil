@@ -36,7 +36,6 @@ def test_check_agari_thirteen_orphans(test_input, expected):
     assert check_agari_thirteen_orphans(hand) == expected
 
 
-@pytest.mark.skip
 @pytest.mark.parametrize(
     "test_input, expected",
     [

@@ -28,7 +28,6 @@ class TileCount:
         self._values = [0] * 34
         for tile in tiles:
             self._values[tile] += 1
-        print(self._values)
 
     def __getitem__(self, key: Union[Tile, int]):
         return self._values[key]
@@ -37,6 +36,13 @@ class TileCount:
         if value not in range(0, 5):
             raise ValueError
         self._values[key] = value
+
+    def get_last_nonzero_idx(self, idx: int = 0):
+        while True:
+            if self._values[idx] != 0:
+                break
+            idx += 1
+        return idx
 
 
 class Tiles:
@@ -50,3 +56,5 @@ class Tiles:
 
     TERMINALS = [MANS[0], MANS[8], PINS[0], PINS[8], SOUS[0], SOUS[8]]
     TERMINALS_AND_HONORS = TERMINALS + HONORS
+
+    STRAIGHT_STARTS = MANS[0:7] + PINS[0:7] + SOUS[0:7]

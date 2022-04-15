@@ -4,16 +4,49 @@ from src.schema.tile import TileCount, Tiles
 
 def check_agari_normal(hand: Hand) -> bool:
     hand_counts = hand.concealed_counts
-    return _check_agari_tile_normal_rec(0, hand_counts, False)
+    return _check_agari_tile_normal_rec(
+        0,
+        hand_counts,
+        False,
+    )
 
 
 def _check_agari_tile_normal_rec(idx: int, hand_counts: TileCount, has_head: bool):
-    while idx < len(Tiles.ALL):
-        if hand_counts[Tiles.ALL[idx]] != 0:
-            break
-        idx += 1
-    else:
+    try:
+        idx = hand_counts.get_last_nonzero_idx(idx)
+    except IndexError:
         return True
+
+    if not has_head:
+        try:
+            hand_counts[idx] -= 2
+            if _check_agari_tile_normal_rec(idx, hand_counts, True):
+                return True
+            hand_counts[idx] += 2
+        except ValueError:
+            pass
+
+    try:
+        hand_counts[idx] -= 3
+        if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
+            return True
+        hand_counts[idx] += 3
+    except ValueError:
+        pass
+
+    if Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS:
+        try:
+            hand_counts[idx] -= 1
+            hand_counts[idx + 1] -= 1
+            hand_counts[idx + 2] -= 1
+            if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
+                return True
+            hand_counts[idx] += 1
+            hand_counts[idx + 1] += 1
+            hand_counts[idx + 2] += 1
+        except ValueError:
+            pass
+
     return False
 
 
