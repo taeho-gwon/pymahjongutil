@@ -37,6 +37,9 @@ class TileCount:
             raise ValueError
         self._values[key] = value
 
+    def __iter__(self):
+        yield from self._values
+
     def get_last_nonzero_idx(self, idx: int = 0):
         while True:
             if self._values[idx] != 0:
