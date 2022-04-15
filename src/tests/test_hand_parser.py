@@ -42,7 +42,7 @@ from src.schema.tile import Tile
                         call_idx=1,
                     ),
                 ],
-                draw_tile=Tile(type=TileType.SOU, value=9),
+                last_tile=Tile(type=TileType.SOU, value=9),
             ),
         ),
         (

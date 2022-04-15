@@ -1,17 +1,8 @@
-from itertools import product
-from typing import Any
+from typing import Union
 
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel
 
 from src.enum.common import TileType
-
-TILE_TYPE_CNT = {
-    TileType.MAN: 9,
-    TileType.PIN: 9,
-    TileType.SOU: 9,
-    TileType.WIND: 4,
-    TileType.DRAGON: 3,
-}
 
 
 class Tile(BaseModel):
@@ -21,35 +12,49 @@ class Tile(BaseModel):
     def __hash__(self):
         return hash(self.type) + hash(self.value)
 
-    @root_validator
-    def validate_tile(cls, values: dict[str, Any]):
-        t, v = values["type"], values["value"]
-        if v < 1 or v > TILE_TYPE_CNT[t]:
-            raise ValueError("Not Exist Tile")
-        return values
+    def __index__(self):
+        start_idx = {
+            TileType.MAN: -1,
+            TileType.PIN: 8,
+            TileType.SOU: 17,
+            TileType.WIND: 26,
+            TileType.DRAGON: 30,
+        }
+        return start_idx[self.type] + self.value
 
-    @staticmethod
-    def all():
-        for tile_type, cnt in TILE_TYPE_CNT.items():
-            yield from (
-                Tile(type=tile_type, value=value) for value in range(1, cnt + 1)
-            )
 
-    @staticmethod
-    def terminals():
-        yield from (
-            Tile(type=tile_type, value=value)
-            for tile_type, value in product(
-                (TileType.MAN, TileType.PIN, TileType.SOU), (1, 9)
-            )
-        )
+class TileCount:
+    def __init__(self, tiles: list[Tile]):
+        self._values = [0] * 34
+        for tile in tiles:
+            self._values[tile] += 1
 
-    @staticmethod
-    def honors():
-        yield from (Tile(type=TileType.WIND, value=value) for value in range(1, 5))
-        yield from (Tile(type=TileType.DRAGON, value=value) for value in range(1, 4))
+    def __getitem__(self, key: Union[Tile, int]):
+        return self._values[key]
 
-    @staticmethod
-    def terminals_and_honors():
-        yield from Tile.terminals()
-        yield from Tile.honors()
+    def __setitem__(self, key: Union[Tile, int], value: int):
+        if value not in range(0, 5):
+            raise ValueError
+        self._values[key] = value
+
+    def get_last_nonzero_idx(self, idx: int = 0):
+        while True:
+            if self._values[idx] != 0:
+                break
+            idx += 1
+        return idx
+
+
+class Tiles:
+    MANS = [Tile(type=TileType.MAN, value=value + 1) for value in range(9)]
+    PINS = [Tile(type=TileType.PIN, value=value + 1) for value in range(9)]
+    SOUS = [Tile(type=TileType.SOU, value=value + 1) for value in range(9)]
+    WINDS = [Tile(type=TileType.WIND, value=value + 1) for value in range(4)]
+    DRAGONS = [Tile(type=TileType.DRAGON, value=value + 1) for value in range(3)]
+    HONORS = WINDS + DRAGONS
+    ALL = MANS + PINS + SOUS + HONORS
+
+    TERMINALS = [MANS[0], MANS[8], PINS[0], PINS[8], SOUS[0], SOUS[8]]
+    TERMINALS_AND_HONORS = TERMINALS + HONORS
+
+    STRAIGHT_STARTS = MANS[0:7] + PINS[0:7] + SOUS[0:7]

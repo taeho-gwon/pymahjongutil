@@ -1,19 +1,18 @@
 from __future__ import annotations
 
-from collections import Counter
 from typing import Optional
 
 from pydantic import BaseModel
 
 from src.enum.common import CallType
 from src.schema.call import Call
-from src.schema.tile import Tile
+from src.schema.tile import Tile, TileCount
 
 
 class Hand(BaseModel):
     concealed_tiles: list[Tile]
     calls: list[Call]
-    draw_tile: Optional[Tile]
+    last_tile: Optional[Tile]
 
     @property
     def is_opened(self) -> bool:
@@ -26,11 +25,19 @@ class Hand(BaseModel):
         for call in self.calls:
             ret.extend(call.tiles)
 
-        if self.draw_tile is not None:
-            ret.append(self.draw_tile)
+        if self.last_tile is not None:
+            ret.append(self.last_tile)
 
         return ret
 
     @property
-    def counts(self) -> dict[Tile, int]:
-        return Counter(self.tiles)
+    def counts(self) -> TileCount:
+        return TileCount(self.tiles)
+
+    @property
+    def concealed_counts(self) -> TileCount:
+        counts = TileCount(self.concealed_tiles)
+        if self.last_tile:
+            counts[self.last_tile] += 1
+
+        return counts
