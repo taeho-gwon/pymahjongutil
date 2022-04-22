@@ -16,12 +16,10 @@ def _calculate_normal_shanten(hand: Hand) -> int:
     best_shanten = [8]
 
     for tile in Tiles.ALL:
-        try:
+        if concealed_counts[tile] >= 2:
             concealed_counts[tile] -= 2
             _erase_complete_set(0, concealed_counts, num_call, 1, best_shanten)
             concealed_counts[tile] += 2
-        except ValueError:
-            pass
 
     _erase_complete_set(0, concealed_counts, num_call, 0, best_shanten)
     return best_shanten[0]
@@ -39,24 +37,23 @@ def _erase_complete_set(
         _erase_partial_set(0, counts, num_completes, 0, num_pairs, best_shanten)
         return
 
-    try:
+    if counts[idx] >= 3:
         counts[idx] -= 3
         _erase_complete_set(idx, counts, num_completes + 1, num_pairs, best_shanten)
         counts[idx] += 3
-    except ValueError:
-        pass
 
-    if Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS:
-        try:
-            counts[idx] -= 1
-            counts[idx + 1] -= 1
-            counts[idx + 2] -= 1
-            _erase_complete_set(idx, counts, num_completes + 1, num_pairs, best_shanten)
-            counts[idx] += 1
-            counts[idx + 1] += 1
-            counts[idx + 2] += 1
-        except ValueError:
-            pass
+    if (
+        Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS
+        and counts[idx + 1] >= 1
+        and counts[idx + 2] >= 1
+    ):
+        counts[idx] -= 1
+        counts[idx + 1] -= 1
+        counts[idx + 2] -= 1
+        _erase_complete_set(idx, counts, num_completes + 1, num_pairs, best_shanten)
+        counts[idx] += 1
+        counts[idx + 1] += 1
+        counts[idx + 2] += 1
 
     _erase_complete_set(idx + 1, counts, num_completes, num_pairs, best_shanten)
 
@@ -75,38 +72,30 @@ def _erase_partial_set(
         best_shanten[0] = min(best_shanten[0], current_shanten)
         return
 
-    try:
+    if counts[idx] >= 2:
         counts[idx] -= 2
         _erase_partial_set(
             idx, counts, num_completes, num_partials + 1, num_pairs, best_shanten
         )
         counts[idx] += 2
-    except ValueError:
-        pass
 
-    if Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS:
-        try:
-            counts[idx] -= 1
-            counts[idx + 2] -= 1
-            _erase_partial_set(
-                idx, counts, num_completes, num_partials + 1, num_pairs, best_shanten
-            )
-            counts[idx] -= 1
-            counts[idx + 2] -= 1
-        except ValueError:
-            pass
+    if Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS and counts[idx + 2] >= 1:
+        counts[idx] -= 1
+        counts[idx + 2] -= 1
+        _erase_partial_set(
+            idx, counts, num_completes, num_partials + 1, num_pairs, best_shanten
+        )
+        counts[idx] += 1
+        counts[idx + 2] += 1
 
-    if Tiles.ALL[idx] in Tiles.PARTIAL_STRAIGHT_STARTS:
-        try:
-            counts[idx] -= 1
-            counts[idx + 1] -= 1
-            _erase_partial_set(
-                idx, counts, num_completes, num_partials + 1, num_pairs, best_shanten
-            )
-            counts[idx] -= 1
-            counts[idx + 1] -= 1
-        except ValueError:
-            pass
+    if Tiles.ALL[idx] in Tiles.PARTIAL_STRAIGHT_STARTS and counts[idx + 1] >= 1:
+        counts[idx] -= 1
+        counts[idx + 1] -= 1
+        _erase_partial_set(
+            idx, counts, num_completes, num_partials + 1, num_pairs, best_shanten
+        )
+        counts[idx] += 1
+        counts[idx + 1] += 1
 
 
 def _calculate_seven_pairs_shanten(hand: Hand) -> int:

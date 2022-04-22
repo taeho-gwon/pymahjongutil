@@ -8,40 +8,35 @@ def check_agari_normal(hand: Hand) -> bool:
 
 
 def _check_agari_tile_normal_rec(idx: int, hand_counts: TileCount, has_head: bool):
-    try:
-        idx = hand_counts.get_last_nonzero_idx(idx)
-    except IndexError:
+    idx = hand_counts.get_last_nonzero_idx(idx)
+    if idx == len(Tiles.ALL):
         return True
 
-    if not has_head:
-        try:
-            hand_counts[idx] -= 2
-            if _check_agari_tile_normal_rec(idx, hand_counts, True):
-                return True
-            hand_counts[idx] += 2
-        except ValueError:
-            pass
+    if not has_head and hand_counts[idx] >= 2:
+        hand_counts[idx] -= 2
+        if _check_agari_tile_normal_rec(idx, hand_counts, True):
+            return True
+        hand_counts[idx] += 2
 
-    try:
+    if hand_counts[idx] >= 3:
         hand_counts[idx] -= 3
         if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
             return True
         hand_counts[idx] += 3
-    except ValueError:
-        pass
 
-    if Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS:
-        try:
-            hand_counts[idx] -= 1
-            hand_counts[idx + 1] -= 1
-            hand_counts[idx + 2] -= 1
-            if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
-                return True
-            hand_counts[idx] += 1
-            hand_counts[idx + 1] += 1
-            hand_counts[idx + 2] += 1
-        except ValueError:
-            pass
+    if (
+        Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS
+        and hand_counts[idx + 1] >= 1
+        and hand_counts[idx + 2] >= 1
+    ):
+        hand_counts[idx] -= 1
+        hand_counts[idx + 1] -= 1
+        hand_counts[idx + 2] -= 1
+        if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
+            return True
+        hand_counts[idx] += 1
+        hand_counts[idx + 1] += 1
+        hand_counts[idx + 2] += 1
 
     return False
 
