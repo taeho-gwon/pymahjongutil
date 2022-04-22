@@ -37,8 +37,11 @@ class TileCount:
             raise ValueError
         self._values[key] = value
 
+    def __iter__(self):
+        yield from self._values
+
     def get_last_nonzero_idx(self, idx: int = 0):
-        while True:
+        while idx < len(self._values):
             if self._values[idx] != 0:
                 break
             idx += 1
@@ -58,3 +61,4 @@ class Tiles:
     TERMINALS_AND_HONORS = TERMINALS + HONORS
 
     STRAIGHT_STARTS = MANS[0:7] + PINS[0:7] + SOUS[0:7]
+    PARTIAL_STRAIGHT_STARTS = MANS[0:8] + PINS[0:8] + SOUS[0:8]
