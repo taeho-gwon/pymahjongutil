@@ -3,7 +3,7 @@ from itertools import chain
 from typing import Optional
 
 from src.enum.common import CallType, TileType
-from src.exception.exception import TileInputError
+from src.exception import TileInputError
 from src.schema.call import Call
 from src.schema.hand import Hand
 from src.schema.tile import Tile

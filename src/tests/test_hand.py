@@ -1,7 +1,7 @@
 import pytest
 
 from src.enum.common import TileType
-from src.hand_parser.hand_parser import get_hand_from_code
+from src.hand_parser import get_hand_from_code
 from src.schema.tile import Tile
 
 
