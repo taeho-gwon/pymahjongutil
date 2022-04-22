@@ -1,11 +1,11 @@
 import pytest
 
-from src.agari_checker.agari_checker import (
+from src.agari_checker import (
     check_agari_normal,
     check_agari_seven_pair,
     check_agari_thirteen_orphans,
 )
-from src.hand_parser.hand_parser import get_hand_from_code
+from src.hand_parser import get_hand_from_code
 
 
 @pytest.mark.parametrize(

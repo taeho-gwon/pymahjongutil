@@ -1,6 +1,6 @@
 import pytest
 
-from src.hand_parser.hand_parser import get_hand_from_code
+from src.hand_parser import get_hand_from_code
 from src.shanten_calculator import calculate_shanten
 
 

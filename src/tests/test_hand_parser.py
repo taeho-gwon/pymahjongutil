@@ -1,7 +1,7 @@
 import pytest
 
 from src.enum.common import CallType, TileType
-from src.hand_parser.hand_parser import get_hand_from_code
+from src.hand_parser import get_hand_from_code
 from src.schema.call import Call
 from src.schema.hand import Hand
 from src.schema.tile import Tile
