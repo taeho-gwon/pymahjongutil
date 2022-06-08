@@ -72,5 +72,17 @@ def get_call_from_code(code: str) -> Call:
     )
 
 
-if __name__ == "__main__":
-    print(get_hand_from_code("123s456p99s"))
+def get_tile_from_code(tile_code: str) -> Tile:
+    tile_type_code_mapper = {
+        "m": TileType.MAN,
+        "p": TileType.PIN,
+        "s": TileType.SOU,
+        "z": TileType.WIND,
+    }
+    tile_type = tile_type_code_mapper[tile_code[1:]]
+    tile_value = int(tile_code[:1])
+    if tile_type == TileType.WIND and tile_value > 4:
+        tile_type = TileType.DRAGON
+        tile_value -= 4
+
+    return Tile(type=tile_type, value=tile_value)
