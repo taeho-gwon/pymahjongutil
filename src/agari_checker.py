@@ -1,5 +1,6 @@
+from src.schema.count import TileCount
 from src.schema.hand import Hand
-from src.schema.tile import TileCount, Tiles
+from src.schema.tile import Tiles
 
 
 def check_agari_normal(hand: Hand) -> bool:
