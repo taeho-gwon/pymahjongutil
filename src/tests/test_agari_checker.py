@@ -6,6 +6,7 @@ from src.agari_checker import (
     check_agari_thirteen_orphans,
 )
 from src.hand_parser import get_hand_from_code
+from src.schema.count import HandCount
 
 
 @pytest.mark.parametrize(
@@ -19,7 +20,8 @@ from src.hand_parser import get_hand_from_code
 )
 def test_check_agari_seven_pair(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert check_agari_seven_pair(hand) == expected
+    hand_count = HandCount.create_from_hand(hand)
+    assert check_agari_seven_pair(hand_count) == expected
 
 
 @pytest.mark.parametrize(
@@ -33,7 +35,8 @@ def test_check_agari_seven_pair(test_input, expected):
 )
 def test_check_agari_thirteen_orphans(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert check_agari_thirteen_orphans(hand) == expected
+    hand_count = HandCount.create_from_hand(hand)
+    assert check_agari_thirteen_orphans(hand_count) == expected
 
 
 @pytest.mark.parametrize(
@@ -47,4 +50,5 @@ def test_check_agari_thirteen_orphans(test_input, expected):
 )
 def test_check_agari_normal(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert check_agari_normal(hand) == expected
+    hand_count = HandCount.create_from_hand(hand)
+    assert check_agari_normal(hand_count) == expected
