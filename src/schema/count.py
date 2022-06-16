@@ -83,7 +83,7 @@ class HandCount(BaseModel):
 
     @staticmethod
     def create_from_hand(hand: Hand):
-        concealed_count = TmpTileCount.create_from_tiles(hand.iter_tiles)
+        concealed_count = TmpTileCount.create_from_tiles(hand.iter_concealed_tiles)
         call_count = TmpTileCount.create_from_calls(hand.calls)
         return HandCount(concealed_count=concealed_count, call_count=call_count)
 
