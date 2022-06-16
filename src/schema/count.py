@@ -53,8 +53,8 @@ class TmpTileCount(BaseModel):
 
 
 class HandCount(BaseModel):
-    concealed_count: TileCount
-    call_count: TileCount
+    concealed_count: TmpTileCount
+    call_count: TmpTileCount
 
     @staticmethod
     def create_from_hand(hand: Hand):

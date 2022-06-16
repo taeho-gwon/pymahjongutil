@@ -1,4 +1,4 @@
-from src.schema.count import TileCount
+from src.schema.count import HandCount, TileCount
 from src.schema.hand import Hand
 from src.schema.tile import Tiles
 
@@ -42,21 +42,22 @@ def _check_agari_tile_normal_rec(idx: int, hand_counts: TileCount, has_head: boo
     return False
 
 
-def check_agari_seven_pair(hand: Hand) -> bool:
-    hand_counts = hand.counts
-    head_counts = sum(1 for tile in Tiles.ALL if hand_counts[tile] == 2)
-    zero_counts = sum(1 for tile in Tiles.ALL if hand_counts[tile] == 0)
-    return not hand.is_opened and head_counts == 7 and zero_counts == 27
-
-
-def check_agari_thirteen_orphans(hand: Hand) -> bool:
-    hand_counts = hand.counts
-    orphan_pair_counts = sum(
-        1 for tile in Tiles.TERMINALS_AND_HONORS if hand_counts[tile] == 2
+def check_agari_seven_pair(hand_count: HandCount) -> bool:
+    head_count = sum(
+        1 for tile in Tiles.ALL if hand_count.concealed_count.counts[tile] == 2
     )
+    return head_count == 7
 
-    return (
-        not hand.is_opened
-        and orphan_pair_counts == 1
-        and all(1 <= hand_counts[orphan] <= 2 for orphan in Tiles.TERMINALS_AND_HONORS)
+
+def check_agari_thirteen_orphans(hand_count: HandCount) -> bool:
+    orphan_pair_count = sum(
+        1
+        for tile in Tiles.TERMINALS_AND_HONORS
+        if hand_count.concealed_count.counts[tile] == 2
     )
+    orphan_count = sum(
+        1
+        for tile in Tiles.TERMINALS_AND_HONORS
+        if hand_count.concealed_count.counts[tile] >= 1
+    )
+    return orphan_count == 13 and orphan_pair_count == 1
