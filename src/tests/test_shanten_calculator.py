@@ -1,6 +1,7 @@
 import pytest
 
 from src.hand_parser import get_hand_from_code
+from src.schema.count import HandCount
 from src.shanten_calculator import calculate_shanten
 
 
@@ -20,4 +21,5 @@ from src.shanten_calculator import calculate_shanten
 )
 def test_calculate_shanten(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert calculate_shanten(hand) == expected
+    hand_count = HandCount.create_from_hand(hand)
+    assert calculate_shanten(hand_count) == expected
