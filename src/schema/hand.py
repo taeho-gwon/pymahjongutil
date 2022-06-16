@@ -31,7 +31,7 @@ class Hand(BaseModel):
         return ret
 
     @property
-    def tiles_iter(self) -> Iterable[Tile]:
+    def iter_tiles(self) -> Iterable[Tile]:
         yield from self.concealed_tiles
         if self.last_tile:
             yield self.last_tile
