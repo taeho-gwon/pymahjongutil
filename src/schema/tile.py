@@ -7,8 +7,8 @@ class Tile(BaseModel):
     type: TileType
     value: int
 
-    def __hash__(self):
-        return hash(self.type) + hash(self.value)
+    class Config:
+        frozen = True
 
     def __index__(self):
         start_idx = {
@@ -19,6 +19,10 @@ class Tile(BaseModel):
             TileType.DRAGON: 30,
         }
         return start_idx[self.type] + self.value
+
+    @property
+    def next(self):
+        return Tile(type=self.type, value=self.value + 1)
 
 
 class Tiles:
