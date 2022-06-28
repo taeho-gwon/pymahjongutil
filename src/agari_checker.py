@@ -19,7 +19,6 @@ def validate_hand_count_for_agari_checking(func: Callable[[HandCount], bool]):
 
 @validate_hand_count_for_agari_checking
 def check_agari_normal(hand_count: HandCount) -> bool:
-    print(calculate_normal_deficiency(hand_count))
     return calculate_normal_deficiency(hand_count) == 0
 
 

@@ -143,7 +143,6 @@ def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     concealed_count = hand_count.concealed_count
     num_excess = sum((x - 2 for x in concealed_count.counts if x > 2))
     num_single = sum(1 for x in concealed_count.counts if x == 1)
-    print(num_single, num_excess)
     return num_excess + (
         (num_single - num_excess + 1) // 2 if num_single >= num_excess else 1
     )
