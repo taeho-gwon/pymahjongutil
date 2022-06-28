@@ -2,6 +2,7 @@ import pytest
 
 from src.enum.common import TileType
 from src.hand_parser import get_hand_from_code
+from src.schema.count import HandCount
 from src.schema.tile import Tile
 
 
@@ -82,9 +83,9 @@ def test_hand_is_opened(test_input, expected):
         ),
     ],
 )
-def test_hand_tiles(test_input, expected):
+def test_hand_iter_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert hand.tiles == expected
+    assert list(hand.iter_tiles) == expected
 
 
 @pytest.mark.parametrize(
@@ -137,6 +138,6 @@ def test_hand_tiles(test_input, expected):
     ],
 )
 def test_hand_counts(test_input, expected):
-    hand_counts = get_hand_from_code(test_input).counts
+    hand_count = HandCount.create_from_hand(get_hand_from_code(test_input))
     for key, val in expected.items():
-        assert hand_counts[key] == val
+        assert hand_count[key] == val
