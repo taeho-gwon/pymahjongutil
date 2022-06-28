@@ -18,15 +18,15 @@ def validate_hand_count_for_agari_checking(func: Callable[[HandCount], bool]):
 
 
 @validate_hand_count_for_agari_checking
-def check_agari_normal(hand_count: HandCount) -> bool:
+def check_normal_agari(hand_count: HandCount) -> bool:
     return calculate_normal_deficiency(hand_count) == 0
 
 
 @validate_hand_count_for_agari_checking
-def check_agari_seven_pair(hand_count: HandCount) -> bool:
+def check_seven_pairs_agari(hand_count: HandCount) -> bool:
     return calculate_seven_pairs_deficiency(hand_count) == 0
 
 
 @validate_hand_count_for_agari_checking
-def check_agari_thirteen_orphans(hand_count: HandCount) -> bool:
+def check_thirteen_orphans_agari(hand_count: HandCount) -> bool:
     return calculate_thirteen_orphans_deficiency(hand_count) == 0
