@@ -88,7 +88,6 @@ def test_hand_iter_tiles(test_input, expected):
     assert list(hand.iter_tiles) == expected
 
 
-@pytest.mark.skip
 @pytest.mark.parametrize(
     "test_input, expected",
     [
