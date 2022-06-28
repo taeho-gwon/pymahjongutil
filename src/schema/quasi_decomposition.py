@@ -2,15 +2,61 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.schema.tile import Tile
+from src.enum.common import DecompositionPartType
+from src.schema.count import TmpTileCount
+from src.schema.tile import Tile, Tiles
+
+
+class KnowledgeBase(TmpTileCount):
+    def can_make_head(self, tile: Tile) -> bool:
+        return self.counts[tile] > 0
+
+    def can_make_meld(self, tile: Tile) -> bool:
+        if self.counts[tile] >= 2:
+            return True
+        if self.counts[tile.prev.prev] > 0 and self.counts[tile.prev] > 0:
+            return True
+        if self.counts[tile.prev] > 0 and self.counts[tile.next] > 0:
+            return True
+        if self.counts[tile.next] > 0 and self.counts[tile.next.next] > 0:
+            return True
+        return False
 
 
 class DecompositionPart(BaseModel):
-    tiles: list[Tile]
+    tile_count: TmpTileCount
+    is_incompletable_pair: bool = False
+    type: DecompositionPartType
 
 
 class QuasiDecomposition(BaseModel):
     parts: list[DecompositionPart]
+    remainder: TmpTileCount
+
+    def append(
+        self,
+        tile_count: TmpTileCount,
+        is_incompletable_pair: bool = False,
+        type: DecompositionPartType = DecompositionPartType.MELD,
+    ):
+        self.parts.append(
+            DecompositionPart(
+                tile_count=tile_count,
+                is_incompletable_pair=is_incompletable_pair,
+                type=type,
+            )
+        )
+
+    def pop(self):
+        self.parts.pop()
+
+    @property
+    def is_valid(self):
+        if len(self.parts) == 4 and all(
+            part.type is not DecompositionPartType.PAIR for part in self.parts
+        ):
+            return False
+        return sum(1 for part in self.parts if part.is_incompletable_pair) < 2
 
 
 class QuasiDecompositionType(BaseModel):
@@ -78,15 +124,39 @@ class QuasiDecompositionType(BaseModel):
             )
 
     @staticmethod
-    def create_from_qdcmp(qdcmp: QuasiDecomposition):
+    def create_from_qdcmp(
+        knowledge_base: KnowledgeBase, qdcmp: QuasiDecomposition
+    ) -> QuasiDecompositionType:
+        meld_cnt, pmeld_cnt, head_cnt, incomplete_head_cnt = 0, 0, 0, 0
+
+        for part in qdcmp.parts:
+            if part.type == DecompositionPartType.MELD:
+                meld_cnt += 1
+            elif part.type == DecompositionPartType.PCHOW:
+                pmeld_cnt += 1
+            elif part.is_incompletable_pair:
+                head_cnt += 1
+                incomplete_head_cnt += 1
+            else:
+                head_cnt += 1
+                pmeld_cnt += 1
+
         return QuasiDecompositionType(
-            meld_cnt=0,
-            pmeld_cnt=0,
-            head_cnt=0,
-            incomplete_head_cnt=0,
-            can_make_head_from_remainder=True,
-            can_make_meld_from_remainder=True,
-            can_conflict_head_meld=True,
+            meld_cnt=meld_cnt,
+            pmeld_cnt=pmeld_cnt,
+            head_cnt=head_cnt,
+            incomplete_head_cnt=incomplete_head_cnt,
+            can_make_head_from_remainder=any(
+                knowledge_base.can_make_head(tile)
+                for tile in Tiles.ALL
+                if qdcmp.remainder[tile] > 0
+            ),
+            can_make_meld_from_remainder=any(
+                knowledge_base.can_make_meld(tile)
+                for tile in Tiles.ALL
+                if qdcmp.remainder[tile] > 0
+            ),
+            can_conflict_head_meld=False,
         )
 
     def __add__(self, other: QuasiDecompositionType) -> QuasiDecompositionType:

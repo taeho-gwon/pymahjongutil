@@ -79,14 +79,23 @@ class TmpTileCount(BaseModel):
 
 class HandCount(BaseModel):
     concealed_count: TmpTileCount
-    call_count: TmpTileCount
+    call_counts: list[TmpTileCount]
 
     @staticmethod
     def create_from_hand(hand: Hand):
         concealed_count = TmpTileCount.create_from_tiles(hand.iter_concealed_tiles)
-        call_count = TmpTileCount.create_from_calls(hand.calls)
-        return HandCount(concealed_count=concealed_count, call_count=call_count)
+        call_counts = [
+            TmpTileCount.create_from_tiles(call.tiles) for call in hand.calls
+        ]
+        return HandCount(concealed_count=concealed_count, call_counts=call_counts)
 
     @property
     def total_count(self):
-        return self.concealed_count.total_count + self.call_count.total_count
+        return self.concealed_count.total_count + sum(
+            call_count.total_count for call_count in self.call_counts
+        )
+
+    def __getitem__(self, item):
+        return self.concealed_count[item] + sum(
+            call_count[item] for call_count in self.call_counts
+        )

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pydantic import BaseModel
 
 from src.enum.common import TileType
@@ -21,8 +23,12 @@ class Tile(BaseModel):
         return start_idx[self.type] + self.value
 
     @property
-    def next(self):
+    def next(self) -> Tile:
         return Tile(type=self.type, value=self.value + 1)
+
+    @property
+    def prev(self) -> Tile:
+        return Tile(type=self.type, value=self.value - 1)
 
 
 class Tiles:

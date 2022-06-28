@@ -1,8 +1,14 @@
-from functools import reduce
+from functools import partial, reduce
 from itertools import product
+from typing import Iterable
 
-from src.schema.count import HandCount
-from src.schema.quasi_decomposition import QuasiDecomposition, QuasiDecompositionType
+from src.enum.common import DecompositionPartType
+from src.schema.count import HandCount, TmpTileCount
+from src.schema.quasi_decomposition import (
+    KnowledgeBase,
+    QuasiDecomposition,
+    QuasiDecompositionType,
+)
 from src.schema.tile import Tile, Tiles
 
 
@@ -18,29 +24,29 @@ def _calculate_normal_shanten(hand_count: HandCount) -> int:
     blocks: list[list[Tile]] = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [
         [t] for t in Tiles.HONORS
     ]
+    knowledge_base: KnowledgeBase = KnowledgeBase(
+        counts=[4 - hand_count[t] for t in Tiles.ALL]
+    )
     types: list[set[QuasiDecompositionType]] = [
         set(
             map(
-                QuasiDecompositionType.create_from_qdcmp, iter_qdcmps(hand_count, block)
+                partial(QuasiDecompositionType.create_from_qdcmp, knowledge_base),
+                iter_qdcmps(hand_count, block),
             )
         )
         for block in blocks
     ]
+
     type_set: set[QuasiDecompositionType] = reduce(combine_typeset, types)
 
-    ke = any(
-        hand_count.concealed_count[t] + hand_count.call_count[t] <= 2 for t in Tiles.ALL
-    )
-    km = any(
-        hand_count.concealed_count[t] + hand_count.call_count[t] <= 1 for t in Tiles.ALL
-    ) or any(
-        hand_count.concealed_count[t] + hand_count.call_count[t] <= 3
-        and hand_count.concealed_count[t.next] + hand_count.call_count[t.next] <= 3
-        and hand_count.concealed_count[t.next.next] + hand_count.call_count[t.next.next]
-        <= 3
+    for type in types:
+        print(type)
+    ke = any(hand_count[t] <= 2 for t in Tiles.ALL)
+    km = any(hand_count[t] <= 1 for t in Tiles.ALL) or any(
+        hand_count[t] <= 3 and hand_count[t.next] <= 3 and hand_count[t.next.next] <= 3
         for t in Tiles.STRAIGHT_STARTS
     )
-    return min((qdcmp_type.cost(ke, km) for qdcmp_type in type_set), default=100)
+    return min((qdcmp_type.cost(ke, km) - 1 for qdcmp_type in type_set), default=100)
 
 
 def combine_typeset(
@@ -50,11 +56,92 @@ def combine_typeset(
 
 
 def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
-    yield QuasiDecomposition(parts=[])
+    states = {t: [hand_count.concealed_count[t], 4 - hand_count[t]] for t in block}
+    qdcmp = QuasiDecomposition(
+        parts=[
+            TmpTileCount(counts=call_count) for call_count in hand_count.call_counts
+        ],
+        remainder=TmpTileCount.create_from_tiles([]),
+    )
+
+    def _iter_qdcmps_rec(
+        states: dict[Tile, list[int]],
+        qdcmp: QuasiDecomposition,
+        iter_tile: Iterable[Tile],
+    ):
+        try:
+            tile = next(t for t in iter_tile if states[t][0] > 0)
+        except StopIteration:
+            if qdcmp.is_valid:
+                yield qdcmp
+            return
+
+        states[tile][0] -= 1
+        qdcmp.remainder[tile] += 1
+        yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
+        qdcmp.remainder[tile] -= 1
+
+        if states[tile][0] >= 2:
+            states[tile][0] -= 2
+            qdcmp.append(tile_count=TmpTileCount.create_from_tiles([tile] * 3))
+            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
+            qdcmp.pop()
+            states[tile][0] += 2
+
+        prev_state = states.get(tile.prev, [0, 0])
+        next_state = states.get(tile.next, [0, 0])
+        next2_state = states.get(tile.next.next, [0, 0])
+        if next_state[0] >= 1 and next2_state[0] >= 1:
+            next_state[0] -= 1
+            next2_state[0] -= 1
+            qdcmp.append(
+                tile_count=TmpTileCount.create_from_tiles(
+                    [tile, tile.next, tile.next.next]
+                )
+            )
+            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
+            qdcmp.pop()
+            next_state[0] += 1
+            next2_state[0] += 1
+
+        if states[tile][0] >= 1:
+            states[tile][0] -= 1
+            qdcmp.append(
+                tile_count=TmpTileCount.create_from_tiles([tile] * 2),
+                is_incompletable_pair=states[tile][1] == 0,
+                type=DecompositionPartType.PAIR,
+            )
+            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
+            qdcmp.pop()
+            states[tile][0] += 1
+
+        if next_state[0] >= 1 and (next2_state[1] > 0 or prev_state[1] > 0):
+            next_state[0] -= 1
+            qdcmp.append(
+                tile_count=TmpTileCount.create_from_tiles([tile, tile.next]),
+                type=DecompositionPartType.PCHOW,
+            )
+            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
+            qdcmp.pop()
+            next_state[0] += 1
+
+        if next2_state[0] >= 1 and next_state[1] > 0:
+            next2_state[0] -= 1
+            qdcmp.append(
+                tile_count=TmpTileCount.create_from_tiles([tile, tile.next.next]),
+                type=DecompositionPartType.PCHOW,
+            )
+            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
+            qdcmp.pop()
+            next2_state[0] += 1
+
+        states[tile][0] += 1
+
+    yield from _iter_qdcmps_rec(states, qdcmp, iter(block))
 
 
 def _calculate_seven_pairs_shanten(hand_count: HandCount) -> int:
-    if hand_count.call_count.total_count > 0:
+    if hand_count.call_counts:
         return 100
 
     concealed_count = hand_count.concealed_count
@@ -66,7 +153,7 @@ def _calculate_seven_pairs_shanten(hand_count: HandCount) -> int:
 
 
 def _calculate_thirteen_orphans_shanten(hand_count: HandCount) -> int:
-    if hand_count.call_count.total_count > 0:
+    if hand_count.call_counts:
         return 100
 
     concealed_count = hand_count.concealed_count
