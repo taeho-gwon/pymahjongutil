@@ -3,7 +3,7 @@ from itertools import product
 from typing import Iterable
 
 from src.enum.common import DecompositionPartType
-from src.schema.count import HandCount, TmpTileCount
+from src.schema.count import HandCount, TileCount
 from src.schema.quasi_decomposition import (
     KnowledgeBase,
     QuasiDecomposition,
@@ -58,10 +58,8 @@ def combine_typeset(
 def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
     states = {t: [hand_count.concealed_count[t], 4 - hand_count[t]] for t in block}
     qdcmp = QuasiDecomposition(
-        parts=[
-            TmpTileCount(counts=call_count) for call_count in hand_count.call_counts
-        ],
-        remainder=TmpTileCount.create_from_tiles([]),
+        parts=[TileCount(counts=call_count) for call_count in hand_count.call_counts],
+        remainder=TileCount.create_from_tiles([]),
     )
 
     def _iter_qdcmps_rec(
@@ -83,7 +81,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
 
         if states[tile][0] >= 2:
             states[tile][0] -= 2
-            qdcmp.append(tile_count=TmpTileCount.create_from_tiles([tile] * 3))
+            qdcmp.append(tile_count=TileCount.create_from_tiles([tile] * 3))
             yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
             qdcmp.pop()
             states[tile][0] += 2
@@ -95,7 +93,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
             next_state[0] -= 1
             next2_state[0] -= 1
             qdcmp.append(
-                tile_count=TmpTileCount.create_from_tiles(
+                tile_count=TileCount.create_from_tiles(
                     [tile, tile.next, tile.next.next]
                 )
             )
@@ -107,7 +105,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
         if states[tile][0] >= 1:
             states[tile][0] -= 1
             qdcmp.append(
-                tile_count=TmpTileCount.create_from_tiles([tile] * 2),
+                tile_count=TileCount.create_from_tiles([tile] * 2),
                 is_incompletable_pair=states[tile][1] == 0,
                 type=DecompositionPartType.PAIR,
             )
@@ -118,7 +116,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
         if next_state[0] >= 1 and (next2_state[1] > 0 or prev_state[1] > 0):
             next_state[0] -= 1
             qdcmp.append(
-                tile_count=TmpTileCount.create_from_tiles([tile, tile.next]),
+                tile_count=TileCount.create_from_tiles([tile, tile.next]),
                 type=DecompositionPartType.PCHOW,
             )
             yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)
@@ -128,7 +126,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
         if next2_state[0] >= 1 and next_state[1] > 0:
             next2_state[0] -= 1
             qdcmp.append(
-                tile_count=TmpTileCount.create_from_tiles([tile, tile.next.next]),
+                tile_count=TileCount.create_from_tiles([tile, tile.next.next]),
                 type=DecompositionPartType.PCHOW,
             )
             yield from _iter_qdcmps_rec(states, qdcmp, iter_tile)

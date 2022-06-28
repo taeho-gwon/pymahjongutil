@@ -1,6 +1,6 @@
 from typing import Callable
 
-from src.schema.count import HandCount, TmpTileCount
+from src.schema.count import HandCount, TileCount
 from src.schema.tile import Tiles
 
 
@@ -18,7 +18,7 @@ def check_agari_normal(hand_count: HandCount) -> bool:
     return _check_agari_tile_normal_rec(0, hand_count.concealed_count, False)
 
 
-def _check_agari_tile_normal_rec(idx: int, tile_count: TmpTileCount, has_head: bool):
+def _check_agari_tile_normal_rec(idx: int, tile_count: TileCount, has_head: bool):
     idx = tile_count.get_first_nonzero_idx(idx)
     if idx == len(Tiles.ALL):
         return True

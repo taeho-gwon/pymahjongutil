@@ -3,11 +3,11 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from src.enum.common import DecompositionPartType
-from src.schema.count import TmpTileCount
+from src.schema.count import TileCount
 from src.schema.tile import Tile, Tiles
 
 
-class KnowledgeBase(TmpTileCount):
+class KnowledgeBase(TileCount):
     def can_make_head(self, tile: Tile) -> bool:
         return self.counts[tile] > 0
 
@@ -24,18 +24,18 @@ class KnowledgeBase(TmpTileCount):
 
 
 class DecompositionPart(BaseModel):
-    tile_count: TmpTileCount
+    tile_count: TileCount
     is_incompletable_pair: bool = False
     type: DecompositionPartType
 
 
 class QuasiDecomposition(BaseModel):
     parts: list[DecompositionPart]
-    remainder: TmpTileCount
+    remainder: TileCount
 
     def append(
         self,
-        tile_count: TmpTileCount,
+        tile_count: TileCount,
         is_incompletable_pair: bool = False,
         type: DecompositionPartType = DecompositionPartType.MELD,
     ):
