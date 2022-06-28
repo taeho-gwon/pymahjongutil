@@ -14,13 +14,13 @@ from src.schema.tile import Tile, Tiles
 
 def calculate_deficiency(hand_count: HandCount) -> int:
     return min(
-        _calculate_normal_deficiency(hand_count),
-        _calculate_seven_pairs_deficiency(hand_count),
-        _calculate_thirteen_orphans_deficiency(hand_count),
+        calculate_normal_deficiency(hand_count),
+        calculate_seven_pairs_deficiency(hand_count),
+        calculate_thirteen_orphans_deficiency(hand_count),
     )
 
 
-def _calculate_normal_deficiency(hand_count: HandCount) -> int:
+def calculate_normal_deficiency(hand_count: HandCount) -> int:
     blocks: list[list[Tile]] = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [
         [t] for t in Tiles.HONORS
     ]
@@ -132,7 +132,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
     yield from _iter_qdcmps_rec(states, qdcmp, iter(block))
 
 
-def _calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
+def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     if hand_count.call_counts:
         return 100
 
@@ -144,7 +144,7 @@ def _calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     )
 
 
-def _calculate_thirteen_orphans_deficiency(hand_count: HandCount) -> int:
+def calculate_thirteen_orphans_deficiency(hand_count: HandCount) -> int:
     if hand_count.call_counts:
         return 100
 
