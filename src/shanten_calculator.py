@@ -14,13 +14,13 @@ from src.schema.tile import Tile, Tiles
 
 def calculate_deficiency(hand_count: HandCount) -> int:
     return min(
-        _calculate_normal_shanten(hand_count),
-        _calculate_seven_pairs_shanten(hand_count),
-        _calculate_thirteen_orphans_shanten(hand_count),
+        _calculate_normal_deficiency(hand_count),
+        _calculate_seven_pairs_deficiency(hand_count),
+        _calculate_thirteen_orphans_deficiency(hand_count),
     )
 
 
-def _calculate_normal_shanten(hand_count: HandCount) -> int:
+def _calculate_normal_deficiency(hand_count: HandCount) -> int:
     blocks: list[list[Tile]] = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [
         [t] for t in Tiles.HONORS
     ]
@@ -39,7 +39,7 @@ def _calculate_normal_shanten(hand_count: HandCount) -> int:
 
     type_set: set[QuasiDecompositionType] = reduce(combine_typeset, types)
     return min(
-        (qdcmp_type.cost(knowledge_base) - 1 for qdcmp_type in type_set), default=100
+        (qdcmp_type.cost(knowledge_base) for qdcmp_type in type_set), default=100
     )
 
 
@@ -132,7 +132,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
     yield from _iter_qdcmps_rec(states, qdcmp, iter(block))
 
 
-def _calculate_seven_pairs_shanten(hand_count: HandCount) -> int:
+def _calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     if hand_count.call_counts:
         return 100
 
@@ -140,11 +140,11 @@ def _calculate_seven_pairs_shanten(hand_count: HandCount) -> int:
     num_excess = sum((x - 2 for x in concealed_count.counts if x > 2))
     num_single = sum(1 for x in concealed_count.counts if x == 1)
     return num_excess + (
-        (num_single - num_excess - 1) // 2 if num_single > num_excess else 0
+        (num_single - num_excess + 1) // 2 if num_single > num_excess else 1
     )
 
 
-def _calculate_thirteen_orphans_shanten(hand_count: HandCount) -> int:
+def _calculate_thirteen_orphans_deficiency(hand_count: HandCount) -> int:
     if hand_count.call_counts:
         return 100
 
@@ -155,4 +155,4 @@ def _calculate_thirteen_orphans_shanten(hand_count: HandCount) -> int:
     has_terminals_and_honors_pair = any(
         concealed_count[tile] >= 2 for tile in Tiles.TERMINALS_AND_HONORS
     )
-    return 13 - num_terminals_and_honors - int(has_terminals_and_honors_pair)
+    return 14 - num_terminals_and_honors - int(has_terminals_and_honors_pair)
