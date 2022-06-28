@@ -1,61 +1,32 @@
-from src.schema.hand import Hand
-from src.schema.tile import TileCount, Tiles
+from typing import Callable
+
+from src.deficiency_calculator import (
+    calculate_normal_deficiency,
+    calculate_seven_pairs_deficiency,
+    calculate_thirteen_orphans_deficiency,
+)
+from src.schema.count import HandCount
 
 
-def check_agari_normal(hand: Hand) -> bool:
-    hand_counts = hand.concealed_counts
-    return _check_agari_tile_normal_rec(0, hand_counts, False)
+def validate_hand_count_for_agari_checking(func: Callable[[HandCount], bool]):
+    def validate(hand_count: HandCount):
+        if hand_count.concealed_count.total_count % 3 != 2:
+            raise ValueError("hand_count is invalid")
+        return func(hand_count)
+
+    return validate
 
 
-def _check_agari_tile_normal_rec(idx: int, hand_counts: TileCount, has_head: bool):
-    idx = hand_counts.get_last_nonzero_idx(idx)
-    if idx == len(Tiles.ALL):
-        return True
-
-    if not has_head and hand_counts[idx] >= 2:
-        hand_counts[idx] -= 2
-        if _check_agari_tile_normal_rec(idx, hand_counts, True):
-            return True
-        hand_counts[idx] += 2
-
-    if hand_counts[idx] >= 3:
-        hand_counts[idx] -= 3
-        if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
-            return True
-        hand_counts[idx] += 3
-
-    if (
-        Tiles.ALL[idx] in Tiles.STRAIGHT_STARTS
-        and hand_counts[idx + 1] >= 1
-        and hand_counts[idx + 2] >= 1
-    ):
-        hand_counts[idx] -= 1
-        hand_counts[idx + 1] -= 1
-        hand_counts[idx + 2] -= 1
-        if _check_agari_tile_normal_rec(idx, hand_counts, has_head):
-            return True
-        hand_counts[idx] += 1
-        hand_counts[idx + 1] += 1
-        hand_counts[idx + 2] += 1
-
-    return False
+@validate_hand_count_for_agari_checking
+def check_normal_agari(hand_count: HandCount) -> bool:
+    return calculate_normal_deficiency(hand_count) == 0
 
 
-def check_agari_seven_pair(hand: Hand) -> bool:
-    hand_counts = hand.counts
-    head_counts = sum(1 for tile in Tiles.ALL if hand_counts[tile] == 2)
-    zero_counts = sum(1 for tile in Tiles.ALL if hand_counts[tile] == 0)
-    return not hand.is_opened and head_counts == 7 and zero_counts == 27
+@validate_hand_count_for_agari_checking
+def check_seven_pairs_agari(hand_count: HandCount) -> bool:
+    return calculate_seven_pairs_deficiency(hand_count) == 0
 
 
-def check_agari_thirteen_orphans(hand: Hand) -> bool:
-    hand_counts = hand.counts
-    orphan_pair_counts = sum(
-        1 for tile in Tiles.TERMINALS_AND_HONORS if hand_counts[tile] == 2
-    )
-
-    return (
-        not hand.is_opened
-        and orphan_pair_counts == 1
-        and all(1 <= hand_counts[orphan] <= 2 for orphan in Tiles.TERMINALS_AND_HONORS)
-    )
+@validate_hand_count_for_agari_checking
+def check_thirteen_orphans_agari(hand_count: HandCount) -> bool:
+    return calculate_thirteen_orphans_deficiency(hand_count) == 0

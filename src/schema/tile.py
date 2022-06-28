@@ -1,4 +1,4 @@
-from typing import Union
+from __future__ import annotations
 
 from pydantic import BaseModel
 
@@ -9,8 +9,8 @@ class Tile(BaseModel):
     type: TileType
     value: int
 
-    def __hash__(self):
-        return hash(self.type) + hash(self.value)
+    class Config:
+        frozen = True
 
     def __index__(self):
         start_idx = {
@@ -22,30 +22,13 @@ class Tile(BaseModel):
         }
         return start_idx[self.type] + self.value
 
+    @property
+    def next(self) -> Tile:
+        return Tile(type=self.type, value=self.value + 1)
 
-class TileCount:
-    def __init__(self, tiles: list[Tile]):
-        self._values = [0] * 34
-        for tile in tiles:
-            self._values[tile] += 1
-
-    def __getitem__(self, key: Union[Tile, int]):
-        return self._values[key]
-
-    def __setitem__(self, key: Union[Tile, int], value: int):
-        if value not in range(0, 5):
-            raise ValueError
-        self._values[key] = value
-
-    def __iter__(self):
-        yield from self._values
-
-    def get_last_nonzero_idx(self, idx: int = 0):
-        while idx < len(self._values):
-            if self._values[idx] != 0:
-                break
-            idx += 1
-        return idx
+    @property
+    def prev(self) -> Tile:
+        return Tile(type=self.type, value=self.value - 1)
 
 
 class Tiles:

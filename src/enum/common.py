@@ -20,3 +20,9 @@ class CallType(UpperStrEnum):
     CONCEALED_KAN = auto()
     BIG_MELDED_KAN = auto()
     SMALL_MELDED_KAN = auto()
+
+
+class DecompositionPartType(UpperStrEnum):
+    MELD = auto()
+    PAIR = auto()
+    PCHOW = auto()

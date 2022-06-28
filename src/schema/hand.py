@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Iterable, Optional
 
 from pydantic import BaseModel
 
 from src.enum.common import CallType
 from src.schema.call import Call
-from src.schema.tile import Tile, TileCount
+from src.schema.tile import Tile
 
 
 class Hand(BaseModel):
@@ -31,13 +31,15 @@ class Hand(BaseModel):
         return ret
 
     @property
-    def counts(self) -> TileCount:
-        return TileCount(self.tiles)
+    def iter_concealed_tiles(self) -> Iterable[Tile]:
+        yield from self.concealed_tiles
+        if self.last_tile:
+            yield self.last_tile
 
     @property
-    def concealed_counts(self) -> TileCount:
-        counts = TileCount(self.concealed_tiles)
+    def iter_tiles(self) -> Iterable[Tile]:
+        yield from self.concealed_tiles
+        for call in self.calls:
+            yield from call.tiles
         if self.last_tile:
-            counts[self.last_tile] += 1
-
-        return counts
+            yield self.last_tile
