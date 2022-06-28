@@ -22,6 +22,24 @@ class KnowledgeBase(TileCount):
             return True
         return False
 
+    @property
+    def is_containing_head(self):
+        return any(count >= 2 for count in self.counts)
+
+    @property
+    def is_containing_meld(self):
+        if any(count >= 3 for count in self.counts):
+            return True
+
+        for tile in Tiles.ALL:
+            if (
+                self.counts[tile] >= 1
+                and self.counts[tile.next] >= 1
+                and self.counts[tile.next.next] >= 1
+            ):
+                return True
+        return False
+
 
 class DecompositionPart(BaseModel):
     tile_count: TileCount
@@ -71,7 +89,9 @@ class QuasiDecompositionType(BaseModel):
     class Config:
         frozen = True
 
-    def cost(self, ke, km):
+    def cost(self, knowledge_base: KnowledgeBase):
+        ke = knowledge_base.is_containing_head
+        km = knowledge_base.is_containing_meld
         if self.head_cnt == 0 and not self.can_make_head_from_remainder and not ke:
             return 100
         if (

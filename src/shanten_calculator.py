@@ -38,15 +38,9 @@ def _calculate_normal_shanten(hand_count: HandCount) -> int:
     ]
 
     type_set: set[QuasiDecompositionType] = reduce(combine_typeset, types)
-
-    for type in types:
-        print(type)
-    ke = any(hand_count[t] <= 2 for t in Tiles.ALL)
-    km = any(hand_count[t] <= 1 for t in Tiles.ALL) or any(
-        hand_count[t] <= 3 and hand_count[t.next] <= 3 and hand_count[t.next.next] <= 3
-        for t in Tiles.STRAIGHT_STARTS
+    return min(
+        (qdcmp_type.cost(knowledge_base) - 1 for qdcmp_type in type_set), default=100
     )
-    return min((qdcmp_type.cost(ke, km) - 1 for qdcmp_type in type_set), default=100)
 
 
 def combine_typeset(
