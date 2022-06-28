@@ -44,7 +44,7 @@ class KnowledgeBase(TileCount):
 class DecompositionPart(BaseModel):
     tile_count: TileCount
     is_incompletable_pair: bool = False
-    type: DecompositionPartType
+    type: DecompositionPartType = DecompositionPartType.MELD
 
 
 class QuasiDecomposition(BaseModel):

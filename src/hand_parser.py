@@ -70,7 +70,3 @@ def get_call_from_code(code: str) -> Call:
         tiles=get_tiles_from_code(code[3:].replace("-", "")),
         call_idx=max(code[3:].find("-"), 0),
     )
-
-
-if __name__ == "__main__":
-    print(get_hand_from_code("123s456p99s"))
