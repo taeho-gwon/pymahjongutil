@@ -12,7 +12,7 @@ from src.schema.quasi_decomposition import (
 from src.schema.tile import Tile, Tiles
 
 
-def calculate_shanten(hand_count: HandCount) -> int:
+def calculate_deficiency(hand_count: HandCount) -> int:
     return min(
         _calculate_normal_shanten(hand_count),
         _calculate_seven_pairs_shanten(hand_count),
