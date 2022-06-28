@@ -5,6 +5,7 @@ from typing import Iterable
 from src.enum.common import DecompositionPartType
 from src.schema.count import HandCount, TileCount
 from src.schema.quasi_decomposition import (
+    DecompositionPart,
     KnowledgeBase,
     QuasiDecomposition,
     QuasiDecompositionType,
@@ -36,7 +37,6 @@ def calculate_normal_deficiency(hand_count: HandCount) -> int:
         )
         for block in blocks
     ]
-
     type_set: set[QuasiDecompositionType] = reduce(combine_typeset, types)
     return min(
         (qdcmp_type.cost(knowledge_base) for qdcmp_type in type_set), default=100
@@ -52,7 +52,11 @@ def combine_typeset(
 def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
     states = {t: [hand_count.concealed_count[t], 4 - hand_count[t]] for t in block}
     qdcmp = QuasiDecomposition(
-        parts=[TileCount(counts=call_count) for call_count in hand_count.call_counts],
+        parts=[
+            DecompositionPart(tile_count=call_count)
+            for call_count in hand_count.call_counts
+            if any(call_count[t] > 0 for t in block)
+        ],
         remainder=TileCount.create_from_tiles([]),
     )
 
@@ -139,8 +143,9 @@ def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     concealed_count = hand_count.concealed_count
     num_excess = sum((x - 2 for x in concealed_count.counts if x > 2))
     num_single = sum(1 for x in concealed_count.counts if x == 1)
+    print(num_single, num_excess)
     return num_excess + (
-        (num_single - num_excess + 1) // 2 if num_single > num_excess else 1
+        (num_single - num_excess + 1) // 2 if num_single >= num_excess else 1
     )
 
 
