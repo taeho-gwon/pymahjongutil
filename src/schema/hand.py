@@ -19,18 +19,6 @@ class Hand(BaseModel):
         return any(call.type != CallType.CONCEALED_KAN for call in self.calls)
 
     @property
-    def tiles(self) -> list[Tile]:
-        ret = self.concealed_tiles[:]
-
-        for call in self.calls:
-            ret.extend(call.tiles)
-
-        if self.last_tile is not None:
-            ret.append(self.last_tile)
-
-        return ret
-
-    @property
     def iter_concealed_tiles(self) -> Iterable[Tile]:
         yield from self.concealed_tiles
         if self.last_tile:
