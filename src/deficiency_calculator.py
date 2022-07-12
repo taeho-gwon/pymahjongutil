@@ -64,7 +64,6 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
         try:
             tile = next(iter_tile_tmp)
         except StopIteration:
-            print(qdcmp)
             if qdcmp.is_valid:
                 yield qdcmp
             return
@@ -136,7 +135,6 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
 
         states[tile][0] += 1
 
-    print()
     yield from _iter_qdcmps_rec(states, qdcmp, iter(block))
 
 
