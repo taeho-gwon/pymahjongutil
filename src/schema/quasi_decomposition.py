@@ -139,7 +139,7 @@ class QuasiDecompositionType(BaseModel):
             )
         else:
             return min(
-                self.pmeld_cnt + mcost * (4 - self.pmeld_cnt - self.meld_cnt),
+                self.pmeld_cnt + mcost * (4 - self.pmeld_cnt - self.meld_cnt) + ecost,
                 self.pmeld_cnt - 1 + mcost * (4 - self.pmeld_cnt - self.meld_cnt + 1),
             )
 
