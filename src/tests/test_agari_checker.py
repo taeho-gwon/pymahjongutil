@@ -18,7 +18,7 @@ from src.schema.count import HandCount
         ("1133s4455p99m1177z", True),
     ],
 )
-def test_check_agari_seven_pair(test_input, expected):
+def test_check_seven_pairs_agari(test_input, expected):
     hand = get_hand_from_code(test_input)
     hand_count = HandCount.create_from_hand(hand)
     assert check_seven_pairs_agari(hand_count) == expected
@@ -33,7 +33,7 @@ def test_check_agari_seven_pair(test_input, expected):
         ("19m19s19p12334567z", True),
     ],
 )
-def test_check_agari_thirteen_orphans(test_input, expected):
+def test_check_thirteen_orphans_agari(test_input, expected):
     hand = get_hand_from_code(test_input)
     hand_count = HandCount.create_from_hand(hand)
     assert check_thirteen_orphans_agari(hand_count) == expected
@@ -48,7 +48,7 @@ def test_check_agari_thirteen_orphans(test_input, expected):
         ("19m19s19p12334567z", False),
     ],
 )
-def test_check_agari_normal(test_input, expected):
+def test_check_normal_agari(test_input, expected):
     hand = get_hand_from_code(test_input)
     hand_count = HandCount.create_from_hand(hand)
     assert check_normal_agari(hand_count) == expected
