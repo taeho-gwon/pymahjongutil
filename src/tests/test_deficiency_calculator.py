@@ -21,6 +21,7 @@ from src.schema.count import HandCount
         ("1199m1199p1199s12z", 4),
         ("19m149s18p1223456z", 8),
         ("69m5678p2789s344z7p", 3),
+        ("9m5678p12789s344z7p", 2),
     ],
 )
 def test_calculate_normal_deficiency(test_input, expected):

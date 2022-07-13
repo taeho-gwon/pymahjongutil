@@ -12,15 +12,17 @@ class Tile(BaseModel):
     class Config:
         frozen = True
 
-    def __index__(self):
-        start_idx = {
-            TileTypeEnum.MAN: -1,
-            TileTypeEnum.PIN: 8,
-            TileTypeEnum.SOU: 17,
-            TileTypeEnum.WIND: 26,
-            TileTypeEnum.DRAGON: 30,
+    def __lt__(self, other: Tile) -> bool:
+        priority_dict = {
+            TileTypeEnum.MAN: 0,
+            TileTypeEnum.PIN: 1,
+            TileTypeEnum.SOU: 2,
+            TileTypeEnum.WIND: 3,
+            TileTypeEnum.DRAGON: 4,
         }
-        return start_idx[self.type] + self.value
+        if self.type != other.type:
+            return priority_dict[self.type] < priority_dict[other.type]
+        return self.value < other.value
 
     @property
     def next(self) -> Tile:
