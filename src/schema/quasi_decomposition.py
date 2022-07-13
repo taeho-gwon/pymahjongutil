@@ -179,26 +179,3 @@ class QuasiDecompositionType(BaseModel):
             ),
             can_conflict_head_meld=False,
         )
-
-    def __add__(self, other: QuasiDecompositionType) -> QuasiDecompositionType:
-        can_conflict_head_meld = (
-            self.can_conflict_head_meld
-            and not other.can_make_head_from_remainder
-            and not other.can_make_meld_from_remainder
-        ) or (
-            other.can_conflict_head_meld
-            and not self.can_make_head_from_remainder
-            and not self.can_make_meld_from_remainder
-        )
-
-        return QuasiDecompositionType(
-            meld_cnt=self.meld_cnt + other.meld_cnt,
-            pmeld_cnt=self.pmeld_cnt + other.pmeld_cnt,
-            head_cnt=self.head_cnt + other.head_cnt,
-            incomplete_head_cnt=self.incomplete_head_cnt + other.incomplete_head_cnt,
-            can_make_head_from_remainder=self.can_make_head_from_remainder
-            or other.can_make_head_from_remainder,
-            can_make_meld_from_remainder=self.can_make_meld_from_remainder
-            or other.can_make_meld_from_remainder,
-            can_conflict_head_meld=can_conflict_head_meld,
-        )

@@ -12,18 +12,68 @@ from src.schema.quasi_decomposition import (
 from src.schema.tile import Tile, Tiles
 
 
+def calculate_deficiency(hand_count: HandCount) -> int:
+    return min(
+        calculate_normal_deficiency(hand_count),
+        calculate_seven_pairs_deficiency(hand_count),
+        calculate_thirteen_orphans_deficiency(hand_count),
+    )
+
+
 def calculate_normal_deficiency(hand_count: HandCount) -> int:
     knowledge_base = KnowledgeBase(
         counts={tile: 4 - hand_count[tile] for tile in Tiles.ALL}, block=Tiles.ALL
     )
     iter_types = get_iter_block_qdcmp_types(hand_count, knowledge_base)
-    type_set = reduce(
-        lambda s1, s2: set(type1 + type2 for type1, type2 in product(s1, s2)),
-        iter_types,
-    )
+    type_set = reduce(merge_block_qdcmp_typeset, iter_types)
     return min(
         (qdcmp_type.cost(knowledge_base) for qdcmp_type in type_set), default=100
     )
+
+
+def merge_block_qdcmp_typeset(
+    s1: set[QuasiDecompositionType], s2: set[QuasiDecompositionType]
+) -> set[QuasiDecompositionType]:
+    ret: set[QuasiDecompositionType] = set()
+    x1: QuasiDecompositionType
+    x2: QuasiDecompositionType
+    for x1, x2 in product(s1, s2):
+        meld_cnt = x1.meld_cnt + x2.meld_cnt
+        pmeld_cnt = x1.pmeld_cnt + x2.pmeld_cnt
+        head_cnt = x1.head_cnt + x2.head_cnt
+        incomplete_head_cnt = x1.incomplete_head_cnt + x2.incomplete_head_cnt
+        if (
+            incomplete_head_cnt > 1
+            or meld_cnt + pmeld_cnt > 5
+            or (meld_cnt + pmeld_cnt == 5 and head_cnt == 0)
+        ):
+            continue
+
+        can_conflict_head_meld = (
+            x1.can_conflict_head_meld
+            and not x2.can_make_head_from_remainder
+            and not x2.can_make_meld_from_remainder
+        ) or (
+            x2.can_conflict_head_meld
+            and not x1.can_make_head_from_remainder
+            and not x1.can_make_meld_from_remainder
+        )
+
+        ret.add(
+            QuasiDecompositionType(
+                meld_cnt=meld_cnt,
+                pmeld_cnt=pmeld_cnt,
+                head_cnt=head_cnt,
+                incomplete_head_cnt=incomplete_head_cnt,
+                can_make_head_from_remainder=x1.can_make_head_from_remainder
+                or x2.can_make_head_from_remainder,
+                can_make_meld_from_remainder=x1.can_make_meld_from_remainder
+                or x2.can_make_meld_from_remainder,
+                can_conflict_head_meld=can_conflict_head_meld,
+            )
+        )
+
+    return ret
 
 
 def get_iter_block_qdcmp_types(
@@ -119,7 +169,7 @@ def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
             _tile_counts[tile] += 1
 
         if _tile_counts[tile.next] >= 1 and (
-            _tile_counts[tile.next.next] > 0 or _remaining_counts[tile.prev] > 0
+            _remaining_counts[tile.next.next] > 0 or _remaining_counts[tile.prev] > 0
         ):
             _tile_counts[tile.next] -= 1
             _qdcmp.append(

@@ -74,15 +74,15 @@ def get_call_from_code(code: str) -> Call:
 
 def get_tile_from_code(tile_code: str) -> Tile:
     tile_type_code_mapper = {
-        "m": TileType.MAN,
-        "p": TileType.PIN,
-        "s": TileType.SOU,
-        "z": TileType.WIND,
+        "m": TileTypeEnum.MAN,
+        "p": TileTypeEnum.PIN,
+        "s": TileTypeEnum.SOU,
+        "z": TileTypeEnum.WIND,
     }
     tile_type = tile_type_code_mapper[tile_code[1:]]
     tile_value = int(tile_code[:1])
-    if tile_type == TileType.WIND and tile_value > 4:
-        tile_type = TileType.DRAGON
+    if tile_type == TileTypeEnum.WIND and tile_value > 4:
+        tile_type = TileTypeEnum.DRAGON
         tile_value -= 4
 
     return Tile(type=tile_type, value=tile_value)
