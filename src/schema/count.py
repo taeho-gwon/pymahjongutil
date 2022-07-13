@@ -1,55 +1,55 @@
 from __future__ import annotations
 
-from itertools import islice
-from typing import Iterable, Union
+from typing import Iterable
 
 from pydantic import BaseModel
 
 from src.schema.call import Call
 from src.schema.hand import Hand
-from src.schema.tile import Tile
+from src.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):
-    counts: list[int]
+    counts: dict[Tile, int]
+    block: list[Tile]
 
     @property
     def total_count(self):
-        return sum(self.counts)
+        return sum(self.counts.values())
 
     @staticmethod
-    def create_from_tiles(tiles: Iterable[Tile]):
-        counts = [0] * 34
+    def create_from_tiles(tiles: Iterable[Tile], block: list[Tile] | None = None):
+        if block is None:
+            block = Tiles.ALL
+        counts = dict(zip(block, [0] * len(block)))
         for tile in tiles:
             counts[tile] += 1
-        return TileCount(counts=counts)
+        return TileCount(counts=counts, block=block)
 
     @staticmethod
-    def create_from_calls(calls: Iterable[Call]):
+    def create_from_calls(calls: Iterable[Call], block: list[Tile] | None = None):
+        if block is None:
+            block = Tiles.ALL
         return sum(
             (TileCount.create_from_tiles(call.tiles) for call in calls),
-            start=TileCount(counts=[0] * 34),
+            start=TileCount(counts={tile: 0 for tile in block}, block=block),
         )
 
     def __add__(self, other: TileCount):
-        counts = [x + y for x, y in zip(self.counts, other.counts)]
-        return TileCount(counts=counts)
+        if self.block == other.block:
+            counts = {
+                tile: self.counts[tile] + other.counts[tile] for tile in self.block
+            }
+            return TileCount(counts=counts, block=self.block)
+        raise ValueError("add tile_count of different block")
 
-    def __getitem__(self, key: Union[Tile, int]):
-        return self.counts[key]
+    def __getitem__(self, key: Tile):
+        return self.counts.get(key, 0)
 
-    def __setitem__(self, key: Union[Tile, int], value: int):
+    def __setitem__(self, key: Tile, value: int):
         if value not in range(5):
             raise ValueError
         self.counts[key] = value
-
-    def get_first_nonzero_idx(self, idx: int):
-        candidate = (
-            x
-            for x, val in enumerate(islice(self.counts, idx, None), start=idx)
-            if val != 0
-        )
-        return next(candidate, len(self.counts))
 
 
 class HandCount(BaseModel):

@@ -6,7 +6,7 @@ class UpperStrEnum(str, Enum):
         return name.upper()
 
 
-class TileType(UpperStrEnum):
+class TileTypeEnum(UpperStrEnum):
     MAN = auto()
     PIN = auto()
     SOU = auto()
@@ -14,7 +14,7 @@ class TileType(UpperStrEnum):
     DRAGON = auto()
 
 
-class CallType(UpperStrEnum):
+class CallTypeEnum(UpperStrEnum):
     CHII = auto()
     PON = auto()
     CONCEALED_KAN = auto()
@@ -22,7 +22,7 @@ class CallType(UpperStrEnum):
     SMALL_MELDED_KAN = auto()
 
 
-class DecompositionPartType(UpperStrEnum):
+class DecompositionPartTypeEnum(UpperStrEnum):
     MELD = auto()
     PAIR = auto()
     PCHOW = auto()

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.enum.common import TileType
+from src.enum.common import TileTypeEnum
 
 
 class Tile(BaseModel):
-    type: TileType
+    type: TileTypeEnum
     value: int
 
     class Config:
@@ -14,11 +14,11 @@ class Tile(BaseModel):
 
     def __index__(self):
         start_idx = {
-            TileType.MAN: -1,
-            TileType.PIN: 8,
-            TileType.SOU: 17,
-            TileType.WIND: 26,
-            TileType.DRAGON: 30,
+            TileTypeEnum.MAN: -1,
+            TileTypeEnum.PIN: 8,
+            TileTypeEnum.SOU: 17,
+            TileTypeEnum.WIND: 26,
+            TileTypeEnum.DRAGON: 30,
         }
         return start_idx[self.type] + self.value
 
@@ -32,11 +32,11 @@ class Tile(BaseModel):
 
 
 class Tiles:
-    MANS = [Tile(type=TileType.MAN, value=value + 1) for value in range(9)]
-    PINS = [Tile(type=TileType.PIN, value=value + 1) for value in range(9)]
-    SOUS = [Tile(type=TileType.SOU, value=value + 1) for value in range(9)]
-    WINDS = [Tile(type=TileType.WIND, value=value + 1) for value in range(4)]
-    DRAGONS = [Tile(type=TileType.DRAGON, value=value + 1) for value in range(3)]
+    MANS = [Tile(type=TileTypeEnum.MAN, value=value + 1) for value in range(9)]
+    PINS = [Tile(type=TileTypeEnum.PIN, value=value + 1) for value in range(9)]
+    SOUS = [Tile(type=TileTypeEnum.SOU, value=value + 1) for value in range(9)]
+    WINDS = [Tile(type=TileTypeEnum.WIND, value=value + 1) for value in range(4)]
+    DRAGONS = [Tile(type=TileTypeEnum.DRAGON, value=value + 1) for value in range(3)]
     HONORS = WINDS + DRAGONS
     ALL = MANS + PINS + SOUS + HONORS
 
