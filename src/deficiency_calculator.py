@@ -17,7 +17,10 @@ def calculate_normal_deficiency(hand_count: HandCount) -> int:
         counts={tile: 4 - hand_count[tile] for tile in Tiles.ALL}, block=Tiles.ALL
     )
     iter_types = get_iter_block_qdcmp_types(hand_count, knowledge_base)
-    type_set = reduce(combine_typeset, iter_types)
+    type_set = reduce(
+        lambda s1, s2: set(type1 + type2 for type1, type2 in product(s1, s2)),
+        iter_types,
+    )
     return min(
         (qdcmp_type.cost(knowledge_base) for qdcmp_type in type_set), default=100
     )
@@ -26,9 +29,7 @@ def calculate_normal_deficiency(hand_count: HandCount) -> int:
 def get_iter_block_qdcmp_types(
     hand_count: HandCount, knowledge_base: KnowledgeBase
 ) -> Iterable[set[QuasiDecompositionType]]:
-    blocks: list[list[Tile]] = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [
-        [t] for t in Tiles.HONORS
-    ]
+    blocks = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [[t] for t in Tiles.HONORS]
     create_from_qdcmp = partial(
         QuasiDecompositionType.create_from_qdcmp, knowledge_base
     )
@@ -44,14 +45,7 @@ def get_iter_block_qdcmp_types(
             TileCount(counts=counts, block=block),
             TileCount(counts=remaining_counts, block=block),
         )
-        s = set(map(create_from_qdcmp, iter_block_qdcmps))
-        yield s
-
-
-def combine_typeset(
-    type_set1: set[QuasiDecompositionType], type_set2: set[QuasiDecompositionType]
-) -> set[QuasiDecompositionType]:
-    return set(type1 + type2 for type1, type2 in product(type_set1, type_set2))
+        yield set(map(create_from_qdcmp, iter_block_qdcmps))
 
 
 def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
@@ -61,96 +55,98 @@ def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
     )
 
     def _iter_qdcmps_rec(
-        tile_counts: TileCount,
-        remaining_counts: TileCount,
-        qdcmp: QuasiDecomposition,
-        iter_tile: Iterable[Tile],
+        _tile_counts: TileCount,
+        _remaining_counts: TileCount,
+        _qdcmp: QuasiDecomposition,
+        _iter_tile: Iterable[Tile],
     ):
-        iter_tile, iter_tile_tmp = tee(
-            dropwhile(lambda x: tile_counts[x] == 0, iter_tile)
+        _iter_tile, _iter_tile_tmp = tee(
+            dropwhile(lambda x: _tile_counts[x] == 0, _iter_tile)
         )
         try:
-            tile = next(iter_tile_tmp)
+            tile = next(_iter_tile_tmp)
         except StopIteration:
-            if qdcmp.is_valid:
-                yield qdcmp
+            if _qdcmp.is_valid:
+                yield _qdcmp
             return
 
-        tile_counts[tile] -= 1
-        qdcmp.remainder[tile] += 1
-        iter_tile, iter_tile_tmp = tee(iter_tile)
-        yield from _iter_qdcmps_rec(tile_counts, remaining_counts, qdcmp, iter_tile_tmp)
-        qdcmp.remainder[tile] -= 1
+        _tile_counts[tile] -= 1
+        _qdcmp.remainder[tile] += 1
+        _iter_tile, _iter_tile_tmp = tee(_iter_tile)
+        yield from _iter_qdcmps_rec(
+            _tile_counts, _remaining_counts, _qdcmp, _iter_tile_tmp
+        )
+        _qdcmp.remainder[tile] -= 1
 
-        if tile_counts[tile] >= 2:
-            tile_counts[tile] -= 2
-            qdcmp.append(tile_count=TileCount.create_from_tiles([tile] * 3))
-            iter_tile, iter_tile_tmp = tee(iter_tile)
+        if _tile_counts[tile] >= 2:
+            _tile_counts[tile] -= 2
+            _qdcmp.append(tile_count=TileCount.create_from_tiles([tile] * 3))
+            _iter_tile, _iter_tile_tmp = tee(_iter_tile)
             yield from _iter_qdcmps_rec(
-                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+                _tile_counts, _remaining_counts, _qdcmp, _iter_tile_tmp
             )
-            qdcmp.pop()
-            tile_counts[tile] += 2
+            _qdcmp.pop()
+            _tile_counts[tile] += 2
 
-        if tile_counts[tile.next] >= 1 and tile_counts[tile.next.next] >= 1:
-            tile_counts[tile.next] -= 1
-            tile_counts[tile.next.next] -= 1
-            qdcmp.append(
+        if _tile_counts[tile.next] >= 1 and _tile_counts[tile.next.next] >= 1:
+            _tile_counts[tile.next] -= 1
+            _tile_counts[tile.next.next] -= 1
+            _qdcmp.append(
                 tile_count=TileCount.create_from_tiles(
                     [tile, tile.next, tile.next.next]
                 )
             )
-            iter_tile, iter_tile_tmp = tee(iter_tile)
+            _iter_tile, _iter_tile_tmp = tee(_iter_tile)
             yield from _iter_qdcmps_rec(
-                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+                _tile_counts, _remaining_counts, _qdcmp, _iter_tile_tmp
             )
-            qdcmp.pop()
-            tile_counts[tile.next] += 1
-            tile_counts[tile.next.next] += 1
+            _qdcmp.pop()
+            _tile_counts[tile.next] += 1
+            _tile_counts[tile.next.next] += 1
 
-        if tile_counts[tile] >= 1:
-            tile_counts[tile] -= 1
-            qdcmp.append(
+        if _tile_counts[tile] >= 1:
+            _tile_counts[tile] -= 1
+            _qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile] * 2),
-                is_incompletable_pair=remaining_counts[tile] == 0,
+                is_incompletable_pair=_remaining_counts[tile] == 0,
                 type=DecompositionPartTypeEnum.PAIR,
             )
-            iter_tile, iter_tile_tmp = tee(iter_tile)
+            _iter_tile, _iter_tile_tmp = tee(_iter_tile)
             yield from _iter_qdcmps_rec(
-                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+                _tile_counts, _remaining_counts, _qdcmp, _iter_tile_tmp
             )
-            qdcmp.pop()
-            tile_counts[tile] += 1
+            _qdcmp.pop()
+            _tile_counts[tile] += 1
 
-        if tile_counts[tile.next] >= 1 and (
-            tile_counts[tile.next.next] > 0 or remaining_counts[tile.prev] > 0
+        if _tile_counts[tile.next] >= 1 and (
+            _tile_counts[tile.next.next] > 0 or _remaining_counts[tile.prev] > 0
         ):
-            tile_counts[tile.next] -= 1
-            qdcmp.append(
+            _tile_counts[tile.next] -= 1
+            _qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile, tile.next]),
                 type=DecompositionPartTypeEnum.PCHOW,
             )
-            iter_tile, iter_tile_tmp = tee(iter_tile)
+            _iter_tile, _iter_tile_tmp = tee(_iter_tile)
             yield from _iter_qdcmps_rec(
-                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+                _tile_counts, _remaining_counts, _qdcmp, _iter_tile_tmp
             )
-            qdcmp.pop()
-            tile_counts[tile.next] += 1
+            _qdcmp.pop()
+            _tile_counts[tile.next] += 1
 
-        if tile_counts[tile.next.next] >= 1 and remaining_counts[tile.next] > 0:
-            tile_counts[tile.next.next] -= 1
-            qdcmp.append(
+        if _tile_counts[tile.next.next] >= 1 and _remaining_counts[tile.next] > 0:
+            _tile_counts[tile.next.next] -= 1
+            _qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile, tile.next.next]),
                 type=DecompositionPartTypeEnum.PCHOW,
             )
-            iter_tile, iter_tile_tmp = tee(iter_tile)
+            _iter_tile, _iter_tile_tmp = tee(_iter_tile)
             yield from _iter_qdcmps_rec(
-                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+                _tile_counts, _remaining_counts, _qdcmp, _iter_tile_tmp
             )
-            qdcmp.pop()
-            tile_counts[tile.next.next] += 1
+            _qdcmp.pop()
+            _tile_counts[tile.next.next] += 1
 
-        tile_counts[tile] += 1
+        _tile_counts[tile] += 1
 
     yield from _iter_qdcmps_rec(
         tile_counts, remaining_counts, qdcmp, iter(tile_counts.block)
