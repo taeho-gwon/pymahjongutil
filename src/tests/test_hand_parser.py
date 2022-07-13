@@ -1,6 +1,6 @@
 import pytest
 
-from src.enum.common import CallType, TileType
+from src.enum.common import CallTypeEnum, TileTypeEnum
 from src.hand_parser import get_hand_from_code
 from src.schema.call import Call
 from src.schema.hand import Hand
@@ -14,54 +14,54 @@ from src.schema.tile import Tile
             "123p45699s,chi123s,pon5-55z",
             Hand(
                 concealed_tiles=[
-                    Tile(type=TileType.PIN, value=1),
-                    Tile(type=TileType.PIN, value=2),
-                    Tile(type=TileType.PIN, value=3),
-                    Tile(type=TileType.SOU, value=4),
-                    Tile(type=TileType.SOU, value=5),
-                    Tile(type=TileType.SOU, value=6),
-                    Tile(type=TileType.SOU, value=9),
+                    Tile(type=TileTypeEnum.PIN, value=1),
+                    Tile(type=TileTypeEnum.PIN, value=2),
+                    Tile(type=TileTypeEnum.PIN, value=3),
+                    Tile(type=TileTypeEnum.SOU, value=4),
+                    Tile(type=TileTypeEnum.SOU, value=5),
+                    Tile(type=TileTypeEnum.SOU, value=6),
+                    Tile(type=TileTypeEnum.SOU, value=9),
                 ],
                 calls=[
                     Call(
-                        type=CallType.CHII,
+                        type=CallTypeEnum.CHII,
                         tiles=[
-                            Tile(type=TileType.SOU, value=1),
-                            Tile(type=TileType.SOU, value=2),
-                            Tile(type=TileType.SOU, value=3),
+                            Tile(type=TileTypeEnum.SOU, value=1),
+                            Tile(type=TileTypeEnum.SOU, value=2),
+                            Tile(type=TileTypeEnum.SOU, value=3),
                         ],
                         call_idx=0,
                     ),
                     Call(
-                        type=CallType.PON,
+                        type=CallTypeEnum.PON,
                         tiles=[
-                            Tile(type=TileType.DRAGON, value=1),
-                            Tile(type=TileType.DRAGON, value=1),
-                            Tile(type=TileType.DRAGON, value=1),
+                            Tile(type=TileTypeEnum.DRAGON, value=1),
+                            Tile(type=TileTypeEnum.DRAGON, value=1),
+                            Tile(type=TileTypeEnum.DRAGON, value=1),
                         ],
                         call_idx=1,
                     ),
                 ],
-                last_tile=Tile(type=TileType.SOU, value=9),
+                last_tile=Tile(type=TileTypeEnum.SOU, value=9),
             ),
         ),
         (
             "19m19p19s1234567z",
             Hand(
                 concealed_tiles=[
-                    Tile(type=TileType.MAN, value=1),
-                    Tile(type=TileType.MAN, value=9),
-                    Tile(type=TileType.PIN, value=1),
-                    Tile(type=TileType.PIN, value=9),
-                    Tile(type=TileType.SOU, value=1),
-                    Tile(type=TileType.SOU, value=9),
-                    Tile(type=TileType.WIND, value=1),
-                    Tile(type=TileType.WIND, value=2),
-                    Tile(type=TileType.WIND, value=3),
-                    Tile(type=TileType.WIND, value=4),
-                    Tile(type=TileType.DRAGON, value=1),
-                    Tile(type=TileType.DRAGON, value=2),
-                    Tile(type=TileType.DRAGON, value=3),
+                    Tile(type=TileTypeEnum.MAN, value=1),
+                    Tile(type=TileTypeEnum.MAN, value=9),
+                    Tile(type=TileTypeEnum.PIN, value=1),
+                    Tile(type=TileTypeEnum.PIN, value=9),
+                    Tile(type=TileTypeEnum.SOU, value=1),
+                    Tile(type=TileTypeEnum.SOU, value=9),
+                    Tile(type=TileTypeEnum.WIND, value=1),
+                    Tile(type=TileTypeEnum.WIND, value=2),
+                    Tile(type=TileTypeEnum.WIND, value=3),
+                    Tile(type=TileTypeEnum.WIND, value=4),
+                    Tile(type=TileTypeEnum.DRAGON, value=1),
+                    Tile(type=TileTypeEnum.DRAGON, value=2),
+                    Tile(type=TileTypeEnum.DRAGON, value=3),
                 ],
                 calls=[],
             ),

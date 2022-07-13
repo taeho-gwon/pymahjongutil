@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.enum.common import DecompositionPartType
+from src.enum.common import DecompositionPartTypeEnum
 from src.schema.count import TileCount
 from src.schema.tile import Tile
 
@@ -38,7 +38,7 @@ class KnowledgeBase(TileCount):
 class DecompositionPart(BaseModel):
     tile_count: TileCount
     is_incompletable_pair: bool = False
-    type: DecompositionPartType = DecompositionPartType.MELD
+    type: DecompositionPartTypeEnum = DecompositionPartTypeEnum.MELD
 
 
 class QuasiDecomposition(BaseModel):
@@ -49,7 +49,7 @@ class QuasiDecomposition(BaseModel):
         self,
         tile_count: TileCount,
         is_incompletable_pair: bool = False,
-        type: DecompositionPartType = DecompositionPartType.MELD,
+        type: DecompositionPartTypeEnum = DecompositionPartTypeEnum.MELD,
     ):
         self.parts.append(
             DecompositionPart(
@@ -65,7 +65,7 @@ class QuasiDecomposition(BaseModel):
     @property
     def is_valid(self):
         if len(self.parts) == 4 and all(
-            part.type is not DecompositionPartType.PAIR for part in self.parts
+            part.type is not DecompositionPartTypeEnum.PAIR for part in self.parts
         ):
             return False
         return sum(1 for part in self.parts if part.is_incompletable_pair) < 2
@@ -151,9 +151,9 @@ class QuasiDecompositionType(BaseModel):
         meld_cnt, pmeld_cnt, head_cnt, incomplete_head_cnt = 0, 0, 0, 0
 
         for part in qdcmp.parts:
-            if part.type == DecompositionPartType.MELD:
+            if part.type == DecompositionPartTypeEnum.MELD:
                 meld_cnt += 1
-            elif part.type == DecompositionPartType.PCHOW:
+            elif part.type == DecompositionPartTypeEnum.PCHOW:
                 pmeld_cnt += 1
             elif part.is_incompletable_pair:
                 head_cnt += 1

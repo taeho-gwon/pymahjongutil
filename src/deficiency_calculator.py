@@ -2,7 +2,7 @@ from functools import partial, reduce
 from itertools import dropwhile, product, tee
 from typing import Iterable
 
-from src.enum.common import DecompositionPartType
+from src.enum.common import DecompositionPartTypeEnum
 from src.schema.count import HandCount, TileCount
 from src.schema.quasi_decomposition import (
     KnowledgeBase,
@@ -113,7 +113,7 @@ def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile] * 2),
                 is_incompletable_pair=remaining_counts[tile] == 0,
-                type=DecompositionPartType.PAIR,
+                type=DecompositionPartTypeEnum.PAIR,
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
             yield from _iter_qdcmps_rec(
@@ -128,7 +128,7 @@ def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
             tile_counts[tile.next] -= 1
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile, tile.next]),
-                type=DecompositionPartType.PCHOW,
+                type=DecompositionPartTypeEnum.PCHOW,
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
             yield from _iter_qdcmps_rec(
@@ -141,7 +141,7 @@ def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
             tile_counts[tile.next.next] -= 1
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile, tile.next.next]),
-                type=DecompositionPartType.PCHOW,
+                type=DecompositionPartTypeEnum.PCHOW,
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
             yield from _iter_qdcmps_rec(
