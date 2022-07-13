@@ -2,49 +2,43 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.enum.common import DecompositionPartType
+from src.enum.common import DecompositionPartTypeEnum
 from src.schema.count import TileCount
-from src.schema.tile import Tile, Tiles
+from src.schema.tile import Tile
 
 
 class KnowledgeBase(TileCount):
     def can_make_head(self, tile: Tile) -> bool:
-        return self.counts[tile] > 0
+        return self[tile] > 0
 
     def can_make_meld(self, tile: Tile) -> bool:
-        if self.counts[tile] >= 2:
+        if self[tile] >= 2:
             return True
-        if self.counts[tile.prev.prev] > 0 and self.counts[tile.prev] > 0:
+        if self[tile.prev.prev] > 0 and self[tile.prev] > 0:
             return True
-        if self.counts[tile.prev] > 0 and self.counts[tile.next] > 0:
+        if self[tile.prev] > 0 and self[tile.next] > 0:
             return True
-        if self.counts[tile.next] > 0 and self.counts[tile.next.next] > 0:
+        if self[tile.next] > 0 and self[tile.next.next] > 0:
             return True
         return False
 
     @property
     def is_containing_head(self):
-        return any(count >= 2 for count in self.counts)
+        return any(self[tile] >= 2 for tile in self.block)
 
     @property
     def is_containing_meld(self):
-        if any(count >= 3 for count in self.counts):
-            return True
-
-        for tile in Tiles.ALL:
-            if (
-                self.counts[tile] >= 1
-                and self.counts[tile.next] >= 1
-                and self.counts[tile.next.next] >= 1
-            ):
-                return True
-        return False
+        return any(
+            self[tile] >= 3
+            or (self[tile] >= 1 and self[tile.next] >= 1 and self[tile.next.next] >= 1)
+            for tile in self.block
+        )
 
 
 class DecompositionPart(BaseModel):
     tile_count: TileCount
     is_incompletable_pair: bool = False
-    type: DecompositionPartType = DecompositionPartType.MELD
+    type: DecompositionPartTypeEnum = DecompositionPartTypeEnum.MELD
 
 
 class QuasiDecomposition(BaseModel):
@@ -55,7 +49,7 @@ class QuasiDecomposition(BaseModel):
         self,
         tile_count: TileCount,
         is_incompletable_pair: bool = False,
-        type: DecompositionPartType = DecompositionPartType.MELD,
+        type: DecompositionPartTypeEnum = DecompositionPartTypeEnum.MELD,
     ):
         self.parts.append(
             DecompositionPart(
@@ -71,10 +65,17 @@ class QuasiDecomposition(BaseModel):
     @property
     def is_valid(self):
         if len(self.parts) == 4 and all(
-            part.type is not DecompositionPartType.PAIR for part in self.parts
+            part.type is not DecompositionPartTypeEnum.PAIR for part in self.parts
         ):
             return False
         return sum(1 for part in self.parts if part.is_incompletable_pair) < 2
+
+    @staticmethod
+    def create_from_call_count(call_count: TileCount) -> QuasiDecomposition:
+        return QuasiDecomposition(
+            parts=[DecompositionPart(tile_count=call_count)],
+            remainder=TileCount.create_from_tiles([]),
+        )
 
 
 class QuasiDecompositionType(BaseModel):
@@ -150,9 +151,9 @@ class QuasiDecompositionType(BaseModel):
         meld_cnt, pmeld_cnt, head_cnt, incomplete_head_cnt = 0, 0, 0, 0
 
         for part in qdcmp.parts:
-            if part.type == DecompositionPartType.MELD:
+            if part.type == DecompositionPartTypeEnum.MELD:
                 meld_cnt += 1
-            elif part.type == DecompositionPartType.PCHOW:
+            elif part.type == DecompositionPartTypeEnum.PCHOW:
                 pmeld_cnt += 1
             elif part.is_incompletable_pair:
                 head_cnt += 1
@@ -168,12 +169,12 @@ class QuasiDecompositionType(BaseModel):
             incomplete_head_cnt=incomplete_head_cnt,
             can_make_head_from_remainder=any(
                 knowledge_base.can_make_head(tile)
-                for tile in Tiles.ALL
+                for tile in qdcmp.remainder.block
                 if qdcmp.remainder[tile] > 0
             ),
             can_make_meld_from_remainder=any(
                 knowledge_base.can_make_meld(tile)
-                for tile in Tiles.ALL
+                for tile in qdcmp.remainder.block
                 if qdcmp.remainder[tile] > 0
             ),
             can_conflict_head_meld=False,

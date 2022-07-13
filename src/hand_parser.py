@@ -2,7 +2,7 @@ import re
 from itertools import chain
 from typing import Optional
 
-from src.enum.common import CallType, TileType
+from src.enum.common import CallTypeEnum, TileTypeEnum
 from src.exception import TileInputError
 from src.schema.call import Call
 from src.schema.hand import Hand
@@ -38,17 +38,17 @@ def get_tiles_from_code(code: str) -> list[Tile]:
 def get_tiles_from_match(nums: str, tile_type_code: str) -> list[Tile]:
     tiles = []
     tile_type_code_mapper = {
-        "m": TileType.MAN,
-        "p": TileType.PIN,
-        "s": TileType.SOU,
-        "z": TileType.WIND,
+        "m": TileTypeEnum.MAN,
+        "p": TileTypeEnum.PIN,
+        "s": TileTypeEnum.SOU,
+        "z": TileTypeEnum.WIND,
     }
 
     for num in nums:
         tile_num = int(num)
         if tile_type_code == "z" and tile_num > 4:
             tile_num -= 4
-            tile_type = TileType.DRAGON
+            tile_type = TileTypeEnum.DRAGON
         else:
             tile_type = tile_type_code_mapper[tile_type_code]
         tiles.append(Tile(type=tile_type, value=tile_num))
@@ -58,11 +58,11 @@ def get_tiles_from_match(nums: str, tile_type_code: str) -> list[Tile]:
 
 def get_call_from_code(code: str) -> Call:
     call_type_code_mapper = {
-        "chi": CallType.CHII,
-        "pon": CallType.PON,
-        "cok": CallType.CONCEALED_KAN,
-        "bmk": CallType.BIG_MELDED_KAN,
-        "smk": CallType.SMALL_MELDED_KAN,
+        "chi": CallTypeEnum.CHII,
+        "pon": CallTypeEnum.PON,
+        "cok": CallTypeEnum.CONCEALED_KAN,
+        "bmk": CallTypeEnum.BIG_MELDED_KAN,
+        "smk": CallTypeEnum.SMALL_MELDED_KAN,
     }
 
     return Call(
