@@ -14,11 +14,11 @@ class KnowledgeBase(TileCount):
     def can_make_meld(self, tile: Tile) -> bool:
         if self.counts[tile] >= 2:
             return True
-        if self.counts[tile.prev.prev] > 0 and self.counts[tile.prev] > 0:
+        if self.counts.get(tile.prev.prev, 0) > 0 and self.counts.get(tile.prev, 0) > 0:
             return True
-        if self.counts[tile.prev] > 0 and self.counts[tile.next] > 0:
+        if self.counts.get(tile.prev, 0) > 0 and self.counts.get(tile.next, 0) > 0:
             return True
-        if self.counts[tile.next] > 0 and self.counts[tile.next.next] > 0:
+        if self.counts.get(tile.next, 0) > 0 and self.counts.get(tile.next.next, 0) > 0:
             return True
         return False
 
@@ -75,6 +75,13 @@ class QuasiDecomposition(BaseModel):
         ):
             return False
         return sum(1 for part in self.parts if part.is_incompletable_pair) < 2
+
+    @staticmethod
+    def create_from_call_count(call_count: TileCount) -> QuasiDecomposition:
+        return QuasiDecomposition(
+            parts=[DecompositionPart(tile_count=call_count)],
+            remainder=TileCount.create_from_tiles([]),
+        )
 
 
 class QuasiDecompositionType(BaseModel):
@@ -168,12 +175,12 @@ class QuasiDecompositionType(BaseModel):
             incomplete_head_cnt=incomplete_head_cnt,
             can_make_head_from_remainder=any(
                 knowledge_base.can_make_head(tile)
-                for tile in Tiles.ALL
+                for tile in qdcmp.remainder.block
                 if qdcmp.remainder[tile] > 0
             ),
             can_make_meld_from_remainder=any(
                 knowledge_base.can_make_meld(tile)
-                for tile in Tiles.ALL
+                for tile in qdcmp.remainder.block
                 if qdcmp.remainder[tile] > 0
             ),
             can_conflict_head_meld=False,

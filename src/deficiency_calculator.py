@@ -5,7 +5,6 @@ from typing import Iterable
 from src.enum.common import DecompositionPartType
 from src.schema.count import HandCount, TileCount
 from src.schema.quasi_decomposition import (
-    DecompositionPart,
     KnowledgeBase,
     QuasiDecomposition,
     QuasiDecompositionType,
@@ -14,26 +13,42 @@ from src.schema.tile import Tile, Tiles
 
 
 def calculate_normal_deficiency(hand_count: HandCount) -> int:
-    blocks: list[list[Tile]] = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [
-        [t] for t in Tiles.HONORS
-    ]
-    knowledge_base: KnowledgeBase = KnowledgeBase(
-        counts=[4 - hand_count[t] for t in Tiles.ALL], block=Tiles.ALL
+    knowledge_base = KnowledgeBase(
+        counts={tile: 4 - hand_count[tile] for tile in Tiles.ALL}, block=Tiles.ALL
     )
-    types: list[set[QuasiDecompositionType]] = [
-        set(
-            map(
-                partial(QuasiDecompositionType.create_from_qdcmp, knowledge_base),
-                iter_qdcmps(hand_count, block),
-            )
-        )
-        for block in blocks
-    ]
-
-    type_set: set[QuasiDecompositionType] = reduce(combine_typeset, types)
+    iter_types: Iterable[set[QuasiDecompositionType]] = get_iter_block_qdcmp_types(
+        hand_count, knowledge_base
+    )
+    iter_types = list(iter_types)
+    type_set: set[QuasiDecompositionType] = reduce(combine_typeset, iter_types)
     return min(
         (qdcmp_type.cost(knowledge_base) for qdcmp_type in type_set), default=100
     )
+
+
+def get_iter_block_qdcmp_types(
+    hand_count: HandCount, knowledge_base: KnowledgeBase
+) -> Iterable[set[QuasiDecompositionType]]:
+    blocks: list[list[Tile]] = [Tiles.MANS, Tiles.PINS, Tiles.SOUS] + [
+        [t] for t in Tiles.HONORS
+    ]
+    create_from_qdcmp = partial(
+        QuasiDecompositionType.create_from_qdcmp, knowledge_base
+    )
+    yield from (
+        {create_from_qdcmp(QuasiDecomposition.create_from_call_count(call_count))}
+        for call_count in hand_count.call_counts
+    )
+
+    for block in blocks:
+        counts = {tile: hand_count.concealed_count.counts[tile] for tile in block}
+        remaining_counts = {tile: 4 - hand_count[tile] for tile in block}
+        iter_block_qdcmps = iter_qdcmps(
+            TileCount(counts=counts, block=block),
+            TileCount(counts=remaining_counts, block=block),
+        )
+        s = set(map(create_from_qdcmp, iter_block_qdcmps))
+        yield s
 
 
 def combine_typeset(
@@ -42,15 +57,11 @@ def combine_typeset(
     return set(type1 + type2 for type1, type2 in product(type_set1, type_set2))
 
 
-def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
-    states = {t: [hand_count.concealed_count[t], 4 - hand_count[t]] for t in block}
+def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
+    states = {t: [tile_counts[t], remaining_counts[t]] for t in tile_counts.block}
     qdcmp = QuasiDecomposition(
-        parts=[
-            DecompositionPart(tile_count=call_count)
-            for call_count in hand_count.call_counts
-            if any(call_count[t] > 0 for t in block)
-        ],
-        remainder=TileCount.create_from_tiles([]),
+        parts=[],
+        remainder=TileCount.create_from_tiles([], block=tile_counts.block),
     )
 
     def _iter_qdcmps_rec(
@@ -135,7 +146,7 @@ def iter_qdcmps(hand_count: HandCount, block: list[Tile]):
 
         states[tile][0] += 1
 
-    yield from _iter_qdcmps_rec(states, qdcmp, iter(block))
+    yield from _iter_qdcmps_rec(states, qdcmp, iter(tile_counts.block))
 
 
 def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
