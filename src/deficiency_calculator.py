@@ -18,7 +18,7 @@ def calculate_normal_deficiency(hand_count: HandCount) -> int:
         [t] for t in Tiles.HONORS
     ]
     knowledge_base: KnowledgeBase = KnowledgeBase(
-        counts=[4 - hand_count[t] for t in Tiles.ALL]
+        counts=[4 - hand_count[t] for t in Tiles.ALL], block=Tiles.ALL
     )
     types: list[set[QuasiDecompositionType]] = [
         set(
@@ -142,9 +142,9 @@ def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     if hand_count.call_counts:
         return 100
 
-    concealed_count = hand_count.concealed_count
-    num_excess = sum((x - 2 for x in concealed_count.counts if x > 2))
-    num_single = sum(1 for x in concealed_count.counts if x == 1)
+    concealed_tile_count_values = hand_count.concealed_count.counts.values()
+    num_excess = sum((x - 2 for x in concealed_tile_count_values if x > 2))
+    num_single = sum(1 for x in concealed_tile_count_values if x == 1)
     return num_excess + (
         (num_single - num_excess + 1) // 2 if num_single >= num_excess else 1
     )

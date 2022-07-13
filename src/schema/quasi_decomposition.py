@@ -24,11 +24,11 @@ class KnowledgeBase(TileCount):
 
     @property
     def is_containing_head(self):
-        return any(count >= 2 for count in self.counts)
+        return any(count >= 2 for count in self.counts.values())
 
     @property
     def is_containing_meld(self):
-        if any(count >= 3 for count in self.counts):
+        if any(count >= 3 for count in self.counts.values()):
             return True
 
         for tile in Tiles.ALL:
