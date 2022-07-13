@@ -44,7 +44,7 @@ class TileCount(BaseModel):
         raise ValueError("add tile_count of different block")
 
     def __getitem__(self, key: Tile):
-        return self.counts[key]
+        return self.counts.get(key, 0)
 
     def __setitem__(self, key: Tile, value: int):
         if value not in range(5):

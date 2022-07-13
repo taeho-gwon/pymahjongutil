@@ -16,11 +16,8 @@ def calculate_normal_deficiency(hand_count: HandCount) -> int:
     knowledge_base = KnowledgeBase(
         counts={tile: 4 - hand_count[tile] for tile in Tiles.ALL}, block=Tiles.ALL
     )
-    iter_types: Iterable[set[QuasiDecompositionType]] = get_iter_block_qdcmp_types(
-        hand_count, knowledge_base
-    )
-    iter_types = list(iter_types)
-    type_set: set[QuasiDecompositionType] = reduce(combine_typeset, iter_types)
+    iter_types = get_iter_block_qdcmp_types(hand_count, knowledge_base)
+    type_set = reduce(combine_typeset, iter_types)
     return min(
         (qdcmp_type.cost(knowledge_base) for qdcmp_type in type_set), default=100
     )
@@ -58,19 +55,19 @@ def combine_typeset(
 
 
 def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
-    states = {t: [tile_counts[t], remaining_counts[t]] for t in tile_counts.block}
     qdcmp = QuasiDecomposition(
         parts=[],
         remainder=TileCount.create_from_tiles([], block=tile_counts.block),
     )
 
     def _iter_qdcmps_rec(
-        states: dict[Tile, list[int]],
+        tile_counts: TileCount,
+        remaining_counts: TileCount,
         qdcmp: QuasiDecomposition,
         iter_tile: Iterable[Tile],
     ):
         iter_tile, iter_tile_tmp = tee(
-            dropwhile(lambda x: states[x][0] == 0, iter_tile)
+            dropwhile(lambda x: tile_counts[x] == 0, iter_tile)
         )
         try:
             tile = next(iter_tile_tmp)
@@ -79,74 +76,85 @@ def iter_qdcmps(tile_counts: TileCount, remaining_counts: TileCount):
                 yield qdcmp
             return
 
-        states[tile][0] -= 1
+        tile_counts[tile] -= 1
         qdcmp.remainder[tile] += 1
         iter_tile, iter_tile_tmp = tee(iter_tile)
-        yield from _iter_qdcmps_rec(states, qdcmp, iter_tile_tmp)
+        yield from _iter_qdcmps_rec(tile_counts, remaining_counts, qdcmp, iter_tile_tmp)
         qdcmp.remainder[tile] -= 1
 
-        if states[tile][0] >= 2:
-            states[tile][0] -= 2
+        if tile_counts[tile] >= 2:
+            tile_counts[tile] -= 2
             qdcmp.append(tile_count=TileCount.create_from_tiles([tile] * 3))
             iter_tile, iter_tile_tmp = tee(iter_tile)
-            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile_tmp)
+            yield from _iter_qdcmps_rec(
+                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+            )
             qdcmp.pop()
-            states[tile][0] += 2
+            tile_counts[tile] += 2
 
-        prev_state = states.get(tile.prev, [0, 0])
-        next_state = states.get(tile.next, [0, 0])
-        next2_state = states.get(tile.next.next, [0, 0])
-        if next_state[0] >= 1 and next2_state[0] >= 1:
-            next_state[0] -= 1
-            next2_state[0] -= 1
+        if tile_counts[tile.next] >= 1 and tile_counts[tile.next.next] >= 1:
+            tile_counts[tile.next] -= 1
+            tile_counts[tile.next.next] -= 1
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles(
                     [tile, tile.next, tile.next.next]
                 )
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
-            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile_tmp)
+            yield from _iter_qdcmps_rec(
+                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+            )
             qdcmp.pop()
-            next_state[0] += 1
-            next2_state[0] += 1
+            tile_counts[tile.next] += 1
+            tile_counts[tile.next.next] += 1
 
-        if states[tile][0] >= 1:
-            states[tile][0] -= 1
+        if tile_counts[tile] >= 1:
+            tile_counts[tile] -= 1
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile] * 2),
-                is_incompletable_pair=states[tile][1] == 0,
+                is_incompletable_pair=remaining_counts[tile] == 0,
                 type=DecompositionPartType.PAIR,
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
-            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile_tmp)
+            yield from _iter_qdcmps_rec(
+                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+            )
             qdcmp.pop()
-            states[tile][0] += 1
+            tile_counts[tile] += 1
 
-        if next_state[0] >= 1 and (next2_state[1] > 0 or prev_state[1] > 0):
-            next_state[0] -= 1
+        if tile_counts[tile.next] >= 1 and (
+            tile_counts[tile.next.next] > 0 or remaining_counts[tile.prev] > 0
+        ):
+            tile_counts[tile.next] -= 1
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile, tile.next]),
                 type=DecompositionPartType.PCHOW,
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
-            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile_tmp)
+            yield from _iter_qdcmps_rec(
+                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+            )
             qdcmp.pop()
-            next_state[0] += 1
+            tile_counts[tile.next] += 1
 
-        if next2_state[0] >= 1 and next_state[1] > 0:
-            next2_state[0] -= 1
+        if tile_counts[tile.next.next] >= 1 and remaining_counts[tile.next] > 0:
+            tile_counts[tile.next.next] -= 1
             qdcmp.append(
                 tile_count=TileCount.create_from_tiles([tile, tile.next.next]),
                 type=DecompositionPartType.PCHOW,
             )
             iter_tile, iter_tile_tmp = tee(iter_tile)
-            yield from _iter_qdcmps_rec(states, qdcmp, iter_tile_tmp)
+            yield from _iter_qdcmps_rec(
+                tile_counts, remaining_counts, qdcmp, iter_tile_tmp
+            )
             qdcmp.pop()
-            next2_state[0] += 1
+            tile_counts[tile.next.next] += 1
 
-        states[tile][0] += 1
+        tile_counts[tile] += 1
 
-    yield from _iter_qdcmps_rec(states, qdcmp, iter(tile_counts.block))
+    yield from _iter_qdcmps_rec(
+        tile_counts, remaining_counts, qdcmp, iter(tile_counts.block)
+    )
 
 
 def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:

@@ -4,41 +4,35 @@ from pydantic import BaseModel
 
 from src.enum.common import DecompositionPartType
 from src.schema.count import TileCount
-from src.schema.tile import Tile, Tiles
+from src.schema.tile import Tile
 
 
 class KnowledgeBase(TileCount):
     def can_make_head(self, tile: Tile) -> bool:
-        return self.counts[tile] > 0
+        return self[tile] > 0
 
     def can_make_meld(self, tile: Tile) -> bool:
-        if self.counts[tile] >= 2:
+        if self[tile] >= 2:
             return True
-        if self.counts.get(tile.prev.prev, 0) > 0 and self.counts.get(tile.prev, 0) > 0:
+        if self[tile.prev.prev] > 0 and self[tile.prev] > 0:
             return True
-        if self.counts.get(tile.prev, 0) > 0 and self.counts.get(tile.next, 0) > 0:
+        if self[tile.prev] > 0 and self[tile.next] > 0:
             return True
-        if self.counts.get(tile.next, 0) > 0 and self.counts.get(tile.next.next, 0) > 0:
+        if self[tile.next] > 0 and self[tile.next.next] > 0:
             return True
         return False
 
     @property
     def is_containing_head(self):
-        return any(count >= 2 for count in self.counts.values())
+        return any(self[tile] >= 2 for tile in self.block)
 
     @property
     def is_containing_meld(self):
-        if any(count >= 3 for count in self.counts.values()):
-            return True
-
-        for tile in Tiles.ALL:
-            if (
-                self.counts[tile] >= 1
-                and self.counts[tile.next] >= 1
-                and self.counts[tile.next.next] >= 1
-            ):
-                return True
-        return False
+        return any(
+            self[tile] >= 3
+            or (self[tile] >= 1 and self[tile.next] >= 1 and self[tile.next.next] >= 1)
+            for tile in self.block
+        )
 
 
 class DecompositionPart(BaseModel):
