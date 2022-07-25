@@ -1,8 +1,8 @@
 import pytest
 
-from src.enum.common import TileTypeEnum
-from src.hand_parser import get_hand_from_code
-from src.schema.tile import Tile
+from pymahjong.enum.common import TileTypeEnum
+from pymahjong.hand_parser import get_hand_from_code
+from pymahjong.schema.tile import Tile
 
 
 @pytest.mark.parametrize(

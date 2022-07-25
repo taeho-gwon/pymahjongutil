@@ -1,12 +1,12 @@
 import pytest
 
-from src.agari_checker import (
+from pymahjong.agari_checker import (
     check_normal_agari,
     check_seven_pairs_agari,
     check_thirteen_orphans_agari,
 )
-from src.hand_parser import get_hand_from_code
-from src.schema.count import HandCount
+from pymahjong.hand_parser import get_hand_from_code
+from pymahjong.schema.count import HandCount
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from src.enum.common import CallTypeEnum
-from src.schema.tile import Tile
+from pymahjong.enum.common import CallTypeEnum
+from pymahjong.schema.tile import Tile
 
 
 class Call(BaseModel):

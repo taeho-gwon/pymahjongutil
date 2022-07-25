@@ -1,10 +1,10 @@
 import pytest
 
-from src.enum.common import CallTypeEnum, TileTypeEnum
-from src.hand_parser import get_hand_from_code
-from src.schema.call import Call
-from src.schema.hand import Hand
-from src.schema.tile import Tile
+from pymahjong.enum.common import CallTypeEnum, TileTypeEnum
+from pymahjong.hand_parser import get_hand_from_code
+from pymahjong.schema.call import Call
+from pymahjong.schema.hand import Hand
+from pymahjong.schema.tile import Tile
 
 
 @pytest.mark.parametrize(

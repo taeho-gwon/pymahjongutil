@@ -2,14 +2,14 @@ from functools import partial, reduce
 from itertools import dropwhile, product, tee
 from typing import Iterable
 
-from src.enum.common import DecompositionPartTypeEnum
-from src.schema.count import HandCount, TileCount
-from src.schema.quasi_decomposition import (
+from pymahjong.enum.common import DecompositionPartTypeEnum
+from pymahjong.schema.count import HandCount, TileCount
+from pymahjong.schema.quasi_decomposition import (
     KnowledgeBase,
     QuasiDecomposition,
     QuasiDecompositionType,
 )
-from src.schema.tile import Tile, Tiles
+from pymahjong.schema.tile import Tile, Tiles
 
 
 def calculate_deficiency(hand_count: HandCount) -> int:
