@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.enum.common import TileTypeEnum
+from pymahjong.enum.common import TileTypeEnum
 
 
 class Tile(BaseModel):

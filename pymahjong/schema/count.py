@@ -4,9 +4,9 @@ from typing import Iterable
 
 from pydantic import BaseModel
 
-from src.schema.call import Call
-from src.schema.hand import Hand
-from src.schema.tile import Tile, Tiles
+from pymahjong.schema.call import Call
+from pymahjong.schema.hand import Hand
+from pymahjong.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):

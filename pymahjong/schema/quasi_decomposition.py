@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from src.enum.common import DecompositionPartTypeEnum
-from src.schema.count import TileCount
-from src.schema.tile import Tile
+from pymahjong.enum.common import DecompositionPartTypeEnum
+from pymahjong.schema.count import TileCount
+from pymahjong.schema.tile import Tile
 
 
 class KnowledgeBase(TileCount):

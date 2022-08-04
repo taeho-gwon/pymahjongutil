@@ -2,11 +2,11 @@ import re
 from itertools import chain
 from typing import Optional
 
-from src.enum.common import CallTypeEnum, TileTypeEnum
-from src.exception import TileInputError
-from src.schema.call import Call
-from src.schema.hand import Hand
-from src.schema.tile import Tile
+from pymahjong.enum.common import CallTypeEnum, TileTypeEnum
+from pymahjong.exception import TileInputError
+from pymahjong.schema.call import Call
+from pymahjong.schema.hand import Hand
+from pymahjong.schema.tile import Tile
 
 
 def get_hand_from_code(code: str) -> Hand:

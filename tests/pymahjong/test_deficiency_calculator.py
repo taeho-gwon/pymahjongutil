@@ -1,12 +1,12 @@
 import pytest
 
-from src.deficiency_calculator import (
+from pymahjong.deficiency_calculator import (
     calculate_normal_deficiency,
     calculate_seven_pairs_deficiency,
     calculate_thirteen_orphans_deficiency,
 )
-from src.hand_parser import get_hand_from_code
-from src.schema.count import HandCount
+from pymahjong.hand_parser import get_hand_from_code
+from pymahjong.schema.count import HandCount
 
 
 @pytest.mark.parametrize(

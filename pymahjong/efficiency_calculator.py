@@ -1,7 +1,7 @@
-from src.deficiency_calculator import calculate_deficiency
-from src.schema.count import HandCount
-from src.schema.efficiency_data import EfficiencyData
-from src.schema.tile import Tile, Tiles
+from pymahjong.deficiency_calculator import calculate_deficiency
+from pymahjong.schema.count import HandCount
+from pymahjong.schema.efficiency_data import EfficiencyData
+from pymahjong.schema.tile import Tile, Tiles
 
 
 def calculate_efficiency(hand_count: HandCount) -> list[EfficiencyData]:

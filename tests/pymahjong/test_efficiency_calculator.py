@@ -1,9 +1,9 @@
 import pytest
 
-from src.efficiency_calculator import calculate_efficiency
-from src.hand_parser import get_hand_from_code, get_tile_from_code
-from src.schema.count import HandCount
-from src.schema.efficiency_data import EfficiencyData
+from pymahjong.efficiency_calculator import calculate_efficiency
+from pymahjong.hand_parser import get_hand_from_code, get_tile_from_code
+from pymahjong.schema.count import HandCount
+from pymahjong.schema.efficiency_data import EfficiencyData
 
 
 @pytest.mark.parametrize(
