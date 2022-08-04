@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from typing import Iterable
 
 from pydantic import BaseModel
@@ -11,37 +12,27 @@ from pymahjong.schema.tile import Tile, Tiles
 
 class TileCount(BaseModel):
     counts: dict[Tile, int]
-    block: list[Tile]
 
     @property
     def total_count(self):
         return sum(self.counts.values())
 
     @staticmethod
-    def create_from_tiles(tiles: Iterable[Tile], block: list[Tile] | None = None):
-        if block is None:
-            block = Tiles.ALL
-        counts = dict(zip(block, [0] * len(block)))
-        for tile in tiles:
-            counts[tile] += 1
-        return TileCount(counts=counts, block=block)
+    def create_from_tiles(tiles: Iterable[Tile]):
+        counts = {tile: 0 for tile in Tiles.ALL}
+        counts.update(Counter(tiles))
+        return TileCount(counts=counts)
 
     @staticmethod
-    def create_from_calls(calls: Iterable[Call], block: list[Tile] | None = None):
-        if block is None:
-            block = Tiles.ALL
+    def create_from_calls(calls: Iterable[Call]):
         return sum(
             (TileCount.create_from_tiles(call.tiles) for call in calls),
-            start=TileCount(counts={tile: 0 for tile in block}, block=block),
+            start=TileCount(counts={tile: 0 for tile in Tiles.ALL}),
         )
 
     def __add__(self, other: TileCount):
-        if self.block == other.block:
-            counts = {
-                tile: self.counts[tile] + other.counts[tile] for tile in self.block
-            }
-            return TileCount(counts=counts, block=self.block)
-        raise ValueError("add tile_count of different block")
+        counts = {tile: self.counts[tile] + other.counts[tile] for tile in Tiles.ALL}
+        return TileCount(counts=counts)
 
     def __getitem__(self, key: Tile):
         return self.counts.get(key, 0)
@@ -50,6 +41,9 @@ class TileCount(BaseModel):
         if value not in range(5):
             raise ValueError
         self.counts[key] = value
+
+    def convert_to_list34(self):
+        return [self.counts[tile] for tile in Tiles.ALL]
 
 
 class HandCount(BaseModel):
