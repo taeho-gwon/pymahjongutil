@@ -1,8 +1,9 @@
 import pytest
 
 from pymahjong.hand_checker.seven_pair_checker import SevenPairChecker
-from pymahjong.hand_parser import get_hand_from_code
+from pymahjong.hand_parser import get_hand_from_code, get_tile_from_code
 from pymahjong.schema.count import HandCount
+from pymahjong.schema.efficiency_data import EfficiencyData
 
 seven_pair_checker = SevenPairChecker()
 
@@ -40,3 +41,42 @@ def test_calculate_deficiency(test_input, expected):
     hand = get_hand_from_code(test_input)
     hand_count = HandCount.create_from_hand(hand)
     assert seven_pair_checker.calculate_deficiency(hand_count) == expected
+
+
+@pytest.mark.parametrize(
+    "test_input, expected",
+    [
+        (
+            "1188m557889p4466s",
+            [
+                ("7p", ["9p"], 3),
+                ("9p", ["7p"], 3),
+            ],
+        ),
+        (
+            "11789m6789p45566s",
+            [
+                ("7m", ["8m", "9m", "6p", "7p", "8p", "9p", "4s"], 21),
+                ("8m", ["7m", "9m", "6p", "7p", "8p", "9p", "4s"], 21),
+                ("9m", ["7m", "8m", "6p", "7p", "8p", "9p", "4s"], 21),
+                ("6p", ["7m", "8m", "9m", "7p", "8p", "9p", "4s"], 21),
+                ("7p", ["7m", "8m", "9m", "6p", "8p", "9p", "4s"], 21),
+                ("8p", ["7m", "8m", "9m", "6p", "7p", "9p", "4s"], 21),
+                ("9p", ["7m", "8m", "9m", "6p", "7p", "8p", "4s"], 21),
+                ("4s", ["7m", "8m", "9m", "6p", "7p", "8p", "9p"], 21),
+            ],
+        ),
+    ],
+)
+def test_calculate_efficiency(test_input, expected):
+    hand_count = HandCount.create_from_hand(get_hand_from_code(test_input))
+    expected_efficiency = [
+        EfficiencyData(
+            discard_tile=get_tile_from_code(discard_tile_code),
+            ukeire=list(map(get_tile_from_code, ukeire_codes)),
+            ukeire_count=ukeire_count,
+        )
+        for discard_tile_code, ukeire_codes, ukeire_count in expected
+    ]
+
+    assert seven_pair_checker.calculate_efficiency(hand_count) == expected_efficiency

@@ -1,8 +1,9 @@
 import pytest
 
 from pymahjong.hand_checker.normal_checker import NormalChecker
-from pymahjong.hand_parser import get_hand_from_code
+from pymahjong.hand_parser import get_hand_from_code, get_tile_from_code
 from pymahjong.schema.count import HandCount
+from pymahjong.schema.efficiency_data import EfficiencyData
 
 normal_checker = NormalChecker()
 
@@ -43,3 +44,75 @@ def test_calculate_deficiency(test_input, expected):
     hand = get_hand_from_code(test_input)
     hand_count = HandCount.create_from_hand(hand)
     assert normal_checker.calculate_deficiency(hand_count) == expected
+
+
+@pytest.mark.parametrize(
+    "test_input, expected",
+    [
+        (
+            "69m5678p2789s344z7p",
+            [
+                (
+                    "9m",
+                    [
+                        "4m",
+                        "5m",
+                        "6m",
+                        "7m",
+                        "8m",
+                        "6p",
+                        "9p",
+                        "1s",
+                        "2s",
+                        "3s",
+                        "4s",
+                        "3z",
+                        "4z",
+                    ],
+                    46,
+                ),
+                (
+                    "3z",
+                    [
+                        "4m",
+                        "5m",
+                        "6m",
+                        "7m",
+                        "8m",
+                        "9m",
+                        "6p",
+                        "9p",
+                        "1s",
+                        "2s",
+                        "3s",
+                        "4s",
+                        "4z",
+                    ],
+                    46,
+                ),
+                (
+                    "6m",
+                    ["7m", "8m", "9m", "6p", "9p", "1s", "2s", "3s", "4s", "3z", "4z"],
+                    38,
+                ),
+                (
+                    "2s",
+                    ["4m", "5m", "6m", "7m", "8m", "9m", "6p", "9p", "3z", "4z"],
+                    34,
+                ),
+            ],
+        ),
+    ],
+)
+def test_calculate_efficiency(test_input, expected):
+    hand_count = HandCount.create_from_hand(get_hand_from_code(test_input))
+    expected_efficiency = [
+        EfficiencyData(
+            discard_tile=get_tile_from_code(discard_tile_code),
+            ukeire=list(map(get_tile_from_code, ukeire_codes)),
+            ukeire_count=ukeire_count,
+        )
+        for discard_tile_code, ukeire_codes, ukeire_count in expected
+    ]
+
+    assert normal_checker.calculate_efficiency(hand_count) == expected_efficiency
