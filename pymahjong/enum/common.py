@@ -12,6 +12,7 @@ class TileTypeEnum(UpperStrEnum):
     SOU = auto()
     WIND = auto()
     DRAGON = auto()
+    ETC = auto()
 
 
 class CallTypeEnum(UpperStrEnum):

@@ -15,7 +15,7 @@ class HandChecker(ABC):
         efficiency = []
 
         for discard_candidate in filter(
-            lambda t: hand_count.concealed_count[t] > 0, Tiles.ALL
+            lambda t: hand_count.concealed_count[t] > 0, Tiles.DEFAULTS
         ):
             hand_count.concealed_count[discard_candidate] -= 1
             if deficiency == self.calculate_deficiency(hand_count):
@@ -38,7 +38,7 @@ class HandChecker(ABC):
         ukeire = []
         ukeire_count = 0
         for draw_candidate in filter(
-            lambda t: hand_count.concealed_count[t] < 4, Tiles.ALL
+            lambda t: hand_count.concealed_count[t] < 4, Tiles.DEFAULTS
         ):
             hand_count.concealed_count[draw_candidate] += 1
             if deficiency - 1 == self.calculate_deficiency(hand_count):
