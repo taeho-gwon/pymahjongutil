@@ -6,41 +6,52 @@ from pymahjong.enum.common import TileTypeEnum
 
 
 class Tile(BaseModel):
-    type: TileTypeEnum
     value: int
 
-    class Config:
-        frozen = True
-
     def __lt__(self, other: Tile) -> bool:
-        priority_dict = {
-            TileTypeEnum.MAN: 0,
-            TileTypeEnum.PIN: 1,
-            TileTypeEnum.SOU: 2,
-            TileTypeEnum.WIND: 3,
-            TileTypeEnum.DRAGON: 4,
-        }
-        if self.type != other.type:
-            return priority_dict[self.type] < priority_dict[other.type]
         return self.value < other.value
 
     @property
     def next(self) -> Tile:
-        return Tile(type=self.type, value=self.value + 1)
+        return Tile(value=self.value + 1)
 
     @property
     def prev(self) -> Tile:
-        return Tile(type=self.type, value=self.value - 1)
+        return Tile(value=self.value - 1)
+
+    @property
+    def type(self) -> TileTypeEnum:
+        if 0 <= self.value < 9:
+            return TileTypeEnum.MAN
+        elif 9 <= self.value < 18:
+            return TileTypeEnum.PIN
+        elif 18 <= self.value < 27:
+            return TileTypeEnum.SOU
+        elif 27 <= self.value < 31:
+            return TileTypeEnum.WIND
+        elif 31 <= self.value < 34:
+            return TileTypeEnum.DRAGON
+        else:
+            return TileTypeEnum.ETC
+
+    @property
+    def number(self) -> int:
+        if 0 <= self.value < 31:
+            return self.value % 9 + 1
+        elif 31 <= self.value < 34:
+            return self.value - 30
+        else:
+            return self.value - 34
 
 
 class Tiles:
-    MANS = [Tile(type=TileTypeEnum.MAN, value=value + 1) for value in range(9)]
-    PINS = [Tile(type=TileTypeEnum.PIN, value=value + 1) for value in range(9)]
-    SOUS = [Tile(type=TileTypeEnum.SOU, value=value + 1) for value in range(9)]
-    WINDS = [Tile(type=TileTypeEnum.WIND, value=value + 1) for value in range(4)]
-    DRAGONS = [Tile(type=TileTypeEnum.DRAGON, value=value + 1) for value in range(3)]
+    MANS = [Tile(value=value) for value in range(9)]
+    PINS = [Tile(value=value) for value in range(9, 18)]
+    SOUS = [Tile(value=value) for value in range(18, 27)]
+    WINDS = [Tile(value=value) for value in range(27, 31)]
+    DRAGONS = [Tile(value=value) for value in range(31, 34)]
     HONORS = WINDS + DRAGONS
-    ALL = MANS + PINS + SOUS + HONORS
+    DEFAULTS = MANS + PINS + SOUS + HONORS
 
     TERMINALS = [MANS[0], MANS[8], PINS[0], PINS[8], SOUS[0], SOUS[8]]
     TERMINALS_AND_HONORS = TERMINALS + HONORS

@@ -16,7 +16,7 @@ def calculate_deficiency(hand_count: HandCount) -> int:
 def calculate_normal_deficiency(hand_count: HandCount) -> int:
     return (
         shanten_calculator.calculate_shanten_for_regular_hand(
-            hand_count.concealed_count.convert_to_list34()
+            hand_count.concealed_count.counts
         )
         + 1
     )
@@ -25,7 +25,7 @@ def calculate_normal_deficiency(hand_count: HandCount) -> int:
 def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
     return (
         shanten_calculator.calculate_shanten_for_chiitoitsu_hand(
-            hand_count.concealed_count.convert_to_list34()
+            hand_count.concealed_count.counts
         )
         + 1
     )
@@ -34,7 +34,7 @@ def calculate_seven_pairs_deficiency(hand_count: HandCount) -> int:
 def calculate_thirteen_orphans_deficiency(hand_count: HandCount) -> int:
     return (
         shanten_calculator.calculate_shanten_for_kokushi_hand(
-            hand_count.concealed_count.convert_to_list34()
+            hand_count.concealed_count.counts
         )
         + 1
     )

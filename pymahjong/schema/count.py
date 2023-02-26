@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import Counter
 from typing import Iterable
 
 from pydantic import BaseModel
@@ -11,39 +10,37 @@ from pymahjong.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):
-    counts: dict[Tile, int]
+    counts: list[int] = [0] * len(Tiles.DEFAULTS)
 
     @property
-    def total_count(self):
-        return sum(self.counts.values())
+    def total_count(self) -> int:
+        return sum(self.counts)
 
     @staticmethod
     def create_from_tiles(tiles: Iterable[Tile]):
-        counts = {tile: 0 for tile in Tiles.ALL}
-        counts.update(Counter(tiles))
+        counts = [0] * len(Tiles.DEFAULTS)
+        for tile in tiles:
+            counts[tile.value] += 1
+
         return TileCount(counts=counts)
 
     @staticmethod
     def create_from_calls(calls: Iterable[Call]):
         return sum(
             (TileCount.create_from_tiles(call.tiles) for call in calls),
-            start=TileCount(counts={tile: 0 for tile in Tiles.ALL}),
+            start=TileCount(),
         )
 
     def __add__(self, other: TileCount):
-        counts = {tile: self.counts[tile] + other.counts[tile] for tile in Tiles.ALL}
-        return TileCount(counts=counts)
+        return TileCount(counts=[x + y for x, y in zip(self.counts, other.counts)])
 
-    def __getitem__(self, key: Tile):
-        return self.counts.get(key, 0)
+    def __getitem__(self, tile: Tile):
+        return self.counts[tile.value]
 
-    def __setitem__(self, key: Tile, value: int):
+    def __setitem__(self, tile: Tile, value: int):
         if value not in range(5):
             raise ValueError
-        self.counts[key] = value
-
-    def convert_to_list34(self):
-        return [self.counts[tile] for tile in Tiles.ALL]
+        self.counts[tile.value] = value
 
 
 class HandCount(BaseModel):

@@ -1,8 +1,6 @@
 import pytest
 
-from pymahjong.enum.common import TileTypeEnum
 from pymahjong.hand_parser import get_hand_from_code
-from pymahjong.schema.tile import Tile
 
 
 @pytest.mark.parametrize(
@@ -23,54 +21,22 @@ def test_hand_is_opened(test_input, expected):
     [
         (
             "123s456p99m,chi123s,chi12-3s",
-            [
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.PIN, value=4),
-                Tile(type=TileTypeEnum.PIN, value=5),
-                Tile(type=TileTypeEnum.PIN, value=6),
-                Tile(type=TileTypeEnum.MAN, value=9),
-                Tile(type=TileTypeEnum.MAN, value=9),
-            ],
+            [18, 19, 20, 12, 13, 14, 8, 8],
         ),
         (
             "123s123456789p99m",
-            [
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.PIN, value=1),
-                Tile(type=TileTypeEnum.PIN, value=2),
-                Tile(type=TileTypeEnum.PIN, value=3),
-                Tile(type=TileTypeEnum.PIN, value=4),
-                Tile(type=TileTypeEnum.PIN, value=5),
-                Tile(type=TileTypeEnum.PIN, value=6),
-                Tile(type=TileTypeEnum.PIN, value=7),
-                Tile(type=TileTypeEnum.PIN, value=8),
-                Tile(type=TileTypeEnum.PIN, value=9),
-                Tile(type=TileTypeEnum.MAN, value=9),
-                Tile(type=TileTypeEnum.MAN, value=9),
-            ],
+            [18, 19, 20, 9, 10, 11, 12, 13, 14, 15, 16, 17, 8, 8],
         ),
         (
             "123s456p99m,cok111-1z,cok3-333z",
-            [
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.PIN, value=4),
-                Tile(type=TileTypeEnum.PIN, value=5),
-                Tile(type=TileTypeEnum.PIN, value=6),
-                Tile(type=TileTypeEnum.MAN, value=9),
-                Tile(type=TileTypeEnum.MAN, value=9),
-            ],
+            [18, 19, 20, 12, 13, 14, 8, 8],
         ),
     ],
 )
 def test_hand_iter_concealed_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert list(hand.iter_concealed_tiles) == expected
+    for tile, value in zip(hand.iter_concealed_tiles, expected):
+        assert tile.value == value
 
 
 @pytest.mark.parametrize(
@@ -78,65 +44,19 @@ def test_hand_iter_concealed_tiles(test_input, expected):
     [
         (
             "123s456p99m,chi123s,chi12-3s",
-            [
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.PIN, value=4),
-                Tile(type=TileTypeEnum.PIN, value=5),
-                Tile(type=TileTypeEnum.PIN, value=6),
-                Tile(type=TileTypeEnum.MAN, value=9),
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.MAN, value=9),
-            ],
+            [18, 19, 20, 12, 13, 14, 8, 18, 19, 20, 18, 19, 20, 8],
         ),
         (
             "123s123456789p99m",
-            [
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.PIN, value=1),
-                Tile(type=TileTypeEnum.PIN, value=2),
-                Tile(type=TileTypeEnum.PIN, value=3),
-                Tile(type=TileTypeEnum.PIN, value=4),
-                Tile(type=TileTypeEnum.PIN, value=5),
-                Tile(type=TileTypeEnum.PIN, value=6),
-                Tile(type=TileTypeEnum.PIN, value=7),
-                Tile(type=TileTypeEnum.PIN, value=8),
-                Tile(type=TileTypeEnum.PIN, value=9),
-                Tile(type=TileTypeEnum.MAN, value=9),
-                Tile(type=TileTypeEnum.MAN, value=9),
-            ],
+            [18, 19, 20, 9, 10, 11, 12, 13, 14, 15, 16, 17, 8, 8],
         ),
         (
             "123s456p99m,cok111-1z,cok3-333z",
-            [
-                Tile(type=TileTypeEnum.SOU, value=1),
-                Tile(type=TileTypeEnum.SOU, value=2),
-                Tile(type=TileTypeEnum.SOU, value=3),
-                Tile(type=TileTypeEnum.PIN, value=4),
-                Tile(type=TileTypeEnum.PIN, value=5),
-                Tile(type=TileTypeEnum.PIN, value=6),
-                Tile(type=TileTypeEnum.MAN, value=9),
-                Tile(type=TileTypeEnum.WIND, value=1),
-                Tile(type=TileTypeEnum.WIND, value=1),
-                Tile(type=TileTypeEnum.WIND, value=1),
-                Tile(type=TileTypeEnum.WIND, value=1),
-                Tile(type=TileTypeEnum.WIND, value=3),
-                Tile(type=TileTypeEnum.WIND, value=3),
-                Tile(type=TileTypeEnum.WIND, value=3),
-                Tile(type=TileTypeEnum.WIND, value=3),
-                Tile(type=TileTypeEnum.MAN, value=9),
-            ],
+            [18, 19, 20, 12, 13, 14, 8, 27, 27, 27, 27, 29, 29, 29, 29, 8],
         ),
     ],
 )
 def test_hand_iter_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
-    assert list(hand.iter_tiles) == expected
+    for tile, value in zip(hand.iter_tiles, expected):
+        assert tile.value == value

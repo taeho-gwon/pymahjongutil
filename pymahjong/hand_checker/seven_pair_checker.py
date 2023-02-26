@@ -11,7 +11,7 @@ class SevenPairChecker(HandChecker):
     def calculate_deficiency(self, hand_count: HandCount) -> int:
         return (
             self.shanten_calculator.calculate_shanten_for_chiitoitsu_hand(
-                hand_count.concealed_count.convert_to_list34()
+                hand_count.concealed_count.counts
             )
             + 1
         )

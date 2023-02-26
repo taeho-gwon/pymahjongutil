@@ -2,7 +2,7 @@ import re
 from itertools import chain
 from typing import Optional
 
-from pymahjong.enum.common import CallTypeEnum, TileTypeEnum
+from pymahjong.enum.common import CallTypeEnum
 from pymahjong.exception import TileInputError
 from pymahjong.schema.call import Call
 from pymahjong.schema.hand import Hand
@@ -36,24 +36,7 @@ def get_tiles_from_code(code: str) -> list[Tile]:
 
 
 def get_tiles_from_match(nums: str, tile_type_code: str) -> list[Tile]:
-    tiles = []
-    tile_type_code_mapper = {
-        "m": TileTypeEnum.MAN,
-        "p": TileTypeEnum.PIN,
-        "s": TileTypeEnum.SOU,
-        "z": TileTypeEnum.WIND,
-    }
-
-    for num in nums:
-        tile_num = int(num)
-        if tile_type_code == "z" and tile_num > 4:
-            tile_num -= 4
-            tile_type = TileTypeEnum.DRAGON
-        else:
-            tile_type = tile_type_code_mapper[tile_type_code]
-        tiles.append(Tile(type=tile_type, value=tile_num))
-
-    return tiles
+    return [get_tile_from_code(num + tile_type_code) for num in nums]
 
 
 def get_call_from_code(code: str) -> Call:
@@ -74,15 +57,10 @@ def get_call_from_code(code: str) -> Call:
 
 def get_tile_from_code(tile_code: str) -> Tile:
     tile_type_code_mapper = {
-        "m": TileTypeEnum.MAN,
-        "p": TileTypeEnum.PIN,
-        "s": TileTypeEnum.SOU,
-        "z": TileTypeEnum.WIND,
+        "m": 0,
+        "p": 9,
+        "s": 18,
+        "z": 27,
     }
-    tile_type = tile_type_code_mapper[tile_code[1:]]
-    tile_value = int(tile_code[:1])
-    if tile_type == TileTypeEnum.WIND and tile_value > 4:
-        tile_type = TileTypeEnum.DRAGON
-        tile_value -= 4
-
-    return Tile(type=tile_type, value=tile_value)
+    tile_number = int(tile_code[0])
+    return Tile(value=tile_type_code_mapper[tile_code[1]] + tile_number - 1)
