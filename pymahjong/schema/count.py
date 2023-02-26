@@ -10,10 +10,10 @@ from pymahjong.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):
-    counts: list[int]
+    counts: list[int] = [0] * len(Tiles.DEFAULTS)
 
     @property
-    def total_count(self):
+    def total_count(self) -> int:
         return sum(self.counts)
 
     @staticmethod
@@ -28,7 +28,7 @@ class TileCount(BaseModel):
     def create_from_calls(calls: Iterable[Call]):
         return sum(
             (TileCount.create_from_tiles(call.tiles) for call in calls),
-            start=TileCount(counts={tile: 0 for tile in Tiles.DEFAULTS}),
+            start=TileCount(),
         )
 
     def __add__(self, other: TileCount):
