@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 from pymahjong.enum.common import DivisionPartTypeEnum
 from pymahjong.schema.count import TileCount
-from pymahjong.schema.tile import Tile
+from pymahjong.schema.tile import Tile, Tiles
 
 
 class DivisionPart(BaseModel):
@@ -15,6 +15,16 @@ class DivisionPart(BaseModel):
         return DivisionPart(
             type=DivisionPartTypeEnum.HEAD,
             counts=TileCount.create_from_tiles([head_tile] * 2),
+            is_concealed=is_concealed,
+        )
+
+    @staticmethod
+    def create_thirteen_orphans(head_tile: Tile, is_concealed: bool):
+        return DivisionPart(
+            type=DivisionPartTypeEnum.THIRTEEN_ORPHANS,
+            counts=TileCount.create_from_tiles(
+                Tiles.TERMINALS_AND_HONORS + [head_tile]
+            ),
             is_concealed=is_concealed,
         )
 
