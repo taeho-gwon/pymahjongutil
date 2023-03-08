@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from pymahjong.schema.count import HandCount
+from pymahjong.schema.division import Division
 from pymahjong.schema.efficiency_data import EfficiencyData
 from pymahjong.schema.tile import Tile, Tiles
 
@@ -9,6 +10,21 @@ class HandChecker(ABC):
     @abstractmethod
     def calculate_deficiency(self, hand_count: HandCount) -> int:
         pass
+
+    @abstractmethod
+    def _calculate_divisions(
+        self, hand_count: HandCount, agari_tile: Tile, is_concealed: bool
+    ) -> list[Division]:
+        pass
+
+    def calculate_divisions(
+        self, hand_count: HandCount, agari_tile: Tile, is_concealed: bool
+    ) -> list[Division]:
+        if hand_count.concealed_count[agari_tile] == 0:
+            raise ValueError("agari tile is invalid")
+        if not self.check_agari(hand_count):
+            return []
+        return self._calculate_divisions(hand_count, agari_tile, is_concealed)
 
     def calculate_efficiency(self, hand_count: HandCount) -> list[EfficiencyData]:
         deficiency = self.calculate_deficiency(hand_count)
