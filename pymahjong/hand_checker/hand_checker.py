@@ -1,41 +1,50 @@
 from abc import ABC, abstractmethod
 
+from mahjong.shanten import Shanten
+
 from pymahjong.schema.count import HandCount
 from pymahjong.schema.division import Division
 from pymahjong.schema.efficiency_data import EfficiencyData
+from pymahjong.schema.hand import Hand
 from pymahjong.schema.tile import Tile, Tiles
 
 
 class HandChecker(ABC):
+    def __init__(self, hand: Hand):
+        self.hand = hand
+        self.hand_count = HandCount.create_from_hand(hand)
+        self.shanten_calculator = Shanten()
+
     @abstractmethod
-    def calculate_deficiency(self, hand_count: HandCount) -> int:
+    def calculate_deficiency(self) -> int:
         pass
 
     @abstractmethod
     def _calculate_divisions(
-        self, hand_count: HandCount, agari_tile: Tile, is_tsumo_agari: bool
+        self, agari_tile: Tile, is_tsumo_agari: bool
     ) -> list[Division]:
         pass
 
-    def calculate_divisions(
-        self, hand_count: HandCount, agari_tile: Tile, is_tsumo_agari: bool
-    ) -> list[Division]:
-        if hand_count.concealed_count[agari_tile] == 0:
+    def calculate_divisions(self, is_tsumo_agari: bool) -> list[Division]:
+        if (
+            self.hand.last_tile is None
+            or self.hand_count.concealed_count[self.hand.last_tile] == 0
+        ):
             raise ValueError("agari tile is invalid")
-        if not self.check_agari(hand_count):
+        if not self.check_agari():
             return []
-        return self._calculate_divisions(hand_count, agari_tile, is_tsumo_agari)
+        return self._calculate_divisions(self.hand.last_tile, is_tsumo_agari)
 
-    def calculate_efficiency(self, hand_count: HandCount) -> list[EfficiencyData]:
-        deficiency = self.calculate_deficiency(hand_count)
+    def calculate_efficiency(self) -> list[EfficiencyData]:
+        deficiency = self.calculate_deficiency()
         efficiency = []
 
         for discard_candidate in filter(
-            lambda t: hand_count.concealed_count[t] > 0, Tiles.DEFAULTS
+            lambda t: self.hand_count.concealed_count[t] > 0, Tiles.DEFAULTS
         ):
-            hand_count.concealed_count[discard_candidate] -= 1
-            if deficiency == self.calculate_deficiency(hand_count):
-                ukeire, ukeire_count = self.calculate_ukeire(hand_count, deficiency)
+            self.hand_count.concealed_count[discard_candidate] -= 1
+            if deficiency == self.calculate_deficiency():
+                ukeire, ukeire_count = self.calculate_ukeire(deficiency)
                 efficiency.append(
                     EfficiencyData(
                         discard_tile=discard_candidate,
@@ -43,28 +52,26 @@ class HandChecker(ABC):
                         ukeire_count=ukeire_count,
                     )
                 )
-            hand_count.concealed_count[discard_candidate] += 1
+            self.hand_count.concealed_count[discard_candidate] += 1
 
         efficiency.sort()
         return efficiency
 
-    def calculate_ukeire(
-        self, hand_count: HandCount, deficiency: int
-    ) -> tuple[list[Tile], int]:
+    def calculate_ukeire(self, deficiency: int) -> tuple[list[Tile], int]:
         ukeire = []
         ukeire_count = 0
         for draw_candidate in filter(
-            lambda t: hand_count.concealed_count[t] < 4, Tiles.DEFAULTS
+            lambda t: self.hand_count.concealed_count[t] < 4, Tiles.DEFAULTS
         ):
-            hand_count.concealed_count[draw_candidate] += 1
-            if deficiency - 1 == self.calculate_deficiency(hand_count):
+            self.hand_count.concealed_count[draw_candidate] += 1
+            if deficiency - 1 == self.calculate_deficiency():
                 ukeire.append(draw_candidate)
-                ukeire_count += 5 - hand_count[draw_candidate]
-            hand_count.concealed_count[draw_candidate] -= 1
+                ukeire_count += 5 - self.hand_count[draw_candidate]
+            self.hand_count.concealed_count[draw_candidate] -= 1
 
         return ukeire, ukeire_count
 
-    def check_agari(self, hand_count: HandCount) -> bool:
-        if hand_count.concealed_count.total_count % 3 != 2:
+    def check_agari(self) -> bool:
+        if self.hand_count.concealed_count.total_count % 3 != 2:
             raise ValueError("hand_count is invalid")
-        return self.calculate_deficiency(hand_count) == 0
+        return self.calculate_deficiency() == 0
