@@ -10,6 +10,14 @@ class DivisionPart(BaseModel):
     counts: TileCount
     is_concealed: bool
 
+    @staticmethod
+    def create_head(head_tile: Tile, is_concealed: bool):
+        return DivisionPart(
+            type=DivisionPartTypeEnum.HEAD,
+            counts=TileCount.create_from_tiles([head_tile] * 2),
+            is_concealed=is_concealed,
+        )
+
 
 class Division(BaseModel):
     parts: list[DivisionPart]

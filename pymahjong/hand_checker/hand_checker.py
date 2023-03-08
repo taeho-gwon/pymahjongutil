@@ -13,18 +13,18 @@ class HandChecker(ABC):
 
     @abstractmethod
     def _calculate_divisions(
-        self, hand_count: HandCount, agari_tile: Tile, is_concealed: bool
+        self, hand_count: HandCount, agari_tile: Tile, is_tsumo_agari: bool
     ) -> list[Division]:
         pass
 
     def calculate_divisions(
-        self, hand_count: HandCount, agari_tile: Tile, is_concealed: bool
+        self, hand_count: HandCount, agari_tile: Tile, is_tsumo_agari: bool
     ) -> list[Division]:
         if hand_count.concealed_count[agari_tile] == 0:
             raise ValueError("agari tile is invalid")
         if not self.check_agari(hand_count):
             return []
-        return self._calculate_divisions(hand_count, agari_tile, is_concealed)
+        return self._calculate_divisions(hand_count, agari_tile, is_tsumo_agari)
 
     def calculate_efficiency(self, hand_count: HandCount) -> list[EfficiencyData]:
         deficiency = self.calculate_deficiency(hand_count)
