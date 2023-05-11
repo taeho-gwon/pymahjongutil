@@ -1,30 +1,31 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+default_stages: [commit]
+
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.4.0
+  rev: v4.4.0
   hooks:
   - id: trailing-whitespace
   - id: end-of-file-fixer
   - id: check-yaml
+  - id: check-toml
   - id: check-added-large-files
   - id: check-builtin-literals
   - id: check-docstring-first
   - id: name-tests-test
-    # Use args: ['--django'] to match test*.py instead.
     args:
     - --django
-    exclude: tests/fixtures
 - repo: https://github.com/timothycrosley/isort
-  rev: 5.8.0
+  rev: 5.12.0
   hooks:
   - id: isort
     args: ["--profile", "black"]
 - repo: https://github.com/psf/black
-  rev: 21.5b1
+  rev: 23.1.0
   hooks:
   - id: black
-    language_version: python3.10
+    language_version: python3.11
 - repo: local
   hooks:
   - id: flake8
@@ -39,3 +40,9 @@ repos:
     language: python
     types: [python]
     args: ['--config-file', './setup.cfg']
+  - id: pytest
+    name: pytest
+    entry: pytest
+    language: python
+    types: [python]
+    pass_filenames: false
