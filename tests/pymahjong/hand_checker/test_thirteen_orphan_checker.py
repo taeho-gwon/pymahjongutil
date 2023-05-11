@@ -2,10 +2,7 @@ import pytest
 
 from pymahjong.hand_checker.thirteen_orphan_checker import ThirteenOrphanChecker
 from pymahjong.hand_parser import get_hand_from_code, get_tile_from_code
-from pymahjong.schema.count import HandCount
 from pymahjong.schema.efficiency_data import EfficiencyData
-
-thirteen_orphan_checker = ThirteenOrphanChecker()
 
 
 @pytest.mark.parametrize(
@@ -19,8 +16,7 @@ thirteen_orphan_checker = ThirteenOrphanChecker()
 )
 def test_check_thirteen_orphans_agari(test_input, expected):
     hand = get_hand_from_code(test_input)
-    hand_count = HandCount.create_from_hand(hand)
-    assert thirteen_orphan_checker.check_agari(hand_count) == expected
+    assert ThirteenOrphanChecker(hand).check_agari() == expected
 
 
 @pytest.mark.parametrize(
@@ -39,8 +35,7 @@ def test_check_thirteen_orphans_agari(test_input, expected):
 )
 def test_calculate_deficiency(test_input, expected):
     hand = get_hand_from_code(test_input)
-    hand_count = HandCount.create_from_hand(hand)
-    assert thirteen_orphan_checker.calculate_deficiency(hand_count) == expected
+    assert ThirteenOrphanChecker(hand).calculate_deficiency() == expected
 
 
 @pytest.mark.parametrize(
@@ -83,7 +78,7 @@ def test_calculate_deficiency(test_input, expected):
     ],
 )
 def test_calculate_efficiency(test_input, expected):
-    hand_count = HandCount.create_from_hand(get_hand_from_code(test_input))
+    hand = get_hand_from_code(test_input)
     expected_efficiency = [
         EfficiencyData(
             discard_tile=get_tile_from_code(discard_tile_code),
@@ -93,6 +88,4 @@ def test_calculate_efficiency(test_input, expected):
         for discard_tile_code, ukeire_codes, ukeire_count in expected
     ]
 
-    assert (
-        thirteen_orphan_checker.calculate_efficiency(hand_count) == expected_efficiency
-    )
+    assert ThirteenOrphanChecker(hand).calculate_efficiency() == expected_efficiency

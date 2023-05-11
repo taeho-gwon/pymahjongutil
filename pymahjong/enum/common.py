@@ -27,3 +27,11 @@ class DecompositionPartTypeEnum(UpperStrEnum):
     MELD = auto()
     PAIR = auto()
     PCHOW = auto()
+
+
+class DivisionPartTypeEnum(UpperStrEnum):
+    HEAD = auto()
+    STRAIGHT = auto()
+    TRIPLE = auto()
+    QUAD = auto()
+    THIRTEEN_ORPHANS = auto()
