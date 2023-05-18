@@ -23,12 +23,6 @@ class CallTypeEnum(UpperStrEnum):
     SMALL_MELDED_KAN = auto()
 
 
-class DecompositionPartTypeEnum(UpperStrEnum):
-    MELD = auto()
-    PAIR = auto()
-    PCHOW = auto()
-
-
 class DivisionPartTypeEnum(UpperStrEnum):
     HEAD = auto()
     STRAIGHT = auto()
