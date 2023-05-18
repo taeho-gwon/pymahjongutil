@@ -31,7 +31,7 @@ class DivisionPart(BaseModel):
     def create_straight(tile: Tile, is_concealed: bool):
         return DivisionPart(
             type=DivisionPartTypeEnum.STRAIGHT,
-            counts=TileCount.create_from_tiles([tile, tile.next, tile.next.next]),
+            counts=TileCount.create_from_tiles([tile, Tile(tile + 1), Tile(tile + 2)]),
             is_concealed=is_concealed,
         )
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
+import numpy as np
 from pydantic import BaseModel
 
 from pymahjong.schema.call import Call
@@ -10,7 +11,7 @@ from pymahjong.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):
-    counts: list[int] = [0] * len(Tiles.DEFAULTS)
+    counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS))
 
     @property
     def total_count(self) -> int:
@@ -18,29 +19,27 @@ class TileCount(BaseModel):
 
     @staticmethod
     def create_from_tiles(tiles: Iterable[Tile]):
-        counts = [0] * len(Tiles.DEFAULTS)
-        for tile in tiles:
-            counts[tile.value] += 1
-
-        return TileCount(counts=counts)
+        return TileCount(
+            counts=np.bincount([tile for tile in tiles], minlength=len(Tiles.DEFAULTS))
+        )
 
     @staticmethod
     def create_from_calls(calls: Iterable[Call]):
-        return sum(
-            (TileCount.create_from_tiles(call.tiles) for call in calls),
-            start=TileCount(),
-        )
+        return sum(TileCount.create_from_tiles(call.tiles) for call in calls)
 
     def __add__(self, other: TileCount):
-        return TileCount(counts=[x + y for x, y in zip(self.counts, other.counts)])
+        return TileCount(counts=self.counts + other.counts)
 
     def __getitem__(self, tile: Tile):
-        return self.counts[tile.value]
+        return self.counts[tile]
 
     def __setitem__(self, tile: Tile, value: int):
         if value not in range(5):
             raise ValueError
-        self.counts[tile.value] = value
+        self.counts[tile] = value
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class HandCount(BaseModel):
