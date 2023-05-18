@@ -65,7 +65,7 @@ class NormalChecker(HandChecker):
         if tile_counts.counts[idx] >= 3:
             tile_counts.counts[idx] -= 3
             body_divisions.append(
-                DivisionPart.create_triple(Tile(value=idx), is_concealed=True)
+                DivisionPart.create_triple(Tile(idx), is_concealed=True)
             )
             yield from self._calculate_iter_body_divisions(
                 tile_counts, idx, body_divisions
@@ -80,7 +80,7 @@ class NormalChecker(HandChecker):
             tile_counts.counts[idx + 2] -= straight_count
 
             body_divisions.append(
-                DivisionPart.create_straight(Tile(value=idx), is_concealed=True)
+                DivisionPart.create_straight(Tile(idx), is_concealed=True)
             )
             yield from self._calculate_iter_body_divisions(
                 tile_counts, idx, body_divisions
