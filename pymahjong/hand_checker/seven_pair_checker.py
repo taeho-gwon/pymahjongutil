@@ -5,12 +5,13 @@ from pymahjong.schema.tile import Tile, Tiles
 
 class SevenPairChecker(HandChecker):
     def calculate_deficiency(self) -> int:
-        return (
-            self.shanten_calculator.calculate_shanten_for_chiitoitsu_hand(
-                self.hand_count.concealed_count.counts
-            )
-            + 1
-        )
+        if self.hand.is_opened:
+            return 100
+
+        tile_counts = self.hand_count.concealed_count.counts
+        num_pairs = sum(1 for x in tile_counts if x > 1)
+        num_kinds = sum(1 for x in tile_counts if x > 0)
+        return 7 - num_pairs + (0 if num_kinds >= 7 else 7 - num_kinds)
 
     def _calculate_divisions(
         self, agari_tile: Tile, is_tsumo_agari: bool
