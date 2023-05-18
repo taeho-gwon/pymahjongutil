@@ -63,4 +63,4 @@ def get_tile_from_code(tile_code: str) -> Tile:
         "z": 27,
     }
     tile_number = int(tile_code[0])
-    return Tile(value=tile_type_code_mapper[tile_code[1]] + tile_number - 1)
+    return Tile(tile_type_code_mapper[tile_code[1]] + tile_number - 1)
