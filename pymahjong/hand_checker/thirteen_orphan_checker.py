@@ -5,12 +5,17 @@ from pymahjong.schema.tile import Tile, Tiles
 
 class ThirteenOrphanChecker(HandChecker):
     def calculate_deficiency(self) -> int:
-        return (
-            self.shanten_calculator.calculate_shanten_for_kokushi_hand(
-                self.hand_count.concealed_count.counts
-            )
-            + 1
+        if self.hand.is_opened:
+            return 100
+
+        tile_counts = self.hand_count.concealed_count.counts
+        is_orphan_pair_exist = any(
+            tile_counts[x] > 1 for x in Tiles.TERMINALS_AND_HONORS
         )
+        num_orphan_kinds = sum(
+            1 for x in Tiles.TERMINALS_AND_HONORS if tile_counts[x] > 0
+        )
+        return 14 - num_orphan_kinds - int(is_orphan_pair_exist)
 
     def _calculate_divisions(
         self, agari_tile: Tile, is_tsumo_agari: bool
