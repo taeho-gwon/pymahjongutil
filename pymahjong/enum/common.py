@@ -36,6 +36,8 @@ class OtherFuReasonEnum(UpperStrEnum):
     THIRTEEN_ORPHANS = auto()
     BASE = auto()
 
+
+class WaitFuReasonEnum(UpperStrEnum):
     HEAD_WAIT = auto()
     CLOSED_WAIT = auto()
     EDGE_WAIT = auto()
@@ -65,5 +67,9 @@ class BodyFuReasonEnum(UpperStrEnum):
 
 
 FuReasonEnum = (
-    OtherFuReasonEnum | HeadFuReasonEnum | AgariTypeFuReasonEnum | BodyFuReasonEnum
+    OtherFuReasonEnum
+    | WaitFuReasonEnum
+    | HeadFuReasonEnum
+    | AgariTypeFuReasonEnum
+    | BodyFuReasonEnum
 )

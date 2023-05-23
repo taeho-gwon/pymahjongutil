@@ -5,6 +5,7 @@ from pymahjong.enum.common import (
     FuReasonEnum,
     HeadFuReasonEnum,
     OtherFuReasonEnum,
+    WaitFuReasonEnum,
 )
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division, DivisionPart
@@ -17,9 +18,9 @@ class FuCalculator:
             OtherFuReasonEnum.SEVEN_PAIRS: 25,
             OtherFuReasonEnum.THIRTEEN_ORPHANS: 25,
             OtherFuReasonEnum.BASE: 20,
-            OtherFuReasonEnum.HEAD_WAIT: 2,
-            OtherFuReasonEnum.CLOSED_WAIT: 2,
-            OtherFuReasonEnum.EDGE_WAIT: 2,
+            WaitFuReasonEnum.HEAD_WAIT: 2,
+            WaitFuReasonEnum.CLOSED_WAIT: 2,
+            WaitFuReasonEnum.EDGE_WAIT: 2,
             AgariTypeFuReasonEnum.CONCEALED_RON: 10,
             AgariTypeFuReasonEnum.TSUMO: 2,
             AgariTypeFuReasonEnum.OPENED_PINFU: 10,
@@ -58,11 +59,11 @@ class FuCalculator:
             if new_part_fu_reason:
                 fu_reasons.append(new_part_fu_reason)
 
-        new_waiting_fu_reason = self._calculate_waiting_fu(
+        new_wait_fu_reason = self._calculate_waiting_fu(
             division.parts[0], division.agari_tile
         )
-        if new_waiting_fu_reason:
-            fu_reasons.append(new_waiting_fu_reason)
+        if new_wait_fu_reason:
+            fu_reasons.append(new_wait_fu_reason)
 
         new_agari_type_fu_reason = self._calculate_agari_type_fu(
             agari_info.is_tsumo_agari, division.is_opened, len(fu_reasons) == 1
@@ -101,9 +102,9 @@ class FuCalculator:
 
     def _calculate_waiting_fu(
         self, part: DivisionPart, agari_tile: Tile
-    ) -> FuReasonEnum | None:
+    ) -> WaitFuReasonEnum | None:
         if part.type is DivisionPartTypeEnum.HEAD:
-            return OtherFuReasonEnum.HEAD_WAIT
+            return WaitFuReasonEnum.HEAD_WAIT
 
         if part.type is not DivisionPartTypeEnum.STRAIGHT:
             return None
@@ -113,21 +114,21 @@ class FuCalculator:
             and part.counts[agari_tile - 1] == 1
             and part.counts[agari_tile + 1] == 1
         ):
-            return OtherFuReasonEnum.CLOSED_WAIT
+            return WaitFuReasonEnum.CLOSED_WAIT
 
         if (
             agari_tile.number == 3
             and part.counts[agari_tile - 1] == 1
             and part.counts[agari_tile - 2] == 1
         ):
-            return OtherFuReasonEnum.EDGE_WAIT
+            return WaitFuReasonEnum.EDGE_WAIT
 
         if (
             agari_tile.number == 7
             and part.counts[agari_tile + 1] == 1
             and part.counts[agari_tile + 2] == 1
         ):
-            return OtherFuReasonEnum.EDGE_WAIT
+            return WaitFuReasonEnum.EDGE_WAIT
 
         return None
 
