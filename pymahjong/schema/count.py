@@ -14,7 +14,7 @@ class TileCount(BaseModel):
     counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS))
 
     @property
-    def total_count(self) -> int:
+    def num_tiles(self) -> int:
         return sum(self.counts)
 
     @staticmethod
@@ -30,13 +30,16 @@ class TileCount(BaseModel):
     def __add__(self, other: TileCount):
         return TileCount(counts=self.counts + other.counts)
 
-    def __getitem__(self, tile: Tile):
-        return self.counts[tile]
+    def __getitem__(self, idx):
+        return self.counts[idx]
 
-    def __setitem__(self, tile: Tile, value: int):
-        if value not in range(5):
-            raise ValueError
-        self.counts[tile] = value
+    def __setitem__(self, idx, value):
+        self.counts[idx] = value
+
+    def find_earliest_nonzero_index(self, index: int = 0):
+        while index < len(self.counts) and self.counts[index] == 0:
+            index += 1
+        return index
 
     class Config:
         arbitrary_types_allowed = True
@@ -53,10 +56,14 @@ class HandCount(BaseModel):
         return HandCount(concealed_count=concealed_count, call_counts=call_counts)
 
     @property
-    def total_count(self):
-        return self.concealed_count.total_count + sum(
-            call_count.total_count for call_count in self.call_counts
+    def num_tiles(self):
+        return self.concealed_count.num_tiles + sum(
+            call_count.num_tiles for call_count in self.call_counts
         )
+
+    @property
+    def total_count(self) -> TileCount:
+        return sum(self.call_counts, start=self.concealed_count)
 
     def __getitem__(self, item):
         return self.concealed_count[item] + sum(

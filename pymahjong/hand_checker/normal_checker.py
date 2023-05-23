@@ -9,11 +9,137 @@ from pymahjong.schema.tile import Tile, Tiles
 
 class NormalChecker(HandChecker):
     def calculate_deficiency(self) -> int:
-        return (
-            self.shanten_calculator.calculate_shanten_for_regular_hand(
-                self.hand_count.concealed_count.counts
+        concealed_count = self.hand_count.concealed_count.copy(deep=True)
+        num_call = len(self.hand_count.call_counts)
+        best_deficiency = [10]
+
+        for t in (tile for tile in Tiles.DEFAULTS if concealed_count[tile] >= 2):
+            concealed_count[t] -= 2
+            self._erase_complete_set(0, concealed_count, num_call, 1, best_deficiency)
+            concealed_count[t] += 2
+
+        self._erase_complete_set(0, concealed_count, num_call, 0, best_deficiency)
+
+        return best_deficiency[0]
+
+    def _erase_complete_set(
+        self,
+        index: int,
+        concealed_count: TileCount,
+        num_complete_sets: int,
+        num_pair: int,
+        best_deficiency,
+    ):
+        index = concealed_count.find_earliest_nonzero_index(index)
+        if index >= len(Tiles.DEFAULTS):
+            self._erase_partial_set(
+                0, concealed_count, num_complete_sets, 0, num_pair, best_deficiency
             )
-            + 1
+            return
+
+        if concealed_count[index] >= 3:
+            concealed_count[index] -= 3
+            self._erase_complete_set(
+                index, concealed_count, num_complete_sets + 1, num_pair, best_deficiency
+            )
+            concealed_count[index] += 3
+
+        if (
+            index in Tiles.STRAIGHT_STARTS
+            and concealed_count[index + 1] > 0
+            and concealed_count[index + 2] > 0
+        ):
+            concealed_count[index : index + 3] -= 1
+            self._erase_complete_set(
+                index, concealed_count, num_complete_sets + 1, num_pair, best_deficiency
+            )
+            concealed_count[index : index + 3] += 1
+
+        self._erase_complete_set(
+            index + 1, concealed_count, num_complete_sets, num_pair, best_deficiency
+        )
+
+    def _erase_partial_set(
+        self,
+        index: int,
+        concealed_count: TileCount,
+        num_complete_sets: int,
+        num_partial_sets: int,
+        num_pair: int,
+        best_deficiency,
+    ):
+        index = concealed_count.find_earliest_nonzero_index(index)
+        if index >= len(Tiles.DEFAULTS):
+            can_make_pair = num_pair == 1 or any(
+                concealed_count[tile] == 1 and self.total_count[tile] < 4
+                for tile in Tiles.DEFAULTS
+            )
+            current_deficiency = (
+                10
+                - (num_complete_sets * 2)
+                - num_partial_sets
+                - num_pair
+                - can_make_pair
+            )
+            if current_deficiency < best_deficiency[0]:
+                best_deficiency[0] = current_deficiency
+            return
+
+        if num_complete_sets + num_partial_sets < 4:
+            if concealed_count[index] == 2 and self.total_count[index] < 4:
+                concealed_count[index] -= 2
+                self._erase_partial_set(
+                    index,
+                    concealed_count,
+                    num_complete_sets,
+                    num_partial_sets + 1,
+                    num_pair,
+                    best_deficiency,
+                )
+                concealed_count[index] += 2
+
+            if (
+                index in Tiles.PARTIAL_STRAIGHT_STARTS
+                and concealed_count[index + 1] > 0
+                and (
+                    self.total_count[index + 2] < 4
+                    or (index % 9 > 0 and self.total_count[index - 1] < 4)
+                )
+            ):
+                concealed_count[index : index + 2] -= 1
+                self._erase_partial_set(
+                    index,
+                    concealed_count,
+                    num_complete_sets,
+                    num_partial_sets + 1,
+                    num_pair,
+                    best_deficiency,
+                )
+                concealed_count[index : index + 2] += 1
+
+            if (
+                index in Tiles.STRAIGHT_STARTS
+                and concealed_count[index + 2] > 0
+                and self.total_count[index + 1] < 4
+            ):
+                concealed_count[index : index + 3 : 2] -= 1
+                self._erase_partial_set(
+                    index,
+                    concealed_count,
+                    num_complete_sets,
+                    num_partial_sets + 1,
+                    num_pair,
+                    best_deficiency,
+                )
+                concealed_count[index : index + 3 : 2] += 1
+
+        self._erase_partial_set(
+            index + 1,
+            concealed_count,
+            num_complete_sets,
+            num_partial_sets,
+            num_pair,
+            best_deficiency,
         )
 
     def _calculate_divisions(

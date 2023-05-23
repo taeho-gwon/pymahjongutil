@@ -24,7 +24,7 @@ def test_check_agari(test_input, expected):
     [
         ("123m456p789s1112z", 1),
         ("123m456p789s1111z", 2),
-        # ("123m4569999p789s", 2),  mahjong module fix test
+        ("123m4569999p789s", 2),
         ("123m456p789s11122z", 0),
         ("135m466p479s1122z", 4),
         ("334m33889p1457s4z", 5),
