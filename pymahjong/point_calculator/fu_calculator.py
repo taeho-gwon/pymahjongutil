@@ -1,4 +1,9 @@
-from pymahjong.enum.common import DivisionPartTypeEnum, FuReasonEnum
+from pymahjong.enum.common import (
+    BodyFuReasonEnum,
+    DivisionPartTypeEnum,
+    FuReasonEnum,
+    OtherFuReasonEnum,
+)
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division, DivisionPart
 from pymahjong.schema.tile import Tile, Tiles
@@ -7,25 +12,25 @@ from pymahjong.schema.tile import Tile, Tiles
 class FuCalculator:
     def __init__(self):
         self.fu_dict: dict[FuReasonEnum, int] = {
-            FuReasonEnum.SEVEN_PAIRS: 25,
-            FuReasonEnum.THIRTEEN_ORPHANS: 25,
-            FuReasonEnum.BASE: 20,
-            FuReasonEnum.HEAD_WAIT: 2,
-            FuReasonEnum.CLOSED_WAIT: 2,
-            FuReasonEnum.EDGE_WAIT: 2,
-            FuReasonEnum.CONCEALED_RON: 10,
-            FuReasonEnum.TSUMO: 2,
-            FuReasonEnum.OPENED_PINFU: 10,
-            FuReasonEnum.DOUBLE_WIND_PAIR: 4,
-            FuReasonEnum.VALUE_PAIR: 2,
-            FuReasonEnum.OPENED_NORMAL_TRIPLE: 2,
-            FuReasonEnum.OPENED_OUTSIDE_TRIPLE: 4,
-            FuReasonEnum.CONCEALED_NORMAL_TRIPLE: 4,
-            FuReasonEnum.CONCEALED_OUTSIDE_TRIPLE: 8,
-            FuReasonEnum.OPENED_NORMAL_QUAD: 8,
-            FuReasonEnum.OPENED_OUTSIDE_QUAD: 16,
-            FuReasonEnum.CONCEALED_NORMAL_QUAD: 16,
-            FuReasonEnum.CONCEALED_OUTSIDE_QUAD: 32,
+            OtherFuReasonEnum.SEVEN_PAIRS: 25,
+            OtherFuReasonEnum.THIRTEEN_ORPHANS: 25,
+            OtherFuReasonEnum.BASE: 20,
+            OtherFuReasonEnum.HEAD_WAIT: 2,
+            OtherFuReasonEnum.CLOSED_WAIT: 2,
+            OtherFuReasonEnum.EDGE_WAIT: 2,
+            OtherFuReasonEnum.CONCEALED_RON: 10,
+            OtherFuReasonEnum.TSUMO: 2,
+            OtherFuReasonEnum.OPENED_PINFU: 10,
+            OtherFuReasonEnum.DOUBLE_WIND_PAIR: 4,
+            OtherFuReasonEnum.VALUE_PAIR: 2,
+            BodyFuReasonEnum.OPENED_NORMAL_TRIPLE: 2,
+            BodyFuReasonEnum.OPENED_OUTSIDE_TRIPLE: 4,
+            BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE: 4,
+            BodyFuReasonEnum.CONCEALED_OUTSIDE_TRIPLE: 8,
+            BodyFuReasonEnum.OPENED_NORMAL_QUAD: 8,
+            BodyFuReasonEnum.OPENED_OUTSIDE_QUAD: 16,
+            BodyFuReasonEnum.CONCEALED_NORMAL_QUAD: 16,
+            BodyFuReasonEnum.CONCEALED_OUTSIDE_QUAD: 32,
         }
 
     def calculate_fu(
@@ -39,12 +44,12 @@ class FuCalculator:
         self, division: Division, agari_info: AgariInfo
     ) -> list[FuReasonEnum]:
         if len(division.parts) == 7:
-            return [FuReasonEnum.SEVEN_PAIRS]
+            return [OtherFuReasonEnum.SEVEN_PAIRS]
 
         if len(division.parts) == 1:
-            return [FuReasonEnum.THIRTEEN_ORPHANS]
+            return [OtherFuReasonEnum.THIRTEEN_ORPHANS]
 
-        fu_reasons = [FuReasonEnum.BASE]
+        fu_reasons: list[FuReasonEnum] = [OtherFuReasonEnum.BASE]
 
         for part in division.parts:
             new_fu_reason = self._calculate_part_fu(part, agari_info)
@@ -74,27 +79,16 @@ class FuCalculator:
                 first_tile == agari_info.player_wind
                 and first_tile == agari_info.round_wind
             ):
-                return FuReasonEnum.DOUBLE_WIND_PAIR
+                return OtherFuReasonEnum.DOUBLE_WIND_PAIR
             if (
                 first_tile
                 in [agari_info.player_wind, agari_info.round_wind] + Tiles.DRAGONS
             ):
-                return FuReasonEnum.VALUE_PAIR
+                return OtherFuReasonEnum.VALUE_PAIR
             return None
 
         if part.type is DivisionPartTypeEnum.STRAIGHT:
             return None
-
-        fu_reasons = [
-            FuReasonEnum.OPENED_NORMAL_TRIPLE,
-            FuReasonEnum.OPENED_OUTSIDE_TRIPLE,
-            FuReasonEnum.CONCEALED_NORMAL_TRIPLE,
-            FuReasonEnum.CONCEALED_OUTSIDE_TRIPLE,
-            FuReasonEnum.OPENED_NORMAL_QUAD,
-            FuReasonEnum.OPENED_OUTSIDE_QUAD,
-            FuReasonEnum.CONCEALED_NORMAL_QUAD,
-            FuReasonEnum.CONCEALED_OUTSIDE_QUAD,
-        ]
 
         fu_reason_idx = (
             (part.type is DivisionPartTypeEnum.QUAD) * 4
@@ -102,13 +96,13 @@ class FuCalculator:
             + (first_tile in Tiles.TERMINALS_AND_HONORS)
         )
 
-        return fu_reasons[fu_reason_idx]
+        return list(BodyFuReasonEnum)[fu_reason_idx]
 
     def _calculate_waiting_fu(
         self, part: DivisionPart, agari_tile: Tile
     ) -> FuReasonEnum | None:
         if part.type is DivisionPartTypeEnum.HEAD:
-            return FuReasonEnum.HEAD_WAIT
+            return OtherFuReasonEnum.HEAD_WAIT
 
         if part.type is not DivisionPartTypeEnum.STRAIGHT:
             return None
@@ -118,21 +112,21 @@ class FuCalculator:
             and part.counts[agari_tile - 1] == 1
             and part.counts[agari_tile + 1] == 1
         ):
-            return FuReasonEnum.CLOSED_WAIT
+            return OtherFuReasonEnum.CLOSED_WAIT
 
         if (
             agari_tile.number == 3
             and part.counts[agari_tile - 1] == 1
             and part.counts[agari_tile - 2] == 1
         ):
-            return FuReasonEnum.EDGE_WAIT
+            return OtherFuReasonEnum.EDGE_WAIT
 
         if (
             agari_tile.number == 7
             and part.counts[agari_tile + 1] == 1
             and part.counts[agari_tile + 2] == 1
         ):
-            return FuReasonEnum.EDGE_WAIT
+            return OtherFuReasonEnum.EDGE_WAIT
 
         return None
 
@@ -140,12 +134,12 @@ class FuCalculator:
         self, is_tsumo_agari: bool, is_opened: bool, is_pinfu_shape: bool
     ) -> FuReasonEnum | None:
         if is_tsumo_agari:
-            return FuReasonEnum.TSUMO if is_opened or not is_pinfu_shape else None
+            return OtherFuReasonEnum.TSUMO if is_opened or not is_pinfu_shape else None
 
         if not is_opened:
-            return FuReasonEnum.CONCEALED_RON
+            return OtherFuReasonEnum.CONCEALED_RON
 
         if is_pinfu_shape:
-            return FuReasonEnum.OPENED_PINFU
+            return OtherFuReasonEnum.OPENED_PINFU
 
         return None

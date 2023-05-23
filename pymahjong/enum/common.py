@@ -31,7 +31,7 @@ class DivisionPartTypeEnum(UpperStrEnum):
     THIRTEEN_ORPHANS = auto()
 
 
-class FuReasonEnum(UpperStrEnum):
+class OtherFuReasonEnum(UpperStrEnum):
     SEVEN_PAIRS = auto()
     THIRTEEN_ORPHANS = auto()
     BASE = auto()
@@ -47,6 +47,8 @@ class FuReasonEnum(UpperStrEnum):
     DOUBLE_WIND_PAIR = auto()
     VALUE_PAIR = auto()
 
+
+class BodyFuReasonEnum(UpperStrEnum):
     OPENED_NORMAL_TRIPLE = auto()
     OPENED_OUTSIDE_TRIPLE = auto()
     CONCEALED_NORMAL_TRIPLE = auto()
@@ -56,3 +58,6 @@ class FuReasonEnum(UpperStrEnum):
     OPENED_OUTSIDE_QUAD = auto()
     CONCEALED_NORMAL_QUAD = auto()
     CONCEALED_OUTSIDE_QUAD = auto()
+
+
+FuReasonEnum = OtherFuReasonEnum | BodyFuReasonEnum
