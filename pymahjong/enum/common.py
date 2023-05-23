@@ -40,6 +40,8 @@ class OtherFuReasonEnum(UpperStrEnum):
     CLOSED_WAIT = auto()
     EDGE_WAIT = auto()
 
+
+class AgariTypeFuReasonEnum(UpperStrEnum):
     CONCEALED_RON = auto()
     TSUMO = auto()
     OPENED_PINFU = auto()
@@ -62,4 +64,6 @@ class BodyFuReasonEnum(UpperStrEnum):
     CONCEALED_OUTSIDE_QUAD = auto()
 
 
-FuReasonEnum = OtherFuReasonEnum | HeadFuReasonEnum | BodyFuReasonEnum
+FuReasonEnum = (
+    OtherFuReasonEnum | HeadFuReasonEnum | AgariTypeFuReasonEnum | BodyFuReasonEnum
+)

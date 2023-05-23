@@ -1,4 +1,5 @@
 from pymahjong.enum.common import (
+    AgariTypeFuReasonEnum,
     BodyFuReasonEnum,
     DivisionPartTypeEnum,
     FuReasonEnum,
@@ -19,9 +20,9 @@ class FuCalculator:
             OtherFuReasonEnum.HEAD_WAIT: 2,
             OtherFuReasonEnum.CLOSED_WAIT: 2,
             OtherFuReasonEnum.EDGE_WAIT: 2,
-            OtherFuReasonEnum.CONCEALED_RON: 10,
-            OtherFuReasonEnum.TSUMO: 2,
-            OtherFuReasonEnum.OPENED_PINFU: 10,
+            AgariTypeFuReasonEnum.CONCEALED_RON: 10,
+            AgariTypeFuReasonEnum.TSUMO: 2,
+            AgariTypeFuReasonEnum.OPENED_PINFU: 10,
             HeadFuReasonEnum.DOUBLE_WIND_HEAD: 4,
             HeadFuReasonEnum.VALUE_HEAD: 2,
             BodyFuReasonEnum.OPENED_NORMAL_TRIPLE: 2,
@@ -132,14 +133,16 @@ class FuCalculator:
 
     def _calculate_agari_type_fu(
         self, is_tsumo_agari: bool, is_opened: bool, is_pinfu_shape: bool
-    ) -> FuReasonEnum | None:
+    ) -> AgariTypeFuReasonEnum | None:
         if is_tsumo_agari:
-            return OtherFuReasonEnum.TSUMO if is_opened or not is_pinfu_shape else None
+            return (
+                AgariTypeFuReasonEnum.TSUMO if is_opened or not is_pinfu_shape else None
+            )
 
         if not is_opened:
-            return OtherFuReasonEnum.CONCEALED_RON
+            return AgariTypeFuReasonEnum.CONCEALED_RON
 
         if is_pinfu_shape:
-            return OtherFuReasonEnum.OPENED_PINFU
+            return AgariTypeFuReasonEnum.OPENED_PINFU
 
         return None
