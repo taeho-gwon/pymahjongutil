@@ -65,3 +65,4 @@ class DivisionPart(BaseModel):
 class Division(BaseModel):
     parts: list[DivisionPart]
     agari_tile: Tile
+    is_opened: bool

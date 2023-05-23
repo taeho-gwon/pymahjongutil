@@ -20,4 +20,4 @@ class SevenPairChecker(HandChecker):
         for head in Tiles.DEFAULTS:
             head_count = self.hand_count.concealed_count[head] // 2
             parts.extend([DivisionPart.create_head(head, True)] * head_count)
-        return [Division(parts=parts, agari_tile=agari_tile)]
+        return [Division(parts=parts, agari_tile=agari_tile, is_opened=False)]
