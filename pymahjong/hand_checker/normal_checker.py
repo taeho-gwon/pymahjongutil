@@ -147,7 +147,11 @@ class NormalChecker(HandChecker):
     ) -> list[Division]:
         call_parts = [DivisionPart.create_from_call(call) for call in self.hand.calls]
         return [
-            Division(parts=concealed_parts + call_parts, agari_tile=agari_tile)
+            Division(
+                parts=concealed_parts + call_parts,
+                agari_tile=agari_tile,
+                is_opened=self.hand.is_opened,
+            )
             for concealed_parts in self._calculate_iter_concealed_parts(
                 agari_tile, is_tsumo_agari
             )
