@@ -73,3 +73,14 @@ FuReasonEnum = (
     | AgariTypeFuReasonEnum
     | BodyFuReasonEnum
 )
+
+
+class YakumanEnum(UpperStrEnum):
+    YAKUMAN = auto()
+
+
+class NormalYakuEnum(UpperStrEnum):
+    NORMAL = auto()
+
+
+YakuEnum = YakumanEnum | NormalYakuEnum
