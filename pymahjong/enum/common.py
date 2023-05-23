@@ -44,8 +44,10 @@ class OtherFuReasonEnum(UpperStrEnum):
     TSUMO = auto()
     OPENED_PINFU = auto()
 
-    DOUBLE_WIND_PAIR = auto()
-    VALUE_PAIR = auto()
+
+class HeadFuReasonEnum(UpperStrEnum):
+    DOUBLE_WIND_HEAD = auto()
+    VALUE_HEAD = auto()
 
 
 class BodyFuReasonEnum(UpperStrEnum):
@@ -60,4 +62,4 @@ class BodyFuReasonEnum(UpperStrEnum):
     CONCEALED_OUTSIDE_QUAD = auto()
 
 
-FuReasonEnum = OtherFuReasonEnum | BodyFuReasonEnum
+FuReasonEnum = OtherFuReasonEnum | HeadFuReasonEnum | BodyFuReasonEnum

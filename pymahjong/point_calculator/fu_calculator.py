@@ -2,6 +2,7 @@ from pymahjong.enum.common import (
     BodyFuReasonEnum,
     DivisionPartTypeEnum,
     FuReasonEnum,
+    HeadFuReasonEnum,
     OtherFuReasonEnum,
 )
 from pymahjong.schema.agari_info import AgariInfo
@@ -21,8 +22,8 @@ class FuCalculator:
             OtherFuReasonEnum.CONCEALED_RON: 10,
             OtherFuReasonEnum.TSUMO: 2,
             OtherFuReasonEnum.OPENED_PINFU: 10,
-            OtherFuReasonEnum.DOUBLE_WIND_PAIR: 4,
-            OtherFuReasonEnum.VALUE_PAIR: 2,
+            HeadFuReasonEnum.DOUBLE_WIND_HEAD: 4,
+            HeadFuReasonEnum.VALUE_HEAD: 2,
             BodyFuReasonEnum.OPENED_NORMAL_TRIPLE: 2,
             BodyFuReasonEnum.OPENED_OUTSIDE_TRIPLE: 4,
             BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE: 4,
@@ -52,40 +53,30 @@ class FuCalculator:
         fu_reasons: list[FuReasonEnum] = [OtherFuReasonEnum.BASE]
 
         for part in division.parts:
-            new_fu_reason = self._calculate_part_fu(part, agari_info)
-            if new_fu_reason:
-                fu_reasons.append(new_fu_reason)
+            new_part_fu_reason = self._calculate_part_fu(part, agari_info)
+            if new_part_fu_reason:
+                fu_reasons.append(new_part_fu_reason)
 
-        new_fu_reason = self._calculate_waiting_fu(
+        new_waiting_fu_reason = self._calculate_waiting_fu(
             division.parts[0], division.agari_tile
         )
-        if new_fu_reason:
-            fu_reasons.append(new_fu_reason)
+        if new_waiting_fu_reason:
+            fu_reasons.append(new_waiting_fu_reason)
 
-        new_fu_reason = self._calculate_agari_type_fu(
+        new_agari_type_fu_reason = self._calculate_agari_type_fu(
             agari_info.is_tsumo_agari, division.is_opened, len(fu_reasons) == 1
         )
-        if new_fu_reason:
-            fu_reasons.append(new_fu_reason)
+        if new_agari_type_fu_reason:
+            fu_reasons.append(new_agari_type_fu_reason)
 
         return fu_reasons
 
     def _calculate_part_fu(
         self, part: DivisionPart, agari_info: AgariInfo
-    ) -> FuReasonEnum | None:
+    ) -> HeadFuReasonEnum | BodyFuReasonEnum | None:
         first_tile = Tile(part.counts.find_earliest_nonzero_index())
         if part.type is DivisionPartTypeEnum.HEAD:
-            if (
-                first_tile == agari_info.player_wind
-                and first_tile == agari_info.round_wind
-            ):
-                return OtherFuReasonEnum.DOUBLE_WIND_PAIR
-            if (
-                first_tile
-                in [agari_info.player_wind, agari_info.round_wind] + Tiles.DRAGONS
-            ):
-                return OtherFuReasonEnum.VALUE_PAIR
-            return None
+            return self._calculate_head_fu(first_tile, agari_info)
 
         if part.type is DivisionPartTypeEnum.STRAIGHT:
             return None
@@ -97,6 +88,15 @@ class FuCalculator:
         )
 
         return list(BodyFuReasonEnum)[fu_reason_idx]
+
+    def _calculate_head_fu(
+        self, tile: Tile, agari_info: AgariInfo
+    ) -> HeadFuReasonEnum | None:
+        if tile == agari_info.player_wind and tile == agari_info.round_wind:
+            return HeadFuReasonEnum.DOUBLE_WIND_HEAD
+        if tile in [agari_info.player_wind, agari_info.round_wind] + Tiles.DRAGONS:
+            return HeadFuReasonEnum.VALUE_HEAD
+        return None
 
     def _calculate_waiting_fu(
         self, part: DivisionPart, agari_tile: Tile
