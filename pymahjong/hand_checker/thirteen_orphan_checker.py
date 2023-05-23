@@ -27,7 +27,7 @@ class ThirteenOrphanChecker(HandChecker):
         )
         return [
             Division(
-                parts=DivisionPart.create_thirteen_orphans(head, is_tsumo_agari),
+                parts=[DivisionPart.create_thirteen_orphans(head, is_tsumo_agari)],
                 agari_tile=agari_tile,
                 is_opened=False,
             )
