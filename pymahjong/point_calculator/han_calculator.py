@@ -1,8 +1,8 @@
 from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.base_normal_yaku import BaseNormalYaku
-from pymahjong.yaku_checker.base_yakuman import BaseYakuman
+from pymahjong.yaku_checker.normal_yaku.base_normal_yaku import BaseNormalYaku
+from pymahjong.yaku_checker.yakuman.base_yakuman import BaseYakuman
 
 
 class HanCalculator:
