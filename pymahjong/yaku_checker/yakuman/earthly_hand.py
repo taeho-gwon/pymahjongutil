@@ -5,12 +5,13 @@ from pymahjong.schema.tile import Tiles
 from pymahjong.yaku_checker.yakuman.base_yakuman import BaseYakuman
 
 
-class Chinrotou(BaseYakuman):
+class EarthlyHand(BaseYakuman):
     def __init__(self):
-        super().__init__(YakumanEnum.CHINROTOU)
+        super().__init__(YakumanEnum.EARTHLY_HAND)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        return all(
-            sum(part.counts[t] for t in Tiles.SIMPLES + Tiles.HONORS) == 0
-            for part in division.parts
+        return (
+            agari_info.is_first_turn
+            and agari_info.player_wind != Tiles.WINDS[0]
+            and agari_info.is_tsumo_agari
         )

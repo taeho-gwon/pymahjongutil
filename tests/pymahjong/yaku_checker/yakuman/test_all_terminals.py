@@ -1,6 +1,6 @@
 import pytest
 
-from pymahjong.yaku_checker.yakuman.chinrotou import Chinrotou
+from pymahjong.yaku_checker.yakuman.all_terminals import AllTerminals
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 
@@ -12,5 +12,5 @@ from tests.pymahjong.yaku_checker.utils import assert_yaku_check
         ("199m1199p1199s11z1m", False),
     ],
 )
-def test_chinrotou(test_input, expected):
-    assert_yaku_check(test_input, expected, Chinrotou())
+def test_all_terminals(test_input, expected):
+    assert_yaku_check(test_input, expected, AllTerminals())
