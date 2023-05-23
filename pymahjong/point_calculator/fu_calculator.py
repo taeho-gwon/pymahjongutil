@@ -57,9 +57,7 @@ class FuCalculator:
             if part_fu_reason:
                 fu_reasons.append(part_fu_reason)
 
-        wait_fu_reason = self._calculate_waiting_fu(
-            division.parts[0], division.agari_tile
-        )
+        wait_fu_reason = self._calculate_wait_fu(division.parts[0], division.agari_tile)
         if wait_fu_reason:
             fu_reasons.append(wait_fu_reason)
 
@@ -105,7 +103,7 @@ class FuCalculator:
             return HeadFuReasonEnum.VALUE_HEAD
         return None
 
-    def _calculate_waiting_fu(
+    def _calculate_wait_fu(
         self, part: DivisionPart, agari_tile: Tile
     ) -> WaitFuReasonEnum | None:
         if part.type is DivisionPartTypeEnum.HEAD:
