@@ -30,13 +30,16 @@ class TileCount(BaseModel):
     def __add__(self, other: TileCount):
         return TileCount(counts=self.counts + other.counts)
 
-    def __getitem__(self, tile: Tile):
-        return self.counts[tile]
+    def __getitem__(self, idx):
+        return self.counts[idx]
 
-    def __setitem__(self, tile: Tile, value: int):
-        if value not in range(5):
-            raise ValueError
-        self.counts[tile] = value
+    def __setitem__(self, idx, value):
+        self.counts[idx] = value
+
+    def find_earliest_nonzero_index(self, index: int = 0):
+        while index < len(self.counts) and self.counts[index] == 0:
+            index += 1
+        return index
 
     class Config:
         arbitrary_types_allowed = True

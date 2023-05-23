@@ -9,11 +9,107 @@ from pymahjong.schema.tile import Tile, Tiles
 
 class NormalChecker(HandChecker):
     def calculate_deficiency(self) -> int:
-        return (
-            self.shanten_calculator.calculate_shanten_for_regular_hand(
-                self.hand_count.concealed_count.counts
+        concealed_count = self.hand_count.concealed_count
+        num_call = len(self.hand_count.call_counts)
+        best_deficiency = [10]
+
+        for t in (tile for tile in Tiles.DEFAULTS if concealed_count[tile] >= 2):
+            concealed_count[t] -= 2
+            self._erase_complete_set(0, num_call, 1, best_deficiency)
+            concealed_count[t] += 2
+
+        self._erase_complete_set(0, num_call, 0, best_deficiency)
+
+        return best_deficiency[0]
+
+    def _erase_complete_set(
+        self, index: int, num_complete_sets: int, num_pair: int, best_deficiency
+    ):
+        concealed_count = self.hand_count.concealed_count
+        index = concealed_count.find_earliest_nonzero_index(index)
+        if index >= len(Tiles.DEFAULTS):
+            self._erase_partial_set(0, num_complete_sets, 0, num_pair, best_deficiency)
+            return
+
+        if concealed_count[index] >= 3:
+            concealed_count[index] -= 3
+            self._erase_complete_set(
+                index, num_complete_sets + 1, num_pair, best_deficiency
             )
-            + 1
+            concealed_count[index] += 3
+
+        if (
+            index in Tiles.STRAIGHT_STARTS
+            and concealed_count[index + 1] > 0
+            and concealed_count[index + 2] > 0
+        ):
+            concealed_count[index : index + 3] -= 1
+            self._erase_complete_set(
+                index, num_complete_sets + 1, num_pair, best_deficiency
+            )
+            concealed_count[index : index + 3] += 1
+
+        self._erase_complete_set(
+            index + 1, num_complete_sets, num_pair, best_deficiency
+        )
+
+    def _erase_partial_set(
+        self,
+        index: int,
+        num_complete_sets: int,
+        num_partial_sets: int,
+        num_pair: int,
+        best_deficiency,
+    ):
+        concealed_count = self.hand_count.concealed_count
+        index = concealed_count.find_earliest_nonzero_index(index)
+        if index >= len(Tiles.DEFAULTS):
+            current_deficiency = (
+                9 - (num_complete_sets * 2) - num_partial_sets - num_pair
+            )
+            if current_deficiency < best_deficiency[0]:
+                best_deficiency[0] = current_deficiency
+            return
+
+        if num_complete_sets + num_partial_sets < 4:
+            if concealed_count[index] == 2:
+                concealed_count[index] -= 2
+                self._erase_partial_set(
+                    index,
+                    num_complete_sets,
+                    num_partial_sets + 1,
+                    num_pair,
+                    best_deficiency,
+                )
+                concealed_count[index] += 2
+
+            if (
+                index in Tiles.PARTIAL_STRAIGHT_STARTS
+                and concealed_count[index + 1] > 0
+            ):
+                concealed_count[index : index + 2] -= 1
+                self._erase_partial_set(
+                    index,
+                    num_complete_sets,
+                    num_partial_sets + 1,
+                    num_pair,
+                    best_deficiency,
+                )
+                concealed_count[index : index + 2] += 1
+
+            if index in Tiles.STRAIGHT_STARTS and concealed_count[index + 2] > 0:
+                concealed_count[index : index + 3 : 2] -= 1
+                self._erase_partial_set(
+                    index,
+                    num_complete_sets,
+                    num_partial_sets + 1,
+                    num_pair,
+                    best_deficiency,
+                )
+                concealed_count[index : index + 3 : 2] += 1
+
+        self._erase_partial_set(
+            index + 1, num_complete_sets, num_partial_sets, num_pair, best_deficiency
         )
 
     def _calculate_divisions(
