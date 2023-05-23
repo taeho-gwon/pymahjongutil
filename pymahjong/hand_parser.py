@@ -3,7 +3,6 @@ from itertools import chain
 from typing import Optional
 
 from pymahjong.enum.common import CallTypeEnum
-from pymahjong.exception import TileInputError
 from pymahjong.schema.call import Call
 from pymahjong.schema.hand import Hand
 from pymahjong.schema.tile import Tile
@@ -25,7 +24,7 @@ def get_tiles_from_code(code: str) -> list[Tile]:
     pattern = re.compile("([1-9]+)([mpsz])")
     matches = pattern.findall(code)
     if "".join([x + y for (x, y) in matches]) != code:
-        raise TileInputError(code)
+        raise ValueError(code + "is not a valid tile_code")
 
     return list(
         chain.from_iterable(

@@ -41,3 +41,5 @@ class Tiles:
 
     STRAIGHT_STARTS = MANS[0:7] + PINS[0:7] + SOUS[0:7]
     PARTIAL_STRAIGHT_STARTS = MANS[0:8] + PINS[0:8] + SOUS[0:8]
+
+    SIMPLES = MANS[1:8] + PINS[1:8] + SOUS[1:8]
