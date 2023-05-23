@@ -10,8 +10,8 @@ class PointCalculator:
         self.han_calculator = HanCalculator()
 
     def calculate_base_point(self, division: Division, agari_info: AgariInfo):
-        fu = self.fu_calculator.calculate_fu(division, agari_info)
-        han = self.han_calculator.calculate_han(division, agari_info)
+        fu, _ = self.fu_calculator.calculate_fu(division, agari_info)
+        han, _ = self.han_calculator.calculate_han(division, agari_info)
 
         if han < 3 or (han == 3 and fu < 70) or (han == 4 and fu < 40):
             return fu * pow(2, 2 + han)

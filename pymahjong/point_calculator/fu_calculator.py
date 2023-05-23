@@ -6,12 +6,36 @@ from pymahjong.schema.tile import Tile, Tiles
 
 class FuCalculator:
     def __init__(self):
-        pass
+        self.fu_dict: dict[FuReasonEnum, int] = {
+            FuReasonEnum.SEVEN_PAIRS: 25,
+            FuReasonEnum.THIRTEEN_ORPHANS: 25,
+            FuReasonEnum.BASE: 20,
+            FuReasonEnum.HEAD_WAIT: 2,
+            FuReasonEnum.CLOSED_WAIT: 2,
+            FuReasonEnum.EDGE_WAIT: 2,
+            FuReasonEnum.CONCEALED_RON: 10,
+            FuReasonEnum.TSUMO: 2,
+            FuReasonEnum.OPENED_PINFU: 10,
+            FuReasonEnum.DOUBLE_WIND_PAIR: 4,
+            FuReasonEnum.VALUE_PAIR: 2,
+            FuReasonEnum.OPENED_NORMAL_TRIPLE: 2,
+            FuReasonEnum.OPENED_OUTSIDE_TRIPLE: 4,
+            FuReasonEnum.CONCEALED_NORMAL_TRIPLE: 4,
+            FuReasonEnum.CONCEALED_OUTSIDE_TRIPLE: 8,
+            FuReasonEnum.OPENED_NORMAL_QUAD: 8,
+            FuReasonEnum.OPENED_OUTSIDE_QUAD: 16,
+            FuReasonEnum.CONCEALED_NORMAL_QUAD: 16,
+            FuReasonEnum.CONCEALED_OUTSIDE_QUAD: 32,
+        }
 
-    def calculate_fu(self, division: Division, agari_info: AgariInfo) -> int:
-        return 0
+    def calculate_fu(
+        self, division: Division, agari_info: AgariInfo
+    ) -> tuple[int, list[FuReasonEnum]]:
+        fu_reasons = self._calculate_fu_reasons(division, agari_info)
+        fu = sum(self.fu_dict[fu_reason] for fu_reason in fu_reasons)
+        return fu, fu_reasons
 
-    def calculate_fu_reasons(
+    def _calculate_fu_reasons(
         self, division: Division, agari_info: AgariInfo
     ) -> list[FuReasonEnum]:
         if len(division.parts) == 7:

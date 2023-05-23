@@ -6,5 +6,7 @@ class HanCalculator:
     def __init__(self):
         pass
 
-    def calculate_han(self, division: Division, agari_info: AgariInfo) -> int:
-        return 0
+    def calculate_han(
+        self, division: Division, agari_info: AgariInfo
+    ) -> tuple[int, list]:
+        return 0, []
