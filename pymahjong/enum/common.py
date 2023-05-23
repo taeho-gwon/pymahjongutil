@@ -29,3 +29,30 @@ class DivisionPartTypeEnum(UpperStrEnum):
     TRIPLE = auto()
     QUAD = auto()
     THIRTEEN_ORPHANS = auto()
+
+
+class FuReasonEnum(UpperStrEnum):
+    SEVEN_PAIRS = auto()
+    THIRTEEN_ORPHANS = auto()
+    BASE = auto()
+
+    HEAD_WAIT = auto()
+    CLOSED_WAIT = auto()
+    EDGE_WAIT = auto()
+
+    CONCEALED_RON = auto()
+    TSUMO = auto()
+    OPENED_PINFU = auto()
+
+    DOUBLE_WIND_PAIR = auto()
+    VALUE_PAIR = auto()
+
+    OPENED_NORMAL_TRIPLE = auto()
+    OPENED_OUTSIDE_TRIPLE = auto()
+    CONCEALED_NORMAL_TRIPLE = auto()
+    CONCEALED_OUTSIDE_TRIPLE = auto()
+
+    OPENED_NORMAL_QUAD = auto()
+    OPENED_OUTSIDE_QUAD = auto()
+    CONCEALED_NORMAL_QUAD = auto()
+    CONCEALED_OUTSIDE_QUAD = auto()
