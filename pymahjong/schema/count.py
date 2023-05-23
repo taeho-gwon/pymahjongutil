@@ -14,7 +14,7 @@ class TileCount(BaseModel):
     counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS))
 
     @property
-    def total_count(self) -> int:
+    def num_tiles(self) -> int:
         return sum(self.counts)
 
     @staticmethod
@@ -56,12 +56,13 @@ class HandCount(BaseModel):
         return HandCount(concealed_count=concealed_count, call_counts=call_counts)
 
     @property
-    def total_count(self):
-        return self.concealed_count.total_count + sum(
-            call_count.total_count for call_count in self.call_counts
+    def num_tiles(self):
+        return self.concealed_count.num_tiles + sum(
+            call_count.num_tiles for call_count in self.call_counts
         )
 
-    def get_all_tile_count(self) -> TileCount:
+    @property
+    def total_count(self) -> TileCount:
         return sum(self.call_counts, start=self.concealed_count)
 
     def __getitem__(self, item):

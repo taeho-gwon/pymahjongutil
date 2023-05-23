@@ -11,7 +11,7 @@ class HandChecker(ABC):
     def __init__(self, hand: Hand):
         self.hand = hand
         self.hand_count = HandCount.create_from_hand(hand)
-        self.total_count = self.hand_count.get_all_tile_count()
+        self.total_count = self.hand_count.total_count
 
     @abstractmethod
     def calculate_deficiency(self) -> int:
@@ -70,6 +70,6 @@ class HandChecker(ABC):
         return ukeire, ukeire_count
 
     def check_agari(self) -> bool:
-        if self.hand_count.concealed_count.total_count % 3 != 2:
+        if self.hand_count.concealed_count.num_tiles % 3 != 2:
             raise ValueError("hand_count is invalid")
         return self.calculate_deficiency() == 0
