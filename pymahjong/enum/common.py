@@ -76,7 +76,8 @@ FuReasonEnum = (
 
 
 class YakumanEnum(UpperStrEnum):
-    YAKUMAN = auto()
+    CHIIHOU = auto()
+    CHINROTOU = auto()
 
 
 class NormalYakuEnum(UpperStrEnum):

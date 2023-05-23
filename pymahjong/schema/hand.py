@@ -21,7 +21,7 @@ class Hand(BaseModel):
     @property
     def iter_concealed_tiles(self) -> Iterable[Tile]:
         yield from self.concealed_tiles
-        if self.last_tile:
+        if self.last_tile is not None:
             yield self.last_tile
 
     @property
@@ -29,5 +29,5 @@ class Hand(BaseModel):
         yield from self.concealed_tiles
         for call in self.calls:
             yield from call.tiles
-        if self.last_tile:
+        if self.last_tile is not None:
             yield self.last_tile
