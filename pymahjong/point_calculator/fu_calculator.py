@@ -3,8 +3,8 @@ from pymahjong.enum.common import (
     BodyFuReasonEnum,
     DivisionPartTypeEnum,
     FuReasonEnum,
+    HandShapeFuReasonEnum,
     HeadFuReasonEnum,
-    OtherFuReasonEnum,
     WaitFuReasonEnum,
 )
 from pymahjong.schema.agari_info import AgariInfo
@@ -15,9 +15,9 @@ from pymahjong.schema.tile import Tile, Tiles
 class FuCalculator:
     def __init__(self):
         self.fu_dict: dict[FuReasonEnum, int] = {
-            OtherFuReasonEnum.SEVEN_PAIRS: 25,
-            OtherFuReasonEnum.THIRTEEN_ORPHANS: 25,
-            OtherFuReasonEnum.BASE: 20,
+            HandShapeFuReasonEnum.SEVEN_PAIRS: 25,
+            HandShapeFuReasonEnum.THIRTEEN_ORPHANS: 25,
+            HandShapeFuReasonEnum.BASE: 20,
             WaitFuReasonEnum.HEAD_WAIT: 2,
             WaitFuReasonEnum.CLOSED_WAIT: 2,
             WaitFuReasonEnum.EDGE_WAIT: 2,
@@ -46,32 +46,37 @@ class FuCalculator:
     def _calculate_fu_reasons(
         self, division: Division, agari_info: AgariInfo
     ) -> list[FuReasonEnum]:
-        if len(division.parts) == 7:
-            return [OtherFuReasonEnum.SEVEN_PAIRS]
-
-        if len(division.parts) == 1:
-            return [OtherFuReasonEnum.THIRTEEN_ORPHANS]
-
-        fu_reasons: list[FuReasonEnum] = [OtherFuReasonEnum.BASE]
+        fu_reasons: list[FuReasonEnum] = [
+            self._calculate_hand_shape_fu(len(division.parts))
+        ]
+        if fu_reasons[0] is not HandShapeFuReasonEnum.BASE:
+            return fu_reasons
 
         for part in division.parts:
-            new_part_fu_reason = self._calculate_part_fu(part, agari_info)
-            if new_part_fu_reason:
-                fu_reasons.append(new_part_fu_reason)
+            part_fu_reason = self._calculate_part_fu(part, agari_info)
+            if part_fu_reason:
+                fu_reasons.append(part_fu_reason)
 
-        new_wait_fu_reason = self._calculate_waiting_fu(
+        wait_fu_reason = self._calculate_waiting_fu(
             division.parts[0], division.agari_tile
         )
-        if new_wait_fu_reason:
-            fu_reasons.append(new_wait_fu_reason)
+        if wait_fu_reason:
+            fu_reasons.append(wait_fu_reason)
 
-        new_agari_type_fu_reason = self._calculate_agari_type_fu(
+        agari_type_fu_reason = self._calculate_agari_type_fu(
             agari_info.is_tsumo_agari, division.is_opened, len(fu_reasons) == 1
         )
-        if new_agari_type_fu_reason:
-            fu_reasons.append(new_agari_type_fu_reason)
+        if agari_type_fu_reason:
+            fu_reasons.append(agari_type_fu_reason)
 
         return fu_reasons
+
+    def _calculate_hand_shape_fu(self, num_parts: int) -> HandShapeFuReasonEnum:
+        if num_parts == 7:
+            return HandShapeFuReasonEnum.SEVEN_PAIRS
+        if num_parts == 1:
+            return HandShapeFuReasonEnum.THIRTEEN_ORPHANS
+        return HandShapeFuReasonEnum.BASE
 
     def _calculate_part_fu(
         self, part: DivisionPart, agari_info: AgariInfo

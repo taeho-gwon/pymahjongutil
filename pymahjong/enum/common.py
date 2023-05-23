@@ -31,7 +31,7 @@ class DivisionPartTypeEnum(UpperStrEnum):
     THIRTEEN_ORPHANS = auto()
 
 
-class OtherFuReasonEnum(UpperStrEnum):
+class HandShapeFuReasonEnum(UpperStrEnum):
     SEVEN_PAIRS = auto()
     THIRTEEN_ORPHANS = auto()
     BASE = auto()
@@ -67,7 +67,7 @@ class BodyFuReasonEnum(UpperStrEnum):
 
 
 FuReasonEnum = (
-    OtherFuReasonEnum
+    HandShapeFuReasonEnum
     | WaitFuReasonEnum
     | HeadFuReasonEnum
     | AgariTypeFuReasonEnum
