@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-from mahjong.shanten import Shanten
-
 from pymahjong.schema.count import HandCount
 from pymahjong.schema.division import Division
 from pymahjong.schema.efficiency_data import EfficiencyData
@@ -13,7 +11,7 @@ class HandChecker(ABC):
     def __init__(self, hand: Hand):
         self.hand = hand
         self.hand_count = HandCount.create_from_hand(hand)
-        self.shanten_calculator = Shanten()
+        self.total_count = self.hand_count.get_all_tile_count()
 
     @abstractmethod
     def calculate_deficiency(self) -> int:

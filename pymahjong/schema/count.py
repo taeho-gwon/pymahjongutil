@@ -61,6 +61,9 @@ class HandCount(BaseModel):
             call_count.total_count for call_count in self.call_counts
         )
 
+    def get_all_tile_count(self) -> TileCount:
+        return sum(self.call_counts, start=self.concealed_count)
+
     def __getitem__(self, item):
         return self.concealed_count[item] + sum(
             call_count[item] for call_count in self.call_counts
