@@ -97,18 +97,6 @@ files = [
 ]
 
 [[package]]
-name = "mahjong"
-version = "1.2.0"
-description = "Mahjong hands calculation"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "mahjong-1.2.0-py3-none-any.whl", hash = "sha256:6539c44ad41a32a60bfdf0c7cd466c658c32ad1ab6e1f4ec5220f8cb49ee54f4"},
-    {file = "mahjong-1.2.0.tar.gz", hash = "sha256:4de4fff5b90b590b94fa951a438df9ba71348b38719d35a3916fec5e5df84adf"},
-]
-
-[[package]]
 name = "mccabe"
 version = "0.7.0"
 description = "McCabe checker, plugin for flake8"
@@ -495,4 +483,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8669004913c591b68fda9e9e146d76a26523636d019f5e3c9c05f79c56222671"
+content-hash = "22eeb482c6c3e957dbde6db9662132725d685cdb1af9e5ebd56efca26602aea4"
