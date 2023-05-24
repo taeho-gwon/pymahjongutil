@@ -11,7 +11,7 @@ from pymahjong.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):
-    counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS))
+    counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS), dtype=np.int64)
 
     @property
     def num_tiles(self) -> int:
