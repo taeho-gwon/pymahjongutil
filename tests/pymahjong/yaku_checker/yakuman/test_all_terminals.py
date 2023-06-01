@@ -1,6 +1,6 @@
 import pytest
 
-from pymahjong.yaku_checker.yakuman.all_terminals import AllTerminals
+from pymahjong.yaku_checker.all_terminals import AllTerminals
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 

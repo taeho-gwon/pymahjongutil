@@ -1,14 +1,14 @@
 import numpy as np
 
-from pymahjong.enum.common import YakumanEnum
+from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.yakuman.base_yakuman import BaseYakuman
+from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
-class NineGates(BaseYakuman):
+class NineGates(BaseYaku):
     def __init__(self):
-        super().__init__(YakumanEnum.NINE_GATES)
+        super().__init__(YakuEnum.NINE_GATES)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
         if division.is_opened:

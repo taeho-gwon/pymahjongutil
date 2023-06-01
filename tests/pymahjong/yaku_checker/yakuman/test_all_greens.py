@@ -1,6 +1,6 @@
 import pytest
 
-from pymahjong.yaku_checker.yakuman.all_greens import AllGreens
+from pymahjong.yaku_checker.all_greens import AllGreens
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 

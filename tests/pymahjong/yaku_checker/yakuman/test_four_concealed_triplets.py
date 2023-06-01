@@ -1,7 +1,7 @@
 import pytest
 
 from pymahjong.schema.agari_info import AgariInfo
-from pymahjong.yaku_checker.yakuman.four_concealed_triplets import FourConcealedTriplets
+from pymahjong.yaku_checker.four_concealed_triplets import FourConcealedTriplets
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 

@@ -1,12 +1,12 @@
-from pymahjong.enum.common import NormalYakuEnum
+from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.normal_yaku.base_normal_yaku import BaseNormalYaku
+from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
-class Ready(BaseNormalYaku):
+class WinByLastDiscard(BaseYaku):
     def __init__(self):
-        super().__init__(NormalYakuEnum.READY)
+        super().__init__(YakuEnum.WIN_BY_LAST_DISCARD)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         raise NotImplementedError

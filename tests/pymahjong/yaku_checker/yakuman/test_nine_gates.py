@@ -1,6 +1,6 @@
 import pytest
 
-from pymahjong.yaku_checker.yakuman.nine_gates import NineGates
+from pymahjong.yaku_checker.nine_gates import NineGates
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 

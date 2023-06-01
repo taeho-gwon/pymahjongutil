@@ -1,12 +1,12 @@
-from pymahjong.enum.common import YakumanEnum
+from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.yakuman.base_yakuman import BaseYakuman
+from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
-class FourQuads(BaseYakuman):
+class BigThreeDragons(BaseYaku):
     def __init__(self):
-        super().__init__(YakumanEnum.FOUR_QUADS)
+        super().__init__(YakuEnum.BIG_THREE_DRAGONS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
         raise NotImplementedError

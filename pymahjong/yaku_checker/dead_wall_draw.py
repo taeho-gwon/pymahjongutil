@@ -1,12 +1,12 @@
-from pymahjong.enum.common import NormalYakuEnum
+from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.normal_yaku.base_normal_yaku import BaseNormalYaku
+from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
-class SelfDraw(BaseNormalYaku):
+class DeadWallDraw(BaseYaku):
     def __init__(self):
-        super().__init__(NormalYakuEnum.SELF_DRAW)
+        super().__init__(YakuEnum.DEAD_WALL_DRAW)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         raise NotImplementedError

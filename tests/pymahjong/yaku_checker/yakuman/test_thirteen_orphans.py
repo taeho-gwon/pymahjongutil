@@ -1,6 +1,6 @@
 import pytest
 
-from pymahjong.yaku_checker.yakuman.thirteen_orphans import ThirteenOrphans
+from pymahjong.yaku_checker.thirteen_orphans import ThirteenOrphans
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 

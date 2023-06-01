@@ -75,22 +75,7 @@ FuReasonEnum = (
 )
 
 
-class YakumanEnum(UpperStrEnum):
-    HEAVENLY_HAND = auto()
-    EARTHLY_HAND = auto()
-    FOUR_CONCEALED_TRIPLETS = auto()
-    THIRTEEN_ORPHANS = auto()
-    NINE_GATES = auto()
-    ALL_GREENS = auto()
-    ALL_HONORS = auto()
-    ALL_TERMINALS = auto()
-    BIG_THREE_DRAGONS = auto()
-    SMALL_FOUR_WINDS = auto()
-    BIG_FOUR_WINDS = auto()
-    FOUR_QUADS = auto()
-
-
-class NormalYakuEnum(UpperStrEnum):
+class YakuEnum(UpperStrEnum):
     READY = auto()
     SELF_DRAW = auto()
     ONE_SHOT = auto()
@@ -124,5 +109,15 @@ class NormalYakuEnum(UpperStrEnum):
     HALF_FLUSH = auto()
     FLUSH = auto()
 
-
-YakuEnum = YakumanEnum | NormalYakuEnum
+    HEAVENLY_HAND = auto()
+    EARTHLY_HAND = auto()
+    FOUR_CONCEALED_TRIPLETS = auto()
+    THIRTEEN_ORPHANS = auto()
+    NINE_GATES = auto()
+    ALL_GREENS = auto()
+    ALL_HONORS = auto()
+    ALL_TERMINALS = auto()
+    BIG_THREE_DRAGONS = auto()
+    SMALL_FOUR_WINDS = auto()
+    BIG_FOUR_WINDS = auto()
+    FOUR_QUADS = auto()

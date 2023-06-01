@@ -2,7 +2,7 @@ import pytest
 
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.tile import Tiles
-from pymahjong.yaku_checker.yakuman.heavenly_hand import HeavenlyHand
+from pymahjong.yaku_checker.heavenly_hand import HeavenlyHand
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
 
