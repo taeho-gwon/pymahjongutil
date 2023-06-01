@@ -70,3 +70,15 @@ class Division(BaseModel):
     @property
     def tile_count(self) -> TileCount:
         return sum((part.counts for part in self.parts), start=TileCount())
+
+    @property
+    def num_concealed_triplets(self) -> int:
+        return sum(
+            1
+            for part in self.parts
+            if part.is_concealed
+            and (
+                part.type is DivisionPartTypeEnum.TRIPLE
+                or part.type is DivisionPartTypeEnum.QUAD
+            )
+        )
