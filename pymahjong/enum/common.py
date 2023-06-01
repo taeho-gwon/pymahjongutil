@@ -94,7 +94,7 @@ class YakuEnum(UpperStrEnum):
 
     DOUBLE_READY = auto()
     SEVEN_PAIRS = auto()
-    THREE_COLOR_STRAIGHTS = auto()
+    THREE_COLOR_SEQUENCES = auto()
     STRAIGHT = auto()
     ALL_TRIPLETS = auto()
     THREE_CONCEALED_TRIPLETS = auto()
