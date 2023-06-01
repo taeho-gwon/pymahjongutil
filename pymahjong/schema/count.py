@@ -41,6 +41,9 @@ class TileCount(BaseModel):
             index += 1
         return index
 
+    def is_containing_only(self, indices: list[int]) -> bool:
+        return self.counts[indices].sum() == self.counts.sum()
+
     class Config:
         arbitrary_types_allowed = True
 

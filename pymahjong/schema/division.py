@@ -66,3 +66,7 @@ class Division(BaseModel):
     parts: list[DivisionPart]
     agari_tile: Tile
     is_opened: bool
+
+    @property
+    def tile_count(self) -> TileCount:
+        return sum((part.counts for part in self.parts), start=TileCount())
