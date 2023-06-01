@@ -12,5 +12,5 @@ from tests.pymahjong.yaku_checker.utils import assert_yaku_check
         ("2344666688s666z5s", False),
     ],
 )
-def test_all_terminals(test_input, expected):
+def test_all_greens(test_input, expected):
     assert_yaku_check(test_input, expected, AllGreens())
