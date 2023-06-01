@@ -10,7 +10,4 @@ class AllTerminals(BaseYakuman):
         super().__init__(YakumanEnum.ALL_TERMINALS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        return all(
-            sum(part.counts[t] for t in Tiles.SIMPLES + Tiles.HONORS) == 0
-            for part in division.parts
-        )
+        return division.tile_count.is_containing_only(Tiles.TERMINALS)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Sequence
 
 import numpy as np
 from pydantic import BaseModel
@@ -41,7 +41,7 @@ class TileCount(BaseModel):
             index += 1
         return index
 
-    def is_containing_only(self, indices: list[int]) -> bool:
+    def is_containing_only(self, indices: Sequence[int]) -> bool:
         return self.counts[indices].sum() == self.counts.sum()
 
     class Config:
