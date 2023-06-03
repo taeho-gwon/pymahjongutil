@@ -9,12 +9,10 @@ class AllTriplets(BaseYaku):
         super().__init__(YakuEnum.ALL_TRIPLETS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        return (
-            sum(
-                1
-                for part in division.parts
-                if part.type is DivisionPartTypeEnum.TRIPLE
-                or part.type is DivisionPartTypeEnum.QUAD
-            )
-            == 4
+        num_triplets = sum(
+            1
+            for part in division.parts
+            if part.type is DivisionPartTypeEnum.TRIPLE
+            or part.type is DivisionPartTypeEnum.QUAD
         )
+        return num_triplets == 4
