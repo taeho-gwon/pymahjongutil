@@ -1,6 +1,7 @@
 from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
+from pymahjong.schema.tile import Tiles
 from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
@@ -9,4 +10,6 @@ class HalfOutsideHand(BaseYaku):
         super().__init__(YakuEnum.HALF_OUTSIDE_HAND)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        return all(
+            not part.counts.is_containing_only(Tiles.SIMPLES) for part in division.parts
+        )
