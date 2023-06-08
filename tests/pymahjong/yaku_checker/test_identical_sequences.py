@@ -1,6 +1,5 @@
 import pytest
 
-from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.yaku_checker.identical_sequences import IdenticalSequences
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
@@ -15,4 +14,4 @@ from tests.pymahjong.yaku_checker.utils import assert_yaku_check
     ],
 )
 def test_identical_sequences(test_input, expected):
-    assert_yaku_check(test_input, expected, IdenticalSequences(), AgariInfo())
+    assert_yaku_check(test_input, expected, IdenticalSequences())

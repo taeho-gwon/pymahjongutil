@@ -8,6 +8,10 @@ def assert_yaku_check(test_input, expected, yaku, agari_info=None):
         agari_info = AgariInfo()
 
     hand = get_hand_from_code(test_input)
+    div = RiichiChecker(hand).calculate_divisions(
+        is_tsumo_agari=agari_info.is_tsumo_agari
+    )
+    print(div)
     result = any(
         yaku.is_satisfied(division, agari_info)
         for division in RiichiChecker(hand).calculate_divisions(

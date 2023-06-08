@@ -1,6 +1,5 @@
 import pytest
 
-from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.yaku_checker.four_quads import FourQuads
 from tests.pymahjong.yaku_checker.utils import assert_yaku_check
 
@@ -13,4 +12,4 @@ from tests.pymahjong.yaku_checker.utils import assert_yaku_check
     ],
 )
 def test_four_quads(test_input, expected):
-    assert_yaku_check(test_input, expected, FourQuads(), AgariInfo())
+    assert_yaku_check(test_input, expected, FourQuads())

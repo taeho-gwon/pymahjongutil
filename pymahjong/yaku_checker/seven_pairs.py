@@ -9,4 +9,4 @@ class SevenPairs(BaseYaku):
         super().__init__(YakuEnum.SEVEN_PAIRS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        return len(division.parts) == 7
