@@ -9,4 +9,4 @@ class FourQuads(BaseYaku):
         super().__init__(YakuEnum.FOUR_QUADS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        return division.num_quads == 4

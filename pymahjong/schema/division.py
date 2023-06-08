@@ -82,3 +82,7 @@ class Division(BaseModel):
                 or part.type is DivisionPartTypeEnum.QUAD
             )
         )
+
+    @property
+    def num_quads(self) -> int:
+        return sum(1 for part in self.parts if part.type is DivisionPartTypeEnum.QUAD)
