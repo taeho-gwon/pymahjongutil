@@ -9,4 +9,4 @@ class OneShot(BaseYaku):
         super().__init__(YakuEnum.ONE_SHOT)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_one_shot

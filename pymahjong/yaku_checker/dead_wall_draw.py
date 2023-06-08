@@ -9,4 +9,4 @@ class DeadWallDraw(BaseYaku):
         super().__init__(YakuEnum.DEAD_WALL_DRAW)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_dead_wall_draw

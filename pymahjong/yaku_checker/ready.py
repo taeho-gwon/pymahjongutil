@@ -9,4 +9,4 @@ class Ready(BaseYaku):
         super().__init__(YakuEnum.READY)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_ready_hand

@@ -9,4 +9,4 @@ class WinByLastDraw(BaseYaku):
         super().__init__(YakuEnum.WIN_BY_LAST_DRAW)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_last_draw

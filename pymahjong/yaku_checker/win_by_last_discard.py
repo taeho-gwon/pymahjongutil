@@ -9,4 +9,4 @@ class WinByLastDiscard(BaseYaku):
         super().__init__(YakuEnum.WIN_BY_LAST_DISCARD)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_last_discard

@@ -9,4 +9,4 @@ class RobbingAQuad(BaseYaku):
         super().__init__(YakuEnum.ROBBING_A_QUAD)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_robbing_a_quad

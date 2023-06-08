@@ -9,4 +9,4 @@ class SelfDraw(BaseYaku):
         super().__init__(YakuEnum.SELF_DRAW)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
-        raise NotImplementedError
+        return agari_info.is_tsumo_agari and not division.is_opened

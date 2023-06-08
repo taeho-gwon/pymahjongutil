@@ -9,4 +9,4 @@ class DoubleReady(BaseYaku):
         super().__init__(YakuEnum.DOUBLE_READY)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        return agari_info.is_double_ready_hand
