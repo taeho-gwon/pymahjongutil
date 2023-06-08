@@ -1,6 +1,7 @@
-from pymahjong.enum.common import YakuEnum
+from pymahjong.enum.common import DivisionPartTypeEnum, YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
+from pymahjong.schema.tile import Tiles
 from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
@@ -9,4 +10,18 @@ class SmallThreeDragons(BaseYaku):
         super().__init__(YakuEnum.SMALL_THREE_DRAGONS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        is_dragon_head = any(
+            part.type is DivisionPartTypeEnum.HEAD
+            and part.counts.is_containing_only(Tiles.DRAGONS)
+            for part in division.parts
+        )
+        num_dragon_triplets = sum(
+            1
+            for part in division.parts
+            if part.counts.is_containing_only(Tiles.DRAGONS)
+            and (
+                part.type is DivisionPartTypeEnum.TRIPLE
+                or part.type is DivisionPartTypeEnum.QUAD
+            )
+        )
+        return is_dragon_head and num_dragon_triplets == 2
