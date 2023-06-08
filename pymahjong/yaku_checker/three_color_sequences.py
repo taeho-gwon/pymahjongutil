@@ -1,4 +1,6 @@
-from pymahjong.enum.common import YakuEnum
+from itertools import combinations
+
+from pymahjong.enum.common import DivisionPartTypeEnum, YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
 from pymahjong.yaku_checker.base_yaku import BaseYaku
@@ -9,4 +11,23 @@ class ThreeColorSequences(BaseYaku):
         super().__init__(YakuEnum.THREE_COLOR_SEQUENCES)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        for part1, part2, part3 in combinations(division.parts, 3):
+            if not (
+                part1.type is DivisionPartTypeEnum.STRAIGHT
+                and part2.type is DivisionPartTypeEnum.STRAIGHT
+                and part3.type is DivisionPartTypeEnum.STRAIGHT
+            ):
+                continue
+            idx1 = part1.counts.find_earliest_nonzero_index()
+            idx2 = part2.counts.find_earliest_nonzero_index()
+            idx3 = part3.counts.find_earliest_nonzero_index()
+
+            if (
+                idx1 % 9 == idx2 % 9 == idx3 % 9
+                and idx1 != idx2
+                and idx2 != idx3
+                and idx3 != idx1
+            ):
+                return True
+
+        return False
