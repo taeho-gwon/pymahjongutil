@@ -27,6 +27,11 @@ class TileCount(BaseModel):
     def create_from_calls(calls: Iterable[Call]):
         return sum(TileCount.create_from_tiles(call.tiles) for call in calls)
 
+    def __eq__(self, other):
+        if not isinstance(other, TileCount):
+            return NotImplemented
+        return np.equal(self.counts, other.counts).all()
+
     def __add__(self, other: TileCount):
         return TileCount(counts=self.counts + other.counts)
 
