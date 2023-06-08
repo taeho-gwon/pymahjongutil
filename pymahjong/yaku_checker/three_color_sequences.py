@@ -4,6 +4,7 @@ from pymahjong.enum.common import DivisionPartTypeEnum, YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
 from pymahjong.yaku_checker.base_yaku import BaseYaku
+from pymahjong.yaku_checker.utils import is_three_color_index
 
 
 class ThreeColorSequences(BaseYaku):
@@ -16,15 +17,11 @@ class ThreeColorSequences(BaseYaku):
                 part1.type is part2.type is part3.type is DivisionPartTypeEnum.STRAIGHT
             ):
                 continue
-            idx1 = part1.counts.find_earliest_nonzero_index()
-            idx2 = part2.counts.find_earliest_nonzero_index()
-            idx3 = part3.counts.find_earliest_nonzero_index()
 
-            if (
-                idx1 % 9 == idx2 % 9 == idx3 % 9
-                and idx1 != idx2
-                and idx2 != idx3
-                and idx3 != idx1
+            if is_three_color_index(
+                part1.counts.find_earliest_nonzero_index(),
+                part2.counts.find_earliest_nonzero_index(),
+                part3.counts.find_earliest_nonzero_index(),
             ):
                 return True
 
