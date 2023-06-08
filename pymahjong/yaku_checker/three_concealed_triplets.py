@@ -9,4 +9,4 @@ class ThreeConcealedTriplets(BaseYaku):
         super().__init__(YakuEnum.THREE_CONCEALED_TRIPLETS)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        raise NotImplementedError
+        return division.num_concealed_triplets == 3
