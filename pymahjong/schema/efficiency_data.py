@@ -8,9 +8,9 @@ from pymahjong.schema.tile import Tile
 class EfficiencyData(BaseModel):
     discard_tile: Tile
     ukeire: list[Tile]
-    ukeire_count: int
+    num_ukeire: int
 
     def __lt__(self, other: EfficiencyData) -> bool:
-        if self.ukeire_count != other.ukeire_count:
-            return self.ukeire_count > other.ukeire_count
+        if self.num_ukeire != other.num_ukeire:
+            return self.num_ukeire > other.num_ukeire
         return self.discard_tile < other.discard_tile

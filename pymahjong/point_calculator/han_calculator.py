@@ -1,8 +1,7 @@
 from pymahjong.enum.common import YakuEnum
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.base_normal_yaku import BaseNormalYaku
-from pymahjong.yaku_checker.base_yakuman import BaseYakuman
+from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
 class HanCalculator:
@@ -20,7 +19,7 @@ class HanCalculator:
         self, division: Division, agari_info: AgariInfo
     ) -> list[YakuEnum]:
         yakumans: list[YakuEnum] = []
-        yakuman_checkers: list[BaseYakuman] = []
+        yakuman_checkers: list[BaseYaku] = []
         for yakuman in yakuman_checkers:
             if yakuman.is_satisfied(division, agari_info):
                 yakumans.append(yakuman.yaku)
@@ -28,7 +27,7 @@ class HanCalculator:
             return yakumans
 
         normal_yakus: list[YakuEnum] = []
-        normal_yaku_checkers: list[BaseNormalYaku] = []
+        normal_yaku_checkers: list[BaseYaku] = []
         for normal_yaku in normal_yaku_checkers:
             if normal_yaku.is_satisfied(division, agari_info):
                 normal_yakus.append(normal_yaku.yaku)

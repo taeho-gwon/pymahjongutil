@@ -42,12 +42,12 @@ class HandChecker(ABC):
         ):
             self.hand_count.concealed_count[discard_candidate] -= 1
             if deficiency == self.calculate_deficiency():
-                ukeire, ukeire_count = self.calculate_ukeire(deficiency)
+                ukeire, num_ukeire = self.calculate_ukeire(deficiency)
                 efficiency.append(
                     EfficiencyData(
                         discard_tile=discard_candidate,
                         ukeire=ukeire,
-                        ukeire_count=ukeire_count,
+                        num_ukeire=num_ukeire,
                     )
                 )
             self.hand_count.concealed_count[discard_candidate] += 1
@@ -57,17 +57,17 @@ class HandChecker(ABC):
 
     def calculate_ukeire(self, deficiency: int) -> tuple[list[Tile], int]:
         ukeire = []
-        ukeire_count = 0
+        num_ukeire = 0
         for draw_candidate in filter(
             lambda t: self.hand_count.concealed_count[t] < 4, Tiles.DEFAULTS
         ):
             self.hand_count.concealed_count[draw_candidate] += 1
             if deficiency - 1 == self.calculate_deficiency():
                 ukeire.append(draw_candidate)
-                ukeire_count += 5 - self.hand_count[draw_candidate]
+                num_ukeire += 5 - self.hand_count[draw_candidate]
             self.hand_count.concealed_count[draw_candidate] -= 1
 
-        return ukeire, ukeire_count
+        return ukeire, num_ukeire
 
     def check_agari(self) -> bool:
         if self.hand_count.concealed_count.num_tiles % 3 != 2:

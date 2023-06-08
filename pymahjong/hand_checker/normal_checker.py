@@ -205,17 +205,22 @@ class NormalChecker(HandChecker):
 
         if idx < 27 and idx % 9 < 7:
             straight_count = tile_counts.counts[idx]
+            if min(tile_counts.counts[idx : idx + 3]) != straight_count:
+                return
+
             tile_counts.counts[idx] -= straight_count
             tile_counts.counts[idx + 1] -= straight_count
             tile_counts.counts[idx + 2] -= straight_count
 
-            body_divisions.append(
-                DivisionPart.create_straight(Tile(idx), is_concealed=True)
-            )
+            for _ in range(straight_count):
+                body_divisions.append(
+                    DivisionPart.create_straight(Tile(idx), is_concealed=True)
+                )
             yield from self._calculate_iter_body_divisions(
                 tile_counts, idx, body_divisions
             )
-            body_divisions.pop()
+            for _ in range(straight_count):
+                body_divisions.pop()
 
             tile_counts.counts[idx] += straight_count
             tile_counts.counts[idx + 1] += straight_count
@@ -233,7 +238,10 @@ class NormalChecker(HandChecker):
         for idx, body_part in enumerate(body_parts):
             if body_part.counts[agari_tile] > 0:
                 new_divisions = (
-                    [deepcopy(body_part)] + body_parts[:idx] + body_parts[idx + 1 :]
+                    [deepcopy(body_part)]
+                    + body_parts[:idx]
+                    + body_parts[idx + 1 :]
+                    + [DivisionPart.create_head(head, True)]
                 )
                 new_divisions[0].is_concealed = is_tsumo_agari
                 yield new_divisions

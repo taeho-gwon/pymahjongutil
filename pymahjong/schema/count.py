@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Sequence
 
 import numpy as np
 from pydantic import BaseModel
@@ -11,7 +11,7 @@ from pymahjong.schema.tile import Tile, Tiles
 
 
 class TileCount(BaseModel):
-    counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS))
+    counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS), dtype=np.int64)
 
     @property
     def num_tiles(self) -> int:
@@ -27,6 +27,11 @@ class TileCount(BaseModel):
     def create_from_calls(calls: Iterable[Call]):
         return sum(TileCount.create_from_tiles(call.tiles) for call in calls)
 
+    def __eq__(self, other):
+        if not isinstance(other, TileCount):
+            return NotImplemented
+        return np.equal(self.counts, other.counts).all()
+
     def __add__(self, other: TileCount):
         return TileCount(counts=self.counts + other.counts)
 
@@ -40,6 +45,9 @@ class TileCount(BaseModel):
         while index < len(self.counts) and self.counts[index] == 0:
             index += 1
         return index
+
+    def is_containing_only(self, indices: Sequence[int]) -> bool:
+        return self.counts[indices].sum() == self.counts.sum()
 
     class Config:
         arbitrary_types_allowed = True

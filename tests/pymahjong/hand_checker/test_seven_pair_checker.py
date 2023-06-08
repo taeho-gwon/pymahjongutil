@@ -69,9 +69,9 @@ def test_calculate_efficiency(test_input, expected):
         EfficiencyData(
             discard_tile=get_tile_from_code(discard_tile_code),
             ukeire=list(map(get_tile_from_code, ukeire_codes)),
-            ukeire_count=ukeire_count,
+            num_ukeire=num_ukeire,
         )
-        for discard_tile_code, ukeire_codes, ukeire_count in expected
+        for discard_tile_code, ukeire_codes, num_ukeire in expected
     ]
 
     assert SevenPairChecker(hand).calculate_efficiency() == expected_efficiency

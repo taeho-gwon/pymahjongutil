@@ -30,7 +30,7 @@ class DivisionPart(BaseModel):
     @staticmethod
     def create_straight(tile: Tile, is_concealed: bool):
         return DivisionPart(
-            type=DivisionPartTypeEnum.STRAIGHT,
+            type=DivisionPartTypeEnum.SEQUENCE,
             counts=TileCount.create_from_tiles([tile, Tile(tile + 1), Tile(tile + 2)]),
             is_concealed=is_concealed,
         )
@@ -49,7 +49,7 @@ class DivisionPart(BaseModel):
     def create_from_call(call: Call):
         match call.type:
             case CallTypeEnum.CHII:
-                part_type = DivisionPartTypeEnum.STRAIGHT
+                part_type = DivisionPartTypeEnum.SEQUENCE
             case CallTypeEnum.PON:
                 part_type = DivisionPartTypeEnum.TRIPLE
             case _:
@@ -66,3 +66,23 @@ class Division(BaseModel):
     parts: list[DivisionPart]
     agari_tile: Tile
     is_opened: bool
+
+    @property
+    def tile_count(self) -> TileCount:
+        return sum((part.counts for part in self.parts), start=TileCount())
+
+    @property
+    def num_concealed_triplets(self) -> int:
+        return sum(
+            1
+            for part in self.parts
+            if part.is_concealed
+            and (
+                part.type is DivisionPartTypeEnum.TRIPLE
+                or part.type is DivisionPartTypeEnum.QUAD
+            )
+        )
+
+    @property
+    def num_quads(self) -> int:
+        return sum(1 for part in self.parts if part.type is DivisionPartTypeEnum.QUAD)
