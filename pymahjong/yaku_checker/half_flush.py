@@ -15,4 +15,4 @@ class HalfFlush(BaseYaku):
             tile_count.is_containing_only(Tiles.MANS + Tiles.HONORS)
             or tile_count.is_containing_only(Tiles.PINS + Tiles.HONORS)
             or tile_count.is_containing_only(Tiles.SOUS + Tiles.HONORS)
-        )
+        ) and not tile_count.is_containing_only(Tiles.NUMBERS)

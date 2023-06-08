@@ -12,4 +12,4 @@ class HalfOutsideHand(BaseYaku):
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
         return all(
             not part.counts.is_containing_only(Tiles.SIMPLES) for part in division.parts
-        )
+        ) and not division.tile_count.is_containing_only(Tiles.NUMBERS)

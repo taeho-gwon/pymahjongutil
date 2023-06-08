@@ -9,8 +9,8 @@ from tests.pymahjong.yaku_checker.utils import assert_yaku_check
     [
         ("12399m,chi123p,cok7777z,chi789s", True),
         ("11199m111999p111z", True),
-        ("11199m111999p111s", True),
-        ("111222333m99p999s", True),
+        ("11199m111999p111s", False),
+        ("111222333m99p999s", False),
         ("11122233m999p999s", False),
     ],
 )
