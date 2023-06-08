@@ -12,7 +12,7 @@ class IdenticalSequences(BaseYaku):
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
         return any(
-            part1.type is part2.type is DivisionPartTypeEnum.STRAIGHT
+            part1.type is part2.type is DivisionPartTypeEnum.SEQUENCE
             and part1.counts == part2.counts
             for part1, part2 in combinations(division.parts, 2)
         )

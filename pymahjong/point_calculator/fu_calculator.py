@@ -83,7 +83,7 @@ class FuCalculator:
         if part.type is DivisionPartTypeEnum.HEAD:
             return self._calculate_head_fu(first_tile, agari_info)
 
-        if part.type is DivisionPartTypeEnum.STRAIGHT:
+        if part.type is DivisionPartTypeEnum.SEQUENCE:
             return None
 
         fu_reason_idx = (
@@ -109,7 +109,7 @@ class FuCalculator:
         if part.type is DivisionPartTypeEnum.HEAD:
             return WaitFuReasonEnum.HEAD_WAIT
 
-        if part.type is not DivisionPartTypeEnum.STRAIGHT:
+        if part.type is not DivisionPartTypeEnum.SEQUENCE:
             return None
 
         if (

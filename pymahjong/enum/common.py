@@ -25,7 +25,7 @@ class CallTypeEnum(UpperStrEnum):
 
 class DivisionPartTypeEnum(UpperStrEnum):
     HEAD = auto()
-    STRAIGHT = auto()
+    SEQUENCE = auto()
     TRIPLE = auto()
     QUAD = auto()
     THIRTEEN_ORPHANS = auto()

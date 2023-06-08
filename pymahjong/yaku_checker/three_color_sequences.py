@@ -14,7 +14,7 @@ class ThreeColorSequences(BaseYaku):
     def is_satisfied(self, division: Division, agari_info: AgariInfo):
         for part1, part2, part3 in combinations(division.parts, 3):
             if not (
-                part1.type is part2.type is part3.type is DivisionPartTypeEnum.STRAIGHT
+                part1.type is part2.type is part3.type is DivisionPartTypeEnum.SEQUENCE
             ):
                 continue
 

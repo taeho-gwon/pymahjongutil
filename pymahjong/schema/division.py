@@ -30,7 +30,7 @@ class DivisionPart(BaseModel):
     @staticmethod
     def create_straight(tile: Tile, is_concealed: bool):
         return DivisionPart(
-            type=DivisionPartTypeEnum.STRAIGHT,
+            type=DivisionPartTypeEnum.SEQUENCE,
             counts=TileCount.create_from_tiles([tile, Tile(tile + 1), Tile(tile + 2)]),
             is_concealed=is_concealed,
         )
@@ -49,7 +49,7 @@ class DivisionPart(BaseModel):
     def create_from_call(call: Call):
         match call.type:
             case CallTypeEnum.CHII:
-                part_type = DivisionPartTypeEnum.STRAIGHT
+                part_type = DivisionPartTypeEnum.SEQUENCE
             case CallTypeEnum.PON:
                 part_type = DivisionPartTypeEnum.TRIPLE
             case _:
