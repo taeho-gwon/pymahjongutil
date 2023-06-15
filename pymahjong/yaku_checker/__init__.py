@@ -1,14 +1,16 @@
 import pkgutil
 from importlib import import_module
+from typing import Callable
 
 from pymahjong.enum.common import YakuEnum
+from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
 def snake_to_camel(s: str):
     return "".join(word.title() for word in s.split("_"))
 
 
-YAKU_DICT = {}
+YAKU_DICT: dict[YakuEnum, Callable[[], BaseYaku]] = {}
 
 path = import_module(__name__).__path__
 module_names = (d[1] for d in pkgutil.iter_modules(path))
