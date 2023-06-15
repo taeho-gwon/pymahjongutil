@@ -11,13 +11,12 @@ from pymahjong.schema.tile import Tiles
 
 
 class PointCalculator:
-    def __init__(self, rule: RiichiDefaultRule | None):
+    def __init__(self, rule: RiichiDefaultRule | None = None):
         self.rule = rule or RiichiDefaultRule()
         self.fu_calculator = FuCalculator(self.rule)
         self.han_calculator = HanCalculator(self.rule)
 
-    @staticmethod
-    def calculate_base_point(fu: int, han: int, is_yakuman: bool = False):
+    def calculate_base_point(self, fu: int, han: int, is_yakuman: bool = False):
         if han < 3 or (han == 3 and fu < 70) or (han == 4 and fu < 40):
             return fu * pow(2, 2 + han)
         elif han <= 5:

@@ -17,7 +17,7 @@ from pymahjong.point_calculator.point_calculator import PointCalculator
     ],
 )
 def test_calculate_base_point(fu, han, expected):
-    assert PointCalculator.calculate_base_point(fu, han) == expected
+    assert PointCalculator().calculate_base_point(fu, han) == expected
 
 
 @pytest.mark.parametrize(
@@ -32,4 +32,4 @@ def test_calculate_base_point(fu, han, expected):
     ],
 )
 def test_calculate_base_point_yakuman(fu, han, expected):
-    assert PointCalculator.calculate_base_point(fu, han, is_yakuman=True) == expected
+    assert PointCalculator().calculate_base_point(fu, han, is_yakuman=True) == expected
