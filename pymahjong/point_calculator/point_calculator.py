@@ -1,8 +1,6 @@
 from pymahjong.point_calculator.fu_calculator import FuCalculator
 from pymahjong.point_calculator.han_calculator import HanCalculator
 from pymahjong.rule.riichi_default_rule import RiichiDefaultRule
-from pymahjong.schema.agari_info import AgariInfo
-from pymahjong.schema.division import Division
 
 
 class PointCalculator:
@@ -11,10 +9,8 @@ class PointCalculator:
         self.fu_calculator = FuCalculator(self.rule)
         self.han_calculator = HanCalculator(self.rule)
 
-    def calculate_base_point(self, division: Division, agari_info: AgariInfo):
-        fu, _ = self.fu_calculator.calculate_fu(division, agari_info)
-        han, _ = self.han_calculator.calculate_han(division, agari_info)
-
+    @staticmethod
+    def calculate_base_point(fu: int, han: int, is_yakuman: bool = False):
         if han < 3 or (han == 3 and fu < 70) or (han == 4 and fu < 40):
             return fu * pow(2, 2 + han)
         elif han <= 5:
@@ -26,4 +22,4 @@ class PointCalculator:
         elif han <= 12:
             return 6000
         else:
-            return 8000 * (han // 13)
+            return 8000 * (han // 13 if is_yakuman else 1)
