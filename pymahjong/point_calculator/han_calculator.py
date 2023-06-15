@@ -1,34 +1,32 @@
 from pymahjong.enum.common import YakuEnum
+from pymahjong.rule.riichi_default_rule import RiichiDefaultRule
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
-from pymahjong.yaku_checker.base_yaku import BaseYaku
 
 
 class HanCalculator:
-    def __init__(self):
-        pass
+    def __init__(self, rule: RiichiDefaultRule | None = None):
+        self.rule = rule or RiichiDefaultRule()
 
     def calculate_han(
         self, division: Division, agari_info: AgariInfo
     ) -> tuple[int, list[YakuEnum]]:
         yakus = self._calculate_yakus(division, agari_info)
-        han = 0
+        han = sum(
+            self.rule.yaku_rule_dict[yaku].get_han(division.is_opened) for yaku in yakus
+        )
         return han, yakus
 
     def _calculate_yakus(
         self, division: Division, agari_info: AgariInfo
     ) -> list[YakuEnum]:
-        yakumans: list[YakuEnum] = []
-        yakuman_checkers: list[BaseYaku] = []
-        for yakuman in yakuman_checkers:
-            if yakuman.is_satisfied(division, agari_info):
-                yakumans.append(yakuman.yaku)
-        if yakumans:
-            return yakumans
+        yakumans = []
+        normal_yakus = []
+        for yaku, yaku_rule in self.rule.yaku_rule_dict.items():
+            if yaku_rule.is_applied(division, agari_info):
+                if yaku_rule.is_yakuman:
+                    yakumans.append(yaku)
+                else:
+                    normal_yakus.append(yaku)
 
-        normal_yakus: list[YakuEnum] = []
-        normal_yaku_checkers: list[BaseYaku] = []
-        for normal_yaku in normal_yaku_checkers:
-            if normal_yaku.is_satisfied(division, agari_info):
-                normal_yakus.append(normal_yaku.yaku)
-        return normal_yakus
+        return yakumans or normal_yakus

@@ -7,6 +7,7 @@ class AgariInfo(BaseModel):
     is_tsumo_agari: bool = False
     round_wind: Tile = Tiles.WINDS[0]
     player_wind: Tile = Tiles.WINDS[0]
+    loser_wind: Tile = Tiles.WINDS[0]
     is_ready_hand: bool = False
     is_double_ready_hand: bool = False
     is_one_shot: bool = False
