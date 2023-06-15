@@ -30,24 +30,59 @@ class RiichiDefaultRule:
             YakuEnum.THREE_COLOR_TRIPLETS: (2, 2, False, []),
             YakuEnum.THREE_QUADS: (2, 2, False, []),
             YakuEnum.HALF_OUTSIDE_HAND: (2, 1, False, []),
-            YakuEnum.ALL_TERMINALS_AND_HONORS: (2, 2, False, []),
+            YakuEnum.ALL_TERMINALS_AND_HONORS: (
+                2,
+                2,
+                False,
+                [YakuEnum.HALF_OUTSIDE_HAND],
+            ),
             YakuEnum.SMALL_THREE_DRAGONS: (2, 2, False, []),
-            YakuEnum.TWO_SETS_OF_IDENTICAL_SEQUENCES: (3, 0, False, []),
-            YakuEnum.PURE_OUTSIDE_HAND: (3, 2, False, []),
+            YakuEnum.TWO_SETS_OF_IDENTICAL_SEQUENCES: (
+                3,
+                0,
+                False,
+                [YakuEnum.IDENTICAL_SEQUENCES],
+            ),
+            YakuEnum.PURE_OUTSIDE_HAND: (3, 2, False, [YakuEnum.HALF_OUTSIDE_HAND]),
             YakuEnum.HALF_FLUSH: (3, 2, False, []),
-            YakuEnum.FLUSH: (6, 5, False, []),
-            YakuEnum.HEAVENLY_HAND: (13, 0, True, []),
-            YakuEnum.EARTHLY_HAND: (13, 0, True, []),
-            YakuEnum.FOUR_CONCEALED_TRIPLETS: (13, 0, True, []),
-            YakuEnum.THIRTEEN_ORPHANS: (13, 0, True, []),
-            YakuEnum.NINE_GATES: (13, 0, True, []),
-            YakuEnum.ALL_GREENS: (13, 13, True, []),
-            YakuEnum.ALL_HONORS: (13, 13, True, []),
-            YakuEnum.ALL_TERMINALS: (13, 13, True, []),
-            YakuEnum.BIG_THREE_DRAGONS: (13, 13, True, []),
+            YakuEnum.FLUSH: (6, 5, False, [YakuEnum.HALF_FLUSH]),
+            YakuEnum.HEAVENLY_HAND: (13, 0, True, [YakuEnum.SELF_DRAW]),
+            YakuEnum.EARTHLY_HAND: (13, 0, True, [YakuEnum.SELF_DRAW]),
+            YakuEnum.FOUR_CONCEALED_TRIPLETS: (
+                13,
+                0,
+                True,
+                [YakuEnum.ALL_TRIPLETS, YakuEnum.THREE_CONCEALED_TRIPLETS],
+            ),
+            YakuEnum.THIRTEEN_ORPHANS: (
+                13,
+                0,
+                True,
+                [YakuEnum.ALL_TERMINALS_AND_HONORS],
+            ),
+            YakuEnum.NINE_GATES: (13, 0, True, [YakuEnum.FLUSH]),
+            YakuEnum.ALL_GREENS: (13, 13, True, [YakuEnum.HALF_FLUSH]),
+            YakuEnum.ALL_HONORS: (13, 13, True, [YakuEnum.ALL_TERMINALS_AND_HONORS]),
+            YakuEnum.ALL_TERMINALS: (13, 13, True, [YakuEnum.ALL_TERMINALS_AND_HONORS]),
+            YakuEnum.BIG_THREE_DRAGONS: (
+                13,
+                13,
+                True,
+                [YakuEnum.WHITE_DRAGON, YakuEnum.GREEN_DRAGON, YakuEnum.RED_DRAGON],
+            ),
             YakuEnum.SMALL_FOUR_WINDS: (13, 13, True, []),
-            YakuEnum.BIG_FOUR_WINDS: (13, 13, True, []),
-            YakuEnum.FOUR_QUADS: (13, 13, True, []),
+            YakuEnum.BIG_FOUR_WINDS: (
+                13,
+                13,
+                True,
+                [YakuEnum.PLAYER_WIND, YakuEnum.ROUND_WIND, YakuEnum.ALL_TRIPLETS],
+            ),
+            YakuEnum.FOUR_QUADS: (
+                13,
+                13,
+                True,
+                [YakuEnum.THREE_QUADS, YakuEnum.ALL_TRIPLETS],
+            ),
         }
 
         self.yaku_rule_dict: dict[YakuEnum, YakuRule] = {
@@ -55,13 +90,8 @@ class RiichiDefaultRule:
                 han_normal=yaku_info[0],
                 han_opened=yaku_info[1],
                 is_yakuman=yaku_info[2],
-                sub_yakus=yaku_info[3],
+                high_yakus=yaku_info[3],
                 checker=YAKU_DICT[yaku](),
             )
             for yaku, yaku_info in yaku_info_dict.items()
         }
-        print(self.yaku_rule_dict)
-
-
-if __name__ == "__main__":
-    RiichiDefaultRule()

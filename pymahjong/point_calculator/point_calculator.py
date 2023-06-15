@@ -1,13 +1,15 @@
 from pymahjong.point_calculator.fu_calculator import FuCalculator
 from pymahjong.point_calculator.han_calculator import HanCalculator
+from pymahjong.rule.riichi_default_rule import RiichiDefaultRule
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.division import Division
 
 
 class PointCalculator:
-    def __init__(self):
-        self.fu_calculator = FuCalculator()
-        self.han_calculator = HanCalculator()
+    def __init__(self, rule: RiichiDefaultRule | None):
+        self.rule = rule or RiichiDefaultRule()
+        self.fu_calculator = FuCalculator(self.rule)
+        self.han_calculator = HanCalculator(self.rule)
 
     def calculate_base_point(self, division: Division, agari_info: AgariInfo):
         fu, _ = self.fu_calculator.calculate_fu(division, agari_info)
