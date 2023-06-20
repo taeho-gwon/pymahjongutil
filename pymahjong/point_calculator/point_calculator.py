@@ -64,6 +64,7 @@ class PointCalculator:
         for division in hand_checker.calculate_divisions(agari_info.is_tsumo_agari):
             fu, fu_reasons = self.fu_calculator.calculate_fu(division, agari_info)
             han, yakus = self.han_calculator.calculate_han(division, agari_info)
+            fu = (fu + 9) // 10 * 10
             base_point = self.calculate_base_point(fu, han)
 
             if base_point > max_base_point:
