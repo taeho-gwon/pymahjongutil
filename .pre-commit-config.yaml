@@ -43,3 +43,9 @@ repos:
     language: python
     types: [python]
     pass_filenames: false
+  - id: coverage
+    name: coverage
+    entry: coverage
+    language: python
+    types: [python]
+    args: ['--config-file', './setup.cfg']
