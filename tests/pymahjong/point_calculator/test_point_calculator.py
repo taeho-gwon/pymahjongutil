@@ -128,6 +128,20 @@ def test_calculate_base_point_yakuman(fu, han, expected):
                 HandShapeFuReasonEnum.SEVEN_PAIRS,
             ],
         ),
+        (
+            "2233488m234s4m,chi234s",
+            AgariInfo(loser_wind=Tiles.WINDS[3]),
+            [1500, 0, 0, -1500],
+            1,
+            30,
+            [
+                YakuEnum.ALL_SIMPLES,
+            ],
+            [
+                HandShapeFuReasonEnum.BASE,
+                AgariTypeFuReasonEnum.OPENED_PINFU,
+            ],
+        ),
     ],
 )
 def test_calculate_point_info(
