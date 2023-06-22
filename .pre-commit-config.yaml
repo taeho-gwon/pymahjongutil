@@ -13,18 +13,27 @@ repos:
   - id: check-added-large-files
   - id: check-builtin-literals
   - id: check-docstring-first
-- repo: https://github.com/timothycrosley/isort
-  rev: 5.12.0
-  hooks:
-  - id: isort
-    args: ["--profile", "black"]
-- repo: https://github.com/psf/black
-  rev: 23.1.0
-  hooks:
-  - id: black
-    language_version: python3.11
 - repo: local
   hooks:
+  - id: isort
+    name: isort
+    entry: isort
+    language: python
+    args: ["--profile", "black"]
+  - id: black
+    name: black
+    entry: black
+    language: python
+    types: [python]
+  - id: autoflake
+    name: autoflake
+    entry: autoflake
+    language: python
+    args:
+      - --in-place
+      - --remove-unused-variables
+      - --remove-all-unused-imports
+      - --expand-star-imports
   - id: flake8
     name: flake8
     entry: flake8
@@ -43,9 +52,6 @@ repos:
     language: python
     types: [python]
     pass_filenames: false
-  - id: coverage
-    name: coverage
-    entry: coverage
-    language: python
-    types: [python]
-    args: ['--config-file', './setup.cfg']
+
+default_language_version:
+  python: python3.11
