@@ -13,6 +13,7 @@ from tests.pymahjong.yaku_checker.utils import assert_yaku_check
         ("12m456p22345678s3m", False),
         ("89m456p22345678s7m", False),
         ("2333m444p555s666z2m", False),
+        ("34m445566p678s77z2m", False),
     ],
 )
 def test_all_sequences(test_input, expected):

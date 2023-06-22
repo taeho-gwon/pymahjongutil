@@ -4,6 +4,7 @@ from pymahjong.enum.common import (
     AgariTypeFuReasonEnum,
     BodyFuReasonEnum,
     HandShapeFuReasonEnum,
+    HeadFuReasonEnum,
     WaitFuReasonEnum,
     YakuEnum,
 )
@@ -140,6 +141,53 @@ def test_calculate_base_point_yakuman(fu, han, expected):
             [
                 HandShapeFuReasonEnum.BASE,
                 AgariTypeFuReasonEnum.OPENED_PINFU,
+            ],
+        ),
+        (
+            "19m199s19p1234567z",
+            AgariInfo(is_tsumo_agari=True, player_wind=Tiles.WINDS[3]),
+            [-16000, -8000, -8000, 32000],
+            13,
+            25,
+            [
+                YakuEnum.THIRTEEN_ORPHANS,
+            ],
+            [
+                HandShapeFuReasonEnum.THIRTEEN_ORPHANS,
+            ],
+        ),
+        (
+            "223344m223344s11z",
+            AgariInfo(loser_wind=Tiles.WINDS[2]),
+            [7700, 0, -7700, 0],
+            3,
+            40,
+            [
+                YakuEnum.TWO_SETS_OF_IDENTICAL_SEQUENCES,
+            ],
+            [
+                HandShapeFuReasonEnum.BASE,
+                HeadFuReasonEnum.DOUBLE_WIND_HEAD,
+                WaitFuReasonEnum.HEAD_WAIT,
+                AgariTypeFuReasonEnum.CONCEALED_RON,
+            ],
+        ),
+        (
+            "222m222p77z897s,bmk2222s",
+            AgariInfo(loser_wind=Tiles.WINDS[2]),
+            [3900, 0, -3900, 0],
+            2,
+            40,
+            [
+                YakuEnum.THREE_COLOR_TRIPLETS,
+            ],
+            [
+                HandShapeFuReasonEnum.BASE,
+                BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
+                BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
+                HeadFuReasonEnum.VALUE_HEAD,
+                BodyFuReasonEnum.OPENED_NORMAL_QUAD,
+                WaitFuReasonEnum.EDGE_WAIT,
             ],
         ),
     ],
