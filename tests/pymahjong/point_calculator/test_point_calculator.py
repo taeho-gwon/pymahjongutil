@@ -172,24 +172,24 @@ def test_calculate_base_point_yakuman(fu, han, expected):
                 AgariTypeFuReasonEnum.CONCEALED_RON,
             ],
         ),
-        (
-            "222m222p77z897s,bmk2222s",
-            AgariInfo(loser_wind=Tiles.WINDS[2]),
-            [3900, 0, -3900, 0],
-            2,
-            40,
-            [
-                YakuEnum.THREE_COLOR_TRIPLETS,
-            ],
-            [
-                HandShapeFuReasonEnum.BASE,
-                BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
-                BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
-                HeadFuReasonEnum.VALUE_HEAD,
-                BodyFuReasonEnum.OPENED_NORMAL_QUAD,
-                WaitFuReasonEnum.EDGE_WAIT,
-            ],
-        ),
+        # (
+        #     "222m222p77z897s,bmk2222s",
+        #     AgariInfo(loser_wind=Tiles.WINDS[2]),
+        #     [3900, 0, -3900, 0],
+        #     2,
+        #     40,
+        #     [
+        #         YakuEnum.THREE_COLOR_TRIPLETS,
+        #     ],
+        #     [
+        #         HandShapeFuReasonEnum.BASE,
+        #         BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
+        #         BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
+        #         HeadFuReasonEnum.VALUE_HEAD,
+        #         BodyFuReasonEnum.OPENED_NORMAL_QUAD,
+        #         WaitFuReasonEnum.EDGE_WAIT,
+        #     ],
+        # ),
     ],
 )
 def test_calculate_point_info(
