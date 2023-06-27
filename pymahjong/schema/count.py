@@ -5,7 +5,6 @@ from typing import Iterable, Sequence
 import numpy as np
 from pydantic import BaseModel
 
-from pymahjong.schema.call import Call
 from pymahjong.schema.hand import Hand
 from pymahjong.schema.tile import Tile, Tiles
 
@@ -22,10 +21,6 @@ class TileCount(BaseModel):
         return TileCount(
             counts=np.bincount([tile for tile in tiles], minlength=len(Tiles.DEFAULTS))
         )
-
-    @staticmethod
-    def create_from_calls(calls: Iterable[Call]):
-        return sum(TileCount.create_from_tiles(call.tiles) for call in calls)
 
     def __eq__(self, other):
         if not isinstance(other, TileCount):
@@ -62,12 +57,6 @@ class HandCount(BaseModel):
         concealed_count = TileCount.create_from_tiles(hand.iter_concealed_tiles)
         call_counts = [TileCount.create_from_tiles(call.tiles) for call in hand.calls]
         return HandCount(concealed_count=concealed_count, call_counts=call_counts)
-
-    @property
-    def num_tiles(self):
-        return self.concealed_count.num_tiles + sum(
-            call_count.num_tiles for call_count in self.call_counts
-        )
 
     @property
     def total_count(self) -> TileCount:
