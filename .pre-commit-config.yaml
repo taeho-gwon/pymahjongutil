@@ -47,7 +47,7 @@ repos:
     entry: coverage run
     language: python
     types: [python]
-    args: ['-m', 'pytest']
+    args: ['--rcfile=./setup.cfg', '-m', 'pytest']
   - id: coverage-report
     name: coverage-report
     entry: coverage report
