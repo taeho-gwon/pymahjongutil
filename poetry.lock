@@ -176,20 +176,6 @@ files = [
 toml = ["tomli"]
 
 [[package]]
-name = "direnv"
-version = "2020.12.3"
-description = "direnv (environment switcher) python implementation"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "direnv-2020.12.3.tar.gz", hash = "sha256:74ecba006eb12843fffd20e361edc2d4a043b4465c550b506ee626f42f7dd635"},
-]
-
-[package.dependencies]
-env-file = "*"
-
-[[package]]
 name = "distlib"
 version = "0.3.6"
 description = "Distribution utilities"
@@ -200,20 +186,6 @@ files = [
     {file = "distlib-0.3.6-py2.py3-none-any.whl", hash = "sha256:f35c4b692542ca110de7ef0bea44d73981caeb34ca0b9b6b2e6d7790dda8f80e"},
     {file = "distlib-0.3.6.tar.gz", hash = "sha256:14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46"},
 ]
-
-[[package]]
-name = "env-file"
-version = "2020.12.3"
-description = ".env file handler. required for django, docker, etc"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "env-file-2020.12.3.tar.gz", hash = "sha256:34cbe53b99afaa81209953ee16febcd87121034aa7bf64e229802f51b9c38d66"},
-]
-
-[package.dependencies]
-values = "*"
 
 [[package]]
 name = "filelock"
@@ -669,17 +641,6 @@ files = [
 ]
 
 [[package]]
-name = "values"
-version = "2020.12.3"
-description = "values.get(input) - create list from input"
-category = "dev"
-optional = false
-python-versions = "*"
-files = [
-    {file = "values-2020.12.3.tar.gz", hash = "sha256:30b1b74674b546188b77d8398de17ea49f3692191114da43c703bda5b54402f5"},
-]
-
-[[package]]
 name = "virtualenv"
 version = "20.23.0"
 description = "Virtual Python Environment builder"
@@ -703,4 +664,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "89cec1469a6171693e17a0a3863cb883513ffdb140b39dc63fbc845a48f3fc2e"
+content-hash = "8d433098eb14c7fe63151aac340af025da2ce9b15b8fa7825d1208c4fff16e64"
