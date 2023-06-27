@@ -29,11 +29,7 @@ repos:
     name: autoflake
     entry: autoflake
     language: python
-    args:
-      - --in-place
-      - --remove-unused-variables
-      - --remove-all-unused-imports
-      - --expand-star-imports
+    args: ['--config', './setup.cfg']
   - id: flake8
     name: flake8
     entry: flake8
@@ -46,12 +42,25 @@ repos:
     language: python
     types: [python]
     args: ['--config-file', './setup.cfg']
-  - id: pytest-cov
-    name: pytest-cov
-    entry: pytest --cov --cov-report term-missing
+  - id: pytest
+    name: pytest
+    entry: pytest
     language: python
     types: [python]
     pass_filenames: false
+  - id: coverage-run
+    name: coverage-run
+    entry: coverage run
+    language: python
+    types: [python]
+    args: ['-m', 'pytest']
+  - id: coverage-report
+    name: coverage-report
+    entry: coverage report
+    language: python
+    types: [python]
+    args: ['-m']
+
 
 default_language_version:
   python: python3.11

@@ -1,5 +1,0 @@
-[report]
-exclude_lines =
-    pass
-    raise ValueError
-    NotImplemented
