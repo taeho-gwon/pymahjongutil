@@ -42,18 +42,12 @@ repos:
     language: python
     types: [python]
     args: ['--config-file', './setup.cfg']
-  - id: coverage-run
-    name: coverage-run
-    entry: coverage run
+  - id: pytest
+    name: pytest
+    entry: pytest
     language: python
     types: [python]
-    args: ['--rcfile=./setup.cfg','-m', 'pytest']
-  - id: coverage-report
-    name: coverage-report
-    entry: coverage report
-    language: python
-    types: [python]
-    args: ['--rcfile=./setup.cfg', '-m']
+    pass_filenames: false
 
 
 default_language_version:
