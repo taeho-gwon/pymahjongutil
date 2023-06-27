@@ -46,9 +46,9 @@ repos:
     language: python
     types: [python]
     args: ['--config-file', './setup.cfg']
-  - id: pytest
-    name: pytest
-    entry: pytest
+  - id: pytest-cov
+    name: pytest-cov
+    entry: pytest --cov --cov-report term-missing
     language: python
     types: [python]
     pass_filenames: false
