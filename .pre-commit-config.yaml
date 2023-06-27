@@ -53,7 +53,7 @@ repos:
     entry: coverage report
     language: python
     types: [python]
-    args: ['-m', '-rcfile=./setup.cfg']
+    args: ['-m','-rcfile=./setup.cfg']
 
 
 default_language_version:
