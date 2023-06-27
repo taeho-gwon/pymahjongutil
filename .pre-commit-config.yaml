@@ -47,13 +47,13 @@ repos:
     entry: coverage run
     language: python
     types: [python]
-    args: ['-m', 'pytest', '-rcfile=./setup.cfg']
+    args: ['--rcfile=./setup.cfg','-m', 'pytest']
   - id: coverage-report
     name: coverage-report
     entry: coverage report
     language: python
     types: [python]
-    args: ['-m','-rcfile=./setup.cfg']
+    args: ['--rcfile=./setup.cfg', '-m']
 
 
 default_language_version:
