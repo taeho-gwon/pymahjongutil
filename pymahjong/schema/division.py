@@ -12,34 +12,34 @@ class DivisionPart(BaseModel):
     is_concealed: bool
 
     @staticmethod
-    def create_head(tile: Tile, is_concealed: bool):
+    def create_head(tile: int, is_concealed: bool):
         return DivisionPart(
             type=DivisionPartTypeEnum.HEAD,
-            counts=TileCount.create_from_tiles([tile] * 2),
+            counts=TileCount.create_from_indices([tile] * 2),
             is_concealed=is_concealed,
         )
 
     @staticmethod
-    def create_triple(tile: Tile, is_concealed: bool):
+    def create_triple(tile: int, is_concealed: bool):
         return DivisionPart(
             type=DivisionPartTypeEnum.TRIPLE,
-            counts=TileCount.create_from_tiles([tile] * 3),
+            counts=TileCount.create_from_indices([tile] * 3),
             is_concealed=is_concealed,
         )
 
     @staticmethod
-    def create_straight(tile: Tile, is_concealed: bool):
+    def create_straight(tile: int, is_concealed: bool):
         return DivisionPart(
             type=DivisionPartTypeEnum.SEQUENCE,
-            counts=TileCount.create_from_tiles([tile, Tile(tile + 1), Tile(tile + 2)]),
+            counts=TileCount.create_from_indices([tile, tile + 1, tile + 2]),
             is_concealed=is_concealed,
         )
 
     @staticmethod
-    def create_thirteen_orphans(head_tile: Tile, is_concealed: bool):
+    def create_thirteen_orphans(head_tile: int, is_concealed: bool):
         return DivisionPart(
             type=DivisionPartTypeEnum.THIRTEEN_ORPHANS,
-            counts=TileCount.create_from_tiles(
+            counts=TileCount.create_from_indices(
                 Tiles.TERMINALS_AND_HONORS + [head_tile]
             ),
             is_concealed=is_concealed,

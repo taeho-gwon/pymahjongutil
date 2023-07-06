@@ -13,7 +13,7 @@ class NormalChecker(HandChecker):
         num_call = len(self.hand_count.call_counts)
         best_deficiency = [10]
 
-        for t in (tile for tile in Tiles.DEFAULTS if concealed_count[tile] >= 2):
+        for t in (tile for tile in range(34) if concealed_count[tile] >= 2):
             concealed_count[t] -= 2
             self._erase_complete_set(0, concealed_count, num_call, 1, best_deficiency)
             concealed_count[t] += 2
@@ -69,10 +69,10 @@ class NormalChecker(HandChecker):
         best_deficiency,
     ):
         index = concealed_count.find_earliest_nonzero_index(index)
-        if index >= len(Tiles.DEFAULTS):
+        if index >= 34:
             can_make_pair = num_pair == 1 or any(
                 concealed_count[tile] == 1 and self.total_count[tile] < 4
-                for tile in Tiles.DEFAULTS
+                for tile in range(34)
             )
             current_deficiency = (
                 10
@@ -194,9 +194,7 @@ class NormalChecker(HandChecker):
 
         if tile_counts.counts[idx] >= 3:
             tile_counts.counts[idx] -= 3
-            body_divisions.append(
-                DivisionPart.create_triple(Tile(idx), is_concealed=True)
-            )
+            body_divisions.append(DivisionPart.create_triple(idx, is_concealed=True))
             yield from self._calculate_iter_body_divisions(
                 tile_counts, idx, body_divisions
             )
@@ -214,7 +212,7 @@ class NormalChecker(HandChecker):
 
             for _ in range(straight_count):
                 body_divisions.append(
-                    DivisionPart.create_straight(Tile(idx), is_concealed=True)
+                    DivisionPart.create_straight(idx, is_concealed=True)
                 )
             yield from self._calculate_iter_body_divisions(
                 tile_counts, idx, body_divisions
@@ -228,20 +226,20 @@ class NormalChecker(HandChecker):
 
     def _create_divisions_from_parts(
         self,
-        head: Tile,
+        head_idx: int,
         body_parts: list[DivisionPart],
         agari_tile: Tile,
         is_tsumo_agari: bool,
     ) -> Iterable[list[DivisionPart]]:
-        if head == agari_tile:
-            yield [DivisionPart.create_head(head, is_tsumo_agari)] + body_parts[:]
+        if head_idx == agari_tile.value:
+            yield [DivisionPart.create_head(head_idx, is_tsumo_agari)] + body_parts[:]
         for idx, body_part in enumerate(body_parts):
-            if body_part.counts[agari_tile] > 0:
+            if body_part.counts[agari_tile.value] > 0:
                 new_divisions = (
                     [deepcopy(body_part)]
                     + body_parts[:idx]
                     + body_parts[idx + 1 :]
-                    + [DivisionPart.create_head(head, True)]
+                    + [DivisionPart.create_head(head_idx, True)]
                 )
                 new_divisions[0].is_concealed = is_tsumo_agari
                 yield new_divisions

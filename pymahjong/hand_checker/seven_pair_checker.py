@@ -16,10 +16,10 @@ class SevenPairChecker(HandChecker):
     def _calculate_divisions(
         self, agari_tile: Tile, is_tsumo_agari: bool
     ) -> list[Division]:
-        parts = [DivisionPart.create_head(agari_tile, is_tsumo_agari)]
-        for head in Tiles.DEFAULTS:
-            head_count = self.hand_count.concealed_count[head] // 2
-            if head == agari_tile:
+        parts = [DivisionPart.create_head(agari_tile.value, is_tsumo_agari)]
+        for head_idx in Tiles.DEFAULTS:
+            head_count = self.hand_count.concealed_count[head_idx] // 2
+            if head_idx == agari_tile.value:
                 head_count -= 1
-            parts.extend([DivisionPart.create_head(head, True)] * head_count)
+            parts.extend([DivisionPart.create_head(head_idx, True)] * head_count)
         return [Division(parts=parts, agari_tile=agari_tile, is_opened=False)]

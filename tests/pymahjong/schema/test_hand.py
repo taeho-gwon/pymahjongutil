@@ -36,7 +36,7 @@ def test_hand_is_opened(test_input, expected):
 def test_hand_iter_concealed_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
     for tile, value in zip(hand.iter_concealed_tiles, expected):
-        assert tile == value
+        assert tile.value == value
 
 
 @pytest.mark.parametrize(
@@ -59,4 +59,4 @@ def test_hand_iter_concealed_tiles(test_input, expected):
 def test_hand_iter_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
     for tile, value in zip(hand.iter_tiles, expected):
-        assert tile == value
+        assert tile.value == value

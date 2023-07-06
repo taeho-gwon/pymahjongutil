@@ -36,11 +36,11 @@ class PointCalculator:
         point4 = ceil(base_point * 4 / 100) * 100
         point6 = ceil(base_point * 6 / 100) * 100
 
-        player_idx = agari_info.player_wind - Tiles.WINDS[0]
-        loser_idx = agari_info.loser_wind - Tiles.WINDS[0]
+        player_idx = agari_info.player_wind_idx - Tiles.WINDS[0]
+        loser_idx = agari_info.loser_wind_idx - Tiles.WINDS[0]
         point_diff = [0, 0, 0, 0]
         if agari_info.is_tsumo_agari:
-            if agari_info.player_wind == Tiles.WINDS[0]:
+            if agari_info.player_wind_idx == Tiles.WINDS[0]:
                 point_diff[0] = 3 * point2
                 point_diff[1] = -point2
                 point_diff[2] = -point2
@@ -52,7 +52,7 @@ class PointCalculator:
                 point_diff[3] = -point1
                 point_diff[player_idx] += point1 * 3 + point2
         else:
-            point = point6 if agari_info.player_wind == Tiles.WINDS[0] else point4
+            point = point6 if agari_info.player_wind_idx == Tiles.WINDS[0] else point4
             point_diff[player_idx] += point
             point_diff[loser_idx] -= point
 

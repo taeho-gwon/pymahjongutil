@@ -81,8 +81,8 @@ def test_calculate_efficiency(test_input, expected):
     hand = get_hand_from_code(test_input)
     expected_efficiency = [
         EfficiencyData(
-            discard_tile=get_tile_from_code(discard_tile_code),
-            ukeire=list(map(get_tile_from_code, ukeire_codes)),
+            discard_tile=get_tile_from_code(discard_tile_code).value,
+            ukeire=[get_tile_from_code(ukeire).value for ukeire in ukeire_codes],
             num_ukeire=num_ukeire,
         )
         for discard_tile_code, ukeire_codes, num_ukeire in expected

@@ -6,13 +6,13 @@ from pymahjong.enum.common import (
     HandShapeFuReasonEnum,
     HeadFuReasonEnum,
     WaitFuReasonEnum,
+    WindEnum,
     YakuEnum,
 )
 from pymahjong.hand_parser import get_hand_from_code
 from pymahjong.point_calculator.point_calculator import PointCalculator
 from pymahjong.schema.agari_info import AgariInfo
 from pymahjong.schema.point_info import PointInfo
-from pymahjong.schema.tile import Tiles
 
 
 @pytest.mark.parametrize(
@@ -65,7 +65,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "222444m56667p11s6p",
-            AgariInfo(loser_wind=Tiles.WINDS[1]),
+            AgariInfo(loser_wind=WindEnum.SOUTH),
             [4800, -4800, 0, 0],
             2,
             50,
@@ -81,7 +81,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "11122233m111s11p3m",
-            AgariInfo(player_wind=Tiles.WINDS[1], is_tsumo_agari=True),
+            AgariInfo(player_wind=WindEnum.SOUTH, is_tsumo_agari=True),
             [-16000, 32000, -8000, -8000],
             13,
             50,
@@ -97,7 +97,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "11122233m123s11p3m",
-            AgariInfo(player_wind=Tiles.WINDS[1]),
+            AgariInfo(player_wind=WindEnum.SOUTH),
             [-8000, 8000, 0, 0],
             4,
             40,
@@ -111,8 +111,8 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         (
             "1133557799m1133z",
             AgariInfo(
-                player_wind=Tiles.WINDS[2],
-                loser_wind=Tiles.WINDS[3],
+                player_wind=WindEnum.WEST,
+                loser_wind=WindEnum.NORTH,
                 is_ready_hand=True,
                 is_one_shot=True,
             ),
@@ -131,7 +131,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "2233488m234s4m,chi234s",
-            AgariInfo(loser_wind=Tiles.WINDS[3]),
+            AgariInfo(loser_wind=WindEnum.NORTH),
             [1500, 0, 0, -1500],
             1,
             30,
@@ -145,7 +145,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "19m199s19p1234567z",
-            AgariInfo(is_tsumo_agari=True, player_wind=Tiles.WINDS[3]),
+            AgariInfo(is_tsumo_agari=True, player_wind=WindEnum.NORTH),
             [-16000, -8000, -8000, 32000],
             13,
             25,
@@ -158,7 +158,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "223344m223344s11z",
-            AgariInfo(loser_wind=Tiles.WINDS[2]),
+            AgariInfo(loser_wind=WindEnum.WEST),
             [7700, 0, -7700, 0],
             3,
             40,
@@ -174,7 +174,7 @@ def test_calculate_base_point_yakuman(fu, han, expected):
         ),
         (
             "222m222p77z897s,bmk2222s",
-            AgariInfo(loser_wind=Tiles.WINDS[2]),
+            AgariInfo(loser_wind=WindEnum.WEST),
             [3900, 0, -3900, 0],
             2,
             40,

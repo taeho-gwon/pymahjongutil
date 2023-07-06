@@ -20,4 +20,4 @@ from pymahjong.schema.tile import Tile
     ],
 )
 def test_tile_type(tile_num, expected):
-    assert Tile(tile_num).type is expected
+    assert Tile(value=tile_num).type is expected

@@ -121,3 +121,10 @@ class YakuEnum(UpperStrEnum):
     SMALL_FOUR_WINDS = auto()
     BIG_FOUR_WINDS = auto()
     FOUR_QUADS = auto()
+
+
+class WindEnum(UpperStrEnum):
+    EAST = auto()
+    SOUTH = auto()
+    WEST = auto()
+    NORTH = auto()
