@@ -20,14 +20,14 @@ class ThirteenOrphanChecker(HandChecker):
     def _calculate_divisions(
         self, agari_tile: Tile, is_tsumo_agari: bool
     ) -> list[Division]:
-        head = next(
+        head_idx = next(
             tile
             for tile in Tiles.TERMINALS_AND_HONORS
             if self.hand_count.concealed_count[tile] == 2
         )
         return [
             Division(
-                parts=[DivisionPart.create_thirteen_orphans(head, is_tsumo_agari)],
+                parts=[DivisionPart.create_thirteen_orphans(head_idx, is_tsumo_agari)],
                 agari_tile=agari_tile,
                 is_opened=False,
             )

@@ -80,9 +80,9 @@ class FuCalculator:
     def _calculate_part_fu(
         self, part: DivisionPart, agari_info: AgariInfo
     ) -> HeadFuReasonEnum | BodyFuReasonEnum | None:
-        first_tile = Tile(part.counts.find_earliest_nonzero_index())
+        first_tile_idx = part.counts.find_earliest_nonzero_index()
         if part.type is DivisionPartTypeEnum.HEAD:
-            return self._calculate_head_fu(first_tile, agari_info)
+            return self._calculate_head_fu(first_tile_idx, agari_info)
 
         if part.type is DivisionPartTypeEnum.SEQUENCE:
             return None
@@ -90,17 +90,23 @@ class FuCalculator:
         fu_reason_idx = (
             (part.type is DivisionPartTypeEnum.QUAD) * 4
             + part.is_concealed * 2
-            + (first_tile in Tiles.TERMINALS_AND_HONORS)
+            + (first_tile_idx in Tiles.TERMINALS_AND_HONORS)
         )
 
         return list(BodyFuReasonEnum)[fu_reason_idx]
 
     def _calculate_head_fu(
-        self, tile: Tile, agari_info: AgariInfo
+        self, tile_idx: int, agari_info: AgariInfo
     ) -> HeadFuReasonEnum | None:
-        if tile == agari_info.player_wind and tile == agari_info.round_wind:
+        if (
+            tile_idx == agari_info.player_wind_idx
+            and tile_idx == agari_info.round_wind_idx
+        ):
             return HeadFuReasonEnum.DOUBLE_WIND_HEAD
-        if tile in [agari_info.player_wind, agari_info.round_wind] + Tiles.DRAGONS:
+        if (
+            tile_idx
+            in [agari_info.player_wind_idx, agari_info.round_wind_idx] + Tiles.DRAGONS
+        ):
             return HeadFuReasonEnum.VALUE_HEAD
         return None
 
@@ -114,23 +120,23 @@ class FuCalculator:
             return None
 
         if (
-            agari_tile in Tiles.SIMPLES
-            and part.counts[agari_tile - 1] == 1
-            and part.counts[agari_tile + 1] == 1
+            agari_tile.value in Tiles.SIMPLES
+            and part.counts[agari_tile.value - 1] == 1
+            and part.counts[agari_tile.value + 1] == 1
         ):
             return WaitFuReasonEnum.CLOSED_WAIT
 
         if (
             agari_tile.number == 3
-            and part.counts[agari_tile - 1] == 1
-            and part.counts[agari_tile - 2] == 1
+            and part.counts[agari_tile.value - 1] == 1
+            and part.counts[agari_tile.value - 2] == 1
         ):
             return WaitFuReasonEnum.EDGE_WAIT
 
         if (
             agari_tile.number == 7
-            and part.counts[agari_tile + 1] == 1
-            and part.counts[agari_tile + 2] == 1
+            and part.counts[agari_tile.value + 1] == 1
+            and part.counts[agari_tile.value + 2] == 1
         ):
             return WaitFuReasonEnum.EDGE_WAIT
 

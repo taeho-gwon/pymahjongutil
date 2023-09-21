@@ -23,8 +23,8 @@ class AllSequences(BaseYaku):
             part for part in division.parts if part.type is DivisionPartTypeEnum.HEAD
         )
         if (
-            head.counts[agari_info.player_wind] > 0
-            or head.counts[agari_info.round_wind] > 0
+            head.counts[agari_info.player_wind_idx] > 0
+            or head.counts[agari_info.round_wind_idx] > 0
             or head.counts[Tiles.DRAGONS[0]] > 0
             or head.counts[Tiles.DRAGONS[1]] > 0
             or head.counts[Tiles.DRAGONS[2]] > 0
@@ -32,13 +32,13 @@ class AllSequences(BaseYaku):
             return False
 
         idx = division.parts[0].counts.find_earliest_nonzero_index()
-        if division.agari_tile == Tile(idx + 1):
+        if division.agari_tile == Tile(value=idx + 1):
             return False
 
-        if division.agari_tile == Tile(idx) and idx % 9 == 6:
+        if division.agari_tile == Tile(value=idx) and idx % 9 == 6:
             return False
 
-        if division.agari_tile == Tile(idx + 2) and idx % 9 == 0:
+        if division.agari_tile == Tile(value=idx + 2) and idx % 9 == 0:
             return False
 
         return True

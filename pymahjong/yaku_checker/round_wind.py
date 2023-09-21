@@ -14,6 +14,6 @@ class RoundWind(BaseYaku):
                 part.type is DivisionPartTypeEnum.TRIPLE
                 or part.type is DivisionPartTypeEnum.QUAD
             )
-            and part.counts.is_containing_only([agari_info.round_wind])
+            and part.counts.is_containing_only(agari_info.round_wind_idx)
             for part in division.parts
         )

@@ -19,8 +19,12 @@ class TileCount(BaseModel):
     @staticmethod
     def create_from_tiles(tiles: Iterable[Tile]):
         return TileCount(
-            counts=np.bincount([tile for tile in tiles], minlength=len(Tiles.DEFAULTS))
+            counts=np.bincount([tile.value for tile in tiles], minlength=34)
         )
+
+    @staticmethod
+    def create_from_indices(tiles: Iterable[int]):
+        return TileCount(counts=np.bincount([tile for tile in tiles], minlength=34))
 
     def __eq__(self, other):
         if not isinstance(other, TileCount):

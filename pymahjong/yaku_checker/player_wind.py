@@ -14,6 +14,6 @@ class PlayerWind(BaseYaku):
                 part.type is DivisionPartTypeEnum.TRIPLE
                 or part.type is DivisionPartTypeEnum.QUAD
             )
-            and part.counts.is_containing_only([agari_info.player_wind])
+            and part.counts.is_containing_only(agari_info.player_wind_idx)
             for part in division.parts
         )

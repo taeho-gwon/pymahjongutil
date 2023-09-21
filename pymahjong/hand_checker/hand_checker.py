@@ -26,7 +26,7 @@ class HandChecker(ABC):
     def calculate_divisions(self, is_tsumo_agari: bool) -> list[Division]:
         if (
             self.hand.last_tile is None
-            or self.hand_count.concealed_count[self.hand.last_tile] == 0
+            or self.hand_count.concealed_count[self.hand.last_tile.value] == 0
         ):
             raise ValueError("agari tile is invalid")
         if not self.check_agari():
@@ -55,7 +55,7 @@ class HandChecker(ABC):
         efficiency.sort()
         return efficiency
 
-    def calculate_ukeire(self, deficiency: int) -> tuple[list[Tile], int]:
+    def calculate_ukeire(self, deficiency: int) -> tuple[list[int], int]:
         ukeire = []
         num_ukeire = 0
         for draw_candidate in filter(
