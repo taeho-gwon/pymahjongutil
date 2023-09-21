@@ -18,8 +18,10 @@ class Tile(BaseModel):
             return TileTypeEnum.SOU
         elif 27 <= self.value < 31:
             return TileTypeEnum.WIND
-        else:
+        elif 31 <= self.value < 34:
             return TileTypeEnum.DRAGON
+        else:
+            return TileTypeEnum.ETC
 
     @property
     def number(self) -> int:
@@ -32,10 +34,12 @@ class Tiles:
     SOUS = [value for value in range(18, 27)]
     WINDS = [value for value in range(27, 31)]
     DRAGONS = [value for value in range(31, 34)]
+    ETCS = [value for value in range(34, 42)]
 
     NUMBERS = MANS + PINS + SOUS
     HONORS = WINDS + DRAGONS
     DEFAULTS = NUMBERS + HONORS
+    ALLS = DEFAULTS + ETCS
 
     TERMINALS = [MANS[0], MANS[8], PINS[0], PINS[8], SOUS[0], SOUS[8]]
     TERMINALS_AND_HONORS = TERMINALS + HONORS
