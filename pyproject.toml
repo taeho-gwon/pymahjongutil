@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mahjongrepo"
+name = "pymahjongutil"
 version = "0.1.0"
 description = ""
 authors = ["Taeho Gwon <taehogwon96@gmail.com>"]
@@ -18,6 +18,9 @@ autoflake = "^2.1.1"
 isort = "^5.12.0"
 black = "^23.3.0"
 coverage = "^7.2.7"
+setuptools = "^68.2.2"
+wheel = "^0.41.3"
+twine = "^4.0.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
