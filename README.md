@@ -1,2 +1,2 @@
-# MahjongRepo
-Mahjong Repository
+# pymahjongutil
+mahjong util repository
