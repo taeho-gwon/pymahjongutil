@@ -11,6 +11,7 @@ from pymahjongutil.enum.common import (
 )
 from pymahjongutil.hand_parser import get_hand_from_code
 from pymahjongutil.point_calculator.point_calculator import PointCalculator
+from pymahjongutil.rule.riichi_default_rule import RiichiDefaultRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.point_info import PointInfo
 
@@ -197,6 +198,50 @@ def test_calculate_point_info(
 ):
     hand = get_hand_from_code(test_input)
     assert PointCalculator().calculate_point_info(hand, agari_info) == PointInfo(
+        point_diff=point_diff,
+        han=han,
+        fu=fu,
+        yakus=yakus,
+        fu_reasons=fu_reasons,
+    )
+
+
+@pytest.mark.parametrize(
+    "test_input, agari_info, point_diff, han, fu, yakus, fu_reasons",
+    [
+        (
+            "233445p88s345m,chi345s",
+            AgariInfo(is_tsumo_agari=True),
+            [1500, -500, -500, -500],
+            1,
+            30,
+            [YakuEnum.THREE_COLOR_SEQUENCES],
+            [
+                HandShapeFuReasonEnum.BASE,
+                AgariTypeFuReasonEnum.TSUMO,
+            ],
+        ),
+        (
+            "222345p34588s456m",
+            AgariInfo(is_tsumo_agari=True),
+            [3000, -1000, -1000, -1000],
+            2,
+            30,
+            [YakuEnum.SELF_DRAW, YakuEnum.ALL_SIMPLES],
+            [
+                HandShapeFuReasonEnum.BASE,
+                BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
+                AgariTypeFuReasonEnum.TSUMO,
+            ],
+        ),
+    ],
+)
+def test_calculate_point_info_disable_open_tanyao(
+    test_input, agari_info, point_diff, han, fu, yakus, fu_reasons
+):
+    rule = RiichiDefaultRule(use_open_tanyao=False)
+    hand = get_hand_from_code(test_input)
+    assert PointCalculator(rule).calculate_point_info(hand, agari_info) == PointInfo(
         point_diff=point_diff,
         han=han,
         fu=fu,
