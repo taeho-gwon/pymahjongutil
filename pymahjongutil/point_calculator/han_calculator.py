@@ -1,5 +1,5 @@
 from pymahjongutil.enum.common import YakuEnum
-from pymahjongutil.rule.riichi_default_rule import RiichiMahjongRule
+from pymahjongutil.rule.riichi_mahjong_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division
 

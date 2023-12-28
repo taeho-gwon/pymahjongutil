@@ -11,7 +11,7 @@ from pymahjongutil.enum.common import (
 )
 from pymahjongutil.hand_parser import get_hand_from_code
 from pymahjongutil.point_calculator.point_calculator import PointCalculator
-from pymahjongutil.rule.riichi_default_rule import RiichiMahjongRule
+from pymahjongutil.rule.riichi_mahjong_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.point_info import PointInfo
 
