@@ -1,9 +1,10 @@
 from pymahjongutil.enum.common import YakuEnum
+from pymahjongutil.rule.base_rule import BaseRule
 from pymahjongutil.schema.yaku_rule import YakuRule
 from pymahjongutil.yaku_checker import YAKU_DICT
 
 
-class RiichiDefaultRule:
+class RiichiDefaultRule(BaseRule):
     def __init__(self, use_open_tanyao: bool = True):
         yaku_info_dict: dict[YakuEnum, tuple[int, int, bool, list[YakuEnum]]] = {
             YakuEnum.READY: (1, 0, False, []),
@@ -87,14 +88,16 @@ class RiichiDefaultRule:
             YakuEnum.BIG_FOUR_WINDS: (13, 13, True, []),
             YakuEnum.FOUR_QUADS: (13, 13, True, []),
         }
-
-        self.yaku_rule_dict: dict[YakuEnum, YakuRule] = {
-            yaku: YakuRule(
-                han_normal=yaku_info[0],
-                han_opened=yaku_info[1],
-                is_yakuman=yaku_info[2],
-                high_yakus=yaku_info[3],
-                checker=YAKU_DICT[yaku](),
-            )
-            for yaku, yaku_info in yaku_info_dict.items()
-        }
+        super().__init__(
+            yaku_rule_dict={
+                yaku: YakuRule(
+                    han_normal=yaku_info[0],
+                    han_opened=yaku_info[1],
+                    is_yakuman=yaku_info[2],
+                    high_yakus=yaku_info[3],
+                    checker=YAKU_DICT[yaku](),
+                )
+                for yaku, yaku_info in yaku_info_dict.items()
+            },
+            use_open_tanyao=use_open_tanyao,
+        )
