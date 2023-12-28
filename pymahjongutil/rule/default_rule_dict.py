@@ -1,10 +1,10 @@
 from pymahjongutil.enum.common import YakuEnum
 from pymahjongutil.schema.yaku_rule import YakuRule
-from pymahjongutil.yaku_checker import YAKU_DICT
 
 
-class RiichiDefaultRule:
-    def __init__(self, use_open_tanyao: bool = True):
+class DefaultRuleDictFactory:
+    @staticmethod
+    def create():
         yaku_info_dict: dict[YakuEnum, tuple[int, int, bool, list[YakuEnum]]] = {
             YakuEnum.READY: (1, 0, False, []),
             YakuEnum.SELF_DRAW: (
@@ -30,7 +30,7 @@ class RiichiDefaultRule:
             YakuEnum.RED_DRAGON: (1, 1, False, [YakuEnum.BIG_THREE_DRAGONS]),
             YakuEnum.PLAYER_WIND: (1, 1, False, [YakuEnum.BIG_FOUR_WINDS]),
             YakuEnum.ROUND_WIND: (1, 1, False, [YakuEnum.BIG_FOUR_WINDS]),
-            YakuEnum.ALL_SIMPLES: (1, 1 if use_open_tanyao else 0, False, []),
+            YakuEnum.ALL_SIMPLES: (1, 0, False, []),
             YakuEnum.DOUBLE_READY: (2, 0, False, []),
             YakuEnum.SEVEN_PAIRS: (2, 0, False, []),
             YakuEnum.THREE_COLOR_SEQUENCES: (2, 1, False, []),
@@ -88,13 +88,13 @@ class RiichiDefaultRule:
             YakuEnum.FOUR_QUADS: (13, 13, True, []),
         }
 
-        self.yaku_rule_dict: dict[YakuEnum, YakuRule] = {
+        return {
             yaku: YakuRule(
+                yaku=yaku,
                 han_normal=yaku_info[0],
                 han_opened=yaku_info[1],
                 is_yakuman=yaku_info[2],
                 high_yakus=yaku_info[3],
-                checker=YAKU_DICT[yaku](),
             )
             for yaku, yaku_info in yaku_info_dict.items()
         }
