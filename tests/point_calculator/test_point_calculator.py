@@ -11,7 +11,7 @@ from pymahjongutil.enum.common import (
 )
 from pymahjongutil.hand_parser import get_hand_from_code
 from pymahjongutil.point_calculator.point_calculator import PointCalculator
-from pymahjongutil.rule.riichi_default_rule import RiichiDefaultRule
+from pymahjongutil.rule.riichi_default_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.point_info import PointInfo
 
@@ -239,7 +239,7 @@ def test_calculate_point_info(
 def test_calculate_point_info_disable_open_tanyao(
     test_input, agari_info, point_diff, han, fu, yakus, fu_reasons
 ):
-    rule = RiichiDefaultRule(use_open_tanyao=False)
+    rule = RiichiMahjongRule(use_open_tanyao=False)
     hand = get_hand_from_code(test_input)
     assert PointCalculator(rule).calculate_point_info(hand, agari_info) == PointInfo(
         point_diff=point_diff,

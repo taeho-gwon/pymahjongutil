@@ -7,14 +7,14 @@ from pymahjongutil.enum.common import (
     HeadFuReasonEnum,
     WaitFuReasonEnum,
 )
-from pymahjongutil.rule.riichi_default_rule import RiichiDefaultRule
+from pymahjongutil.rule.riichi_default_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division, DivisionPart
 from pymahjongutil.schema.tile import Tile, Tiles
 
 
 class FuCalculator:
-    def __init__(self, rule: RiichiDefaultRule | None = None):
+    def __init__(self, rule: RiichiMahjongRule | None = None):
         self.fu_dict: dict[FuReasonEnum, int] = {
             HandShapeFuReasonEnum.SEVEN_PAIRS: 25,
             HandShapeFuReasonEnum.THIRTEEN_ORPHANS: 25,

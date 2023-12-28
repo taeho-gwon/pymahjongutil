@@ -1,12 +1,12 @@
 from pymahjongutil.enum.common import YakuEnum
-from pymahjongutil.rule.riichi_default_rule import RiichiDefaultRule
+from pymahjongutil.rule.riichi_default_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division
 
 
 class HanCalculator:
-    def __init__(self, rule: RiichiDefaultRule | None = None):
-        self.rule = rule or RiichiDefaultRule()
+    def __init__(self, rule: RiichiMahjongRule | None = None):
+        self.rule = rule or RiichiMahjongRule()
 
     def calculate_han(
         self, division: Division, agari_info: AgariInfo

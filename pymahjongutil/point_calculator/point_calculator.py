@@ -3,7 +3,7 @@ from math import ceil
 from pymahjongutil.hand_checker.riichi_checker import RiichiChecker
 from pymahjongutil.point_calculator.fu_calculator import FuCalculator
 from pymahjongutil.point_calculator.han_calculator import HanCalculator
-from pymahjongutil.rule.riichi_default_rule import RiichiDefaultRule
+from pymahjongutil.rule.riichi_default_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.hand import Hand
 from pymahjongutil.schema.point_info import PointInfo
@@ -11,8 +11,8 @@ from pymahjongutil.schema.tile import Tiles
 
 
 class PointCalculator:
-    def __init__(self, rule: RiichiDefaultRule | None = None):
-        self.rule = rule or RiichiDefaultRule()
+    def __init__(self, rule: RiichiMahjongRule | None = None):
+        self.rule = rule or RiichiMahjongRule()
         self.fu_calculator = FuCalculator(self.rule)
         self.han_calculator = HanCalculator(self.rule)
 
