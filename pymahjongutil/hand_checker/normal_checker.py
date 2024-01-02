@@ -9,7 +9,9 @@ from pymahjongutil.schema.tile import Tile, Tiles
 
 class NormalChecker(HandChecker):
     def calculate_deficiency(self) -> int:
-        concealed_count = self.hand_count.concealed_count.copy(deep=True)
+        concealed_count = TileCount(
+            counts=self.hand_count.concealed_count.counts.copy()
+        )
         num_call = len(self.hand_count.call_counts)
         best_deficiency = [10]
 

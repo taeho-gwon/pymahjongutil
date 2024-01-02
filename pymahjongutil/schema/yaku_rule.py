@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from dataclasses import dataclass, field
 
 from pymahjongutil.enum.common import YakuEnum
 from pymahjongutil.schema.agari_info import AgariInfo
@@ -6,12 +6,13 @@ from pymahjongutil.schema.division import Division
 from pymahjongutil.yaku_checker import YAKU_DICT
 
 
-class YakuRule(BaseModel):
+@dataclass
+class YakuRule:
     yaku: YakuEnum
-    is_yakuman: bool = False
     han_normal: int
     han_opened: int
-    high_yakus: list[YakuEnum] = []
+    is_yakuman: bool = False
+    high_yakus: list[YakuEnum] = field(default_factory=list)
 
     def get_han(self, is_opened: bool) -> int:
         return self.han_opened if is_opened else self.han_normal

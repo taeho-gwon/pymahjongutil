@@ -1,9 +1,10 @@
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 from pymahjongutil.enum.common import FuReasonEnum, YakuEnum
 
 
-class PointInfo(BaseModel):
+@dataclass
+class PointInfo:
     point_diff: tuple[int, int, int, int]
     han: int
     fu: int

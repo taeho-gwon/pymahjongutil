@@ -1,10 +1,11 @@
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 from pymahjongutil.enum.common import WindEnum
 from pymahjongutil.schema.tile import Tiles
 
 
-class AgariInfo(BaseModel):
+@dataclass
+class AgariInfo:
     is_tsumo_agari: bool = False
     round_wind: WindEnum = WindEnum.EAST
     player_wind: WindEnum = WindEnum.EAST
