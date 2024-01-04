@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Iterable, Sequence
 
 import numpy as np
-from pydantic import BaseModel
 
 from pymahjongutil.schema.hand import Hand
 from pymahjongutil.schema.tile import Tile, Tiles
 
 
-class TileCount(BaseModel):
-    counts: np.ndarray = np.zeros(len(Tiles.DEFAULTS), dtype=np.int64)
+class TileCount:
+    def __init__(self, counts: np.ndarray | None = None):
+        self.counts: np.ndarray = (
+            np.zeros(len(Tiles.DEFAULTS), dtype=np.int64) if counts is None else counts
+        )
 
     @property
     def num_tiles(self) -> int:
@@ -48,11 +51,9 @@ class TileCount(BaseModel):
     def is_containing_only(self, indices: Sequence[int]) -> bool:
         return self.counts[indices].sum() == self.counts.sum()
 
-    class Config:
-        arbitrary_types_allowed = True
 
-
-class HandCount(BaseModel):
+@dataclass
+class HandCount:
     concealed_count: TileCount
     call_counts: list[TileCount]
 

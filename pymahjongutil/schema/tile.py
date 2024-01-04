@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 from pymahjongutil.enum.common import TileTypeEnum, WindEnum
 
 
-class Tile(BaseModel):
+@dataclass
+class Tile:
     value: int
 
     @property

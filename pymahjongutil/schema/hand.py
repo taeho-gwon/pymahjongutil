@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
-
-from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import Iterable
 
 from pymahjongutil.enum.common import CallTypeEnum
 from pymahjongutil.schema.call import Call
 from pymahjongutil.schema.tile import Tile
 
 
-class Hand(BaseModel):
+@dataclass
+class Hand:
     concealed_tiles: list[Tile]
     calls: list[Call]
-    last_tile: Optional[Tile]
+    last_tile: Tile | None = None
 
     @property
     def is_opened(self) -> bool:

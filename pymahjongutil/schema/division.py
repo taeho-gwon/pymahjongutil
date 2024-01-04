@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 from pymahjongutil.enum.common import CallTypeEnum, DivisionPartTypeEnum
 from pymahjongutil.schema.call import Call
@@ -6,7 +6,8 @@ from pymahjongutil.schema.count import TileCount
 from pymahjongutil.schema.tile import Tile, Tiles
 
 
-class DivisionPart(BaseModel):
+@dataclass
+class DivisionPart:
     type: DivisionPartTypeEnum
     counts: TileCount
     is_concealed: bool
@@ -62,7 +63,8 @@ class DivisionPart(BaseModel):
         )
 
 
-class Division(BaseModel):
+@dataclass
+class Division:
     parts: list[DivisionPart]
     agari_tile: Tile
     is_opened: bool
