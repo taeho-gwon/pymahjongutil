@@ -35,7 +35,7 @@ def test_hand_is_opened(test_input, expected):
 )
 def test_hand_iter_concealed_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
-    for tile, value in zip(hand.iter_concealed_tiles, expected):
+    for tile, value in zip(hand.iter_concealed_tiles, expected, strict=False):
         assert tile.value == value
 
 
@@ -58,5 +58,5 @@ def test_hand_iter_concealed_tiles(test_input, expected):
 )
 def test_hand_iter_tiles(test_input, expected):
     hand = get_hand_from_code(test_input)
-    for tile, value in zip(hand.iter_tiles, expected):
+    for tile, value in zip(hand.iter_tiles, expected, strict=False):
         assert tile.value == value

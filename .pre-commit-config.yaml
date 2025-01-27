@@ -3,46 +3,51 @@
 default_stages: [commit]
 
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
-  hooks:
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
-  - id: check-yaml
-  - id: check-toml
-  - id: check-added-large-files
-  - id: check-builtin-literals
-  - id: check-docstring-first
-- repo: local
-  hooks:
-  - id: isort
-    name: isort
-    entry: isort
-    language: python
-    args: ["--profile", "black"]
-  - id: black
-    name: black
-    entry: black
-    language: python
-    types: [python]
-  - id: autoflake
-    name: autoflake
-    entry: autoflake
-    language: python
-    args: ['--config', './setup.cfg']
-  - id: flake8
-    name: flake8
-    entry: flake8
-    language: python
-    types: [python]
-    args: ['--config', './setup.cfg']
-  - id: mypy
-    name: mypy
-    entry: mypy
-    language: python
-    types: [python]
-    args: ['--config-file', './setup.cfg']
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
 
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+    -   id: isort
 
+-   repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+    -   id: black
+
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+    -   id: autoflake
+        args: [
+            --remove-all-unused-imports,
+            --remove-unused-variables,
+            --in-place
+        ]
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+    -   id: mypy
+        additional_dependencies: [types-all]
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.1
+    hooks:
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+-   repo: local
+    hooks:
+    -   id: pytest-coverage
+        name: pytest coverage
+        entry: pytest --cov=pymahjongutil --cov-report=term-missing
+        language: system
+        pass_filenames: false
+        always_run: true
 default_language_version:
   python: python3.12

@@ -41,5 +41,5 @@ from pymahjongutil.schema.tile import Tiles
 # fmt: on
 def test_hand_counts(test_input, expected):
     hand_count = HandCount.create_from_hand(get_hand_from_code(test_input))
-    for tile, tile_count in zip(Tiles.DEFAULTS, expected):
+    for tile, tile_count in zip(Tiles.DEFAULTS, expected, strict=False):
         assert hand_count[tile] == tile_count
