@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from typing import Iterable, Sequence, overload
 
 import numpy as np
 
@@ -20,36 +18,42 @@ class TileCount:
         return sum(self.counts)
 
     @staticmethod
-    def create_from_tiles(tiles: Iterable[Tile]):
+    def create_from_tiles(tiles: Iterable[Tile]) -> "TileCount":
         return TileCount(
             counts=np.bincount([tile.value for tile in tiles], minlength=34)
         )
 
     @staticmethod
-    def create_from_indices(tiles: Iterable[int]):
-        return TileCount(counts=np.bincount([tile for tile in tiles], minlength=34))
+    def create_from_indices(tiles: Iterable[int]) -> "TileCount":
+        return TileCount(counts=np.bincount(list(tiles), minlength=34))
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, TileCount):
             return NotImplemented
-        return np.equal(self.counts, other.counts).all()
+        return bool(np.equal(self.counts, other.counts).all())
 
-    def __add__(self, other: TileCount):
+    def __add__(self, other: "TileCount") -> "TileCount":
         return TileCount(counts=self.counts + other.counts)
 
-    def __getitem__(self, idx):
+    @overload
+    def __getitem__(self, idx: int) -> np.intp: ...
+
+    @overload
+    def __getitem__(self, idx: slice) -> np.ndarray: ...
+
+    def __getitem__(self, idx: int | slice) -> np.intp | np.ndarray:
         return self.counts[idx]
 
-    def __setitem__(self, idx, value):
+    def __setitem__(self, idx: int | slice, value: int | np.intp | np.ndarray) -> None:
         self.counts[idx] = value
 
-    def find_earliest_nonzero_index(self, index: int = 0):
+    def find_earliest_nonzero_index(self, index: int = 0) -> int:
         while index < len(self.counts) and self.counts[index] == 0:
             index += 1
         return index
 
     def is_containing_only(self, indices: Sequence[int]) -> bool:
-        return self.counts[indices].sum() == self.counts.sum()
+        return bool(self.counts[indices].sum() == self.counts.sum())
 
 
 @dataclass
@@ -58,7 +62,7 @@ class HandCount:
     call_counts: list[TileCount]
 
     @staticmethod
-    def create_from_hand(hand: Hand):
+    def create_from_hand(hand: Hand) -> "HandCount":
         concealed_count = TileCount.create_from_tiles(hand.iter_concealed_tiles)
         call_counts = [TileCount.create_from_tiles(call.tiles) for call in hand.calls]
         return HandCount(concealed_count=concealed_count, call_counts=call_counts)
@@ -67,7 +71,7 @@ class HandCount:
     def total_count(self) -> TileCount:
         return sum(self.call_counts, start=self.concealed_count)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> np.intp:
         return self.concealed_count[item] + sum(
             call_count[item] for call_count in self.call_counts
         )

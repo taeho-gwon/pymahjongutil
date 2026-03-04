@@ -5,8 +5,8 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class FourConcealedTriplets(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.FOUR_CONCEALED_TRIPLETS)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         return division.num_concealed_triplets == 4

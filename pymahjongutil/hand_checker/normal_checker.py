@@ -5,6 +5,7 @@ from pymahjongutil.hand_checker.hand_checker import HandChecker
 from pymahjongutil.schema.count import TileCount
 from pymahjongutil.schema.division import Division, DivisionPart
 from pymahjongutil.schema.tile import Tile, Tiles
+from pymahjongutil.schema.tile_index import TileIndex
 
 
 class NormalChecker(HandChecker):
@@ -15,7 +16,7 @@ class NormalChecker(HandChecker):
         num_call = len(self.hand_count.call_counts)
         best_deficiency = [10]
 
-        for t in (tile for tile in range(34) if concealed_count[tile] >= 2):
+        for t in (tile for tile in Tiles.DEFAULTS if concealed_count[tile] >= 2):
             concealed_count[t] -= 2
             self._erase_complete_set(0, concealed_count, num_call, 1, best_deficiency)
             concealed_count[t] += 2
@@ -30,8 +31,8 @@ class NormalChecker(HandChecker):
         concealed_count: TileCount,
         num_complete_sets: int,
         num_pair: int,
-        best_deficiency,
-    ):
+        best_deficiency: list[int],
+    ) -> None:
         index = concealed_count.find_earliest_nonzero_index(index)
         if index >= len(Tiles.DEFAULTS):
             self._erase_partial_set(
@@ -68,13 +69,13 @@ class NormalChecker(HandChecker):
         num_complete_sets: int,
         num_partial_sets: int,
         num_pair: int,
-        best_deficiency,
-    ):
+        best_deficiency: list[int],
+    ) -> None:
         index = concealed_count.find_earliest_nonzero_index(index)
-        if index >= 34:
+        if index >= len(Tiles.DEFAULTS):
             can_make_pair = num_pair == 1 or any(
                 concealed_count[tile] == 1 and self.total_count[tile] < 4
-                for tile in range(34)
+                for tile in Tiles.DEFAULTS
             )
             current_deficiency = (
                 10
@@ -104,7 +105,7 @@ class NormalChecker(HandChecker):
                 index in Tiles.PARTIAL_STRAIGHT_STARTS
                 and concealed_count[index + 1] > 0
                 and (
-                    self.total_count[index + 2] < 4
+                    (index % 9 < 7 and self.total_count[index + 2] < 4)
                     or (index % 9 > 0 and self.total_count[index - 1] < 4)
                 )
             ):
@@ -203,7 +204,7 @@ class NormalChecker(HandChecker):
             body_divisions.pop()
             tile_counts.counts[idx] += 3
 
-        if idx < 27 and idx % 9 < 7:
+        if TileIndex(idx).is_sequence_start:
             straight_count = tile_counts.counts[idx]
             if min(tile_counts.counts[idx : idx + 3]) != straight_count:
                 return

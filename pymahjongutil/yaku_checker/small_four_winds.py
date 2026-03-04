@@ -6,10 +6,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class SmallFourWinds(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.SMALL_FOUR_WINDS)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         is_wind_head = any(
             part.type is DivisionPartTypeEnum.HEAD
             and part.counts.is_containing_only(Tiles.WINDS)
@@ -19,9 +19,6 @@ class SmallFourWinds(BaseYaku):
             1
             for part in division.parts
             if part.counts.is_containing_only(Tiles.WINDS)
-            and (
-                part.type is DivisionPartTypeEnum.TRIPLE
-                or part.type is DivisionPartTypeEnum.QUAD
-            )
+            and part.is_triplet_or_quad
         )
         return is_wind_head and num_wind_triplets == 3

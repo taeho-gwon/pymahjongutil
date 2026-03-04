@@ -4,7 +4,7 @@ from pymahjongutil.schema.yaku_rule import YakuRule
 
 class DefaultRuleDictFactory:
     @staticmethod
-    def create():
+    def create() -> dict[YakuEnum, YakuRule]:
         yaku_info_dict: dict[YakuEnum, tuple[int, int, bool, list[YakuEnum]]] = {
             YakuEnum.READY: (1, 0, False, []),
             YakuEnum.SELF_DRAW: (

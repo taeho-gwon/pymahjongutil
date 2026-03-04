@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Iterable
 
@@ -16,7 +14,7 @@ class Hand:
 
     @property
     def is_opened(self) -> bool:
-        return any(call.type != CallTypeEnum.CONCEALED_KAN for call in self.calls)
+        return any(call.type is not CallTypeEnum.CONCEALED_KAN for call in self.calls)
 
     @property
     def iter_concealed_tiles(self) -> Iterable[Tile]:

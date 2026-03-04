@@ -6,7 +6,7 @@ from pymahjongutil.schema.division import Division
 
 
 class YakuMixin:
-    def __init__(self, yaku: YakuEnum):
+    def __init__(self, yaku: YakuEnum) -> None:
         self.yaku = yaku
 
 

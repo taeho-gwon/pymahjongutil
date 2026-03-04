@@ -10,9 +10,9 @@ from pymahjongutil.schema.tile import Tile
 class RiichiChecker(HandChecker):
     def __init__(self, hand: Hand):
         super().__init__(hand)
-        self.normal_checker = NormalChecker(hand)
-        self.seven_pair_checker = SevenPairChecker(hand)
-        self.thirteen_orphan_checker = ThirteenOrphanChecker(hand)
+        self.normal_checker = NormalChecker(hand, self.hand_count)
+        self.seven_pair_checker = SevenPairChecker(hand, self.hand_count)
+        self.thirteen_orphan_checker = ThirteenOrphanChecker(hand, self.hand_count)
 
     def calculate_deficiency(self) -> int:
         return min(

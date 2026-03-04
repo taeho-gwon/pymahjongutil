@@ -10,25 +10,12 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
 
--   repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.4
     hooks:
-    -   id: isort
-
--   repo: https://github.com/psf/black
-    rev: 24.1.1
-    hooks:
-    -   id: black
-
--   repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.1
-    hooks:
-    -   id: autoflake
-        args: [
-            --remove-all-unused-imports,
-            --remove-unused-variables,
-            --in-place
-        ]
+    -   id: ruff-format
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.8.0
@@ -36,18 +23,13 @@ repos:
     -   id: mypy
         additional_dependencies: [types-all]
 
--   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.1
-    hooks:
-    -   id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
 -   repo: local
     hooks:
     -   id: pytest-coverage
         name: pytest coverage
-        entry: pytest --cov=pymahjongutil --cov-report=term-missing
+        entry: uv run pytest --cov=pymahjongutil --cov-report=term-missing
         language: system
         pass_filenames: false
         always_run: true
 default_language_version:
-  python: python3.12
+  python: python3.13

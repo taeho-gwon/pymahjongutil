@@ -7,14 +7,25 @@ from pymahjongutil.enum.common import (
     HeadFuReasonEnum,
     WaitFuReasonEnum,
 )
-from pymahjongutil.rule.riichi_mahjong_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division, DivisionPart
 from pymahjongutil.schema.tile import Tile, Tiles
 
 
+_BODY_FU_REASON_MAP: dict[tuple[bool, bool, bool], BodyFuReasonEnum] = {
+    (False, False, False): BodyFuReasonEnum.OPENED_NORMAL_TRIPLE,
+    (False, False, True): BodyFuReasonEnum.OPENED_OUTSIDE_TRIPLE,
+    (False, True, False): BodyFuReasonEnum.CONCEALED_NORMAL_TRIPLE,
+    (False, True, True): BodyFuReasonEnum.CONCEALED_OUTSIDE_TRIPLE,
+    (True, False, False): BodyFuReasonEnum.OPENED_NORMAL_QUAD,
+    (True, False, True): BodyFuReasonEnum.OPENED_OUTSIDE_QUAD,
+    (True, True, False): BodyFuReasonEnum.CONCEALED_NORMAL_QUAD,
+    (True, True, True): BodyFuReasonEnum.CONCEALED_OUTSIDE_QUAD,
+}
+
+
 class FuCalculator:
-    def __init__(self, rule: RiichiMahjongRule | None = None):
+    def __init__(self) -> None:
         self.fu_dict: dict[FuReasonEnum, int] = {
             HandShapeFuReasonEnum.SEVEN_PAIRS: 25,
             HandShapeFuReasonEnum.THIRTEEN_ORPHANS: 25,
@@ -87,13 +98,9 @@ class FuCalculator:
         if part.type is DivisionPartTypeEnum.SEQUENCE:
             return None
 
-        fu_reason_idx = (
-            (part.type is DivisionPartTypeEnum.QUAD) * 4
-            + part.is_concealed * 2
-            + (first_tile_idx in Tiles.TERMINALS_AND_HONORS)
-        )
-
-        return list(BodyFuReasonEnum)[fu_reason_idx]
+        is_quad = part.type is DivisionPartTypeEnum.QUAD
+        is_outside = first_tile_idx in Tiles.TERMINALS_AND_HONORS
+        return _BODY_FU_REASON_MAP[(is_quad, part.is_concealed, is_outside)]
 
     def _calculate_head_fu(
         self, tile_idx: int, agari_info: AgariInfo

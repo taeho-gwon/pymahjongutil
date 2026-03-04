@@ -8,10 +8,10 @@ from pymahjongutil.yaku_checker.utils import is_three_color_index
 
 
 class ThreeColorSequences(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.THREE_COLOR_SEQUENCES)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         for part1, part2, part3 in combinations(division.parts, 3):
             if not (
                 part1.type is part2.type is part3.type is DivisionPartTypeEnum.SEQUENCE

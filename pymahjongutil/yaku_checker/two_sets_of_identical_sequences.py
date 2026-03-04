@@ -7,10 +7,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class TwoSetsOfIdenticalSequences(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.TWO_SETS_OF_IDENTICAL_SEQUENCES)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         num_identical_sequences = sum(
             1
             for part1, part2 in combinations(division.parts, 2)

@@ -7,10 +7,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class IdenticalSequences(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.IDENTICAL_SEQUENCES)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         return any(
             part1.type is part2.type is DivisionPartTypeEnum.SEQUENCE
             and part1.counts == part2.counts

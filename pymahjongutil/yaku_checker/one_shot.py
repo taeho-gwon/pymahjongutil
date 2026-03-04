@@ -5,7 +5,7 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class OneShot(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.ONE_SHOT)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:

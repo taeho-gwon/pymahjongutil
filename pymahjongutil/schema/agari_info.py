@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from pymahjongutil.enum.common import WindEnum
 from pymahjongutil.schema.tile import Tiles
+from pymahjongutil.schema.tile_index import TileIndex
+
 
 
 @dataclass
@@ -20,13 +22,25 @@ class AgariInfo:
     is_first_turn: bool = False
 
     @property
-    def round_wind_idx(self):
-        return Tiles.get_tile_from_wind_enum(self.round_wind)
+    def round_wind_idx(self) -> TileIndex:
+        return TileIndex.create_from_wind_enum(self.round_wind)
 
     @property
-    def player_wind_idx(self):
-        return Tiles.get_tile_from_wind_enum(self.player_wind)
+    def player_wind_idx(self) -> TileIndex:
+        return TileIndex.create_from_wind_enum(self.player_wind)
 
     @property
-    def loser_wind_idx(self):
-        return Tiles.get_tile_from_wind_enum(self.loser_wind)
+    def loser_wind_idx(self) -> TileIndex:
+        return TileIndex.create_from_wind_enum(self.loser_wind)
+
+    @property
+    def player_seat(self) -> int:
+        return self.player_wind_idx - Tiles.WINDS[0]
+
+    @property
+    def loser_seat(self) -> int:
+        return self.loser_wind_idx - Tiles.WINDS[0]
+
+    @property
+    def is_dealer(self) -> bool:
+        return self.player_wind is WindEnum.EAST

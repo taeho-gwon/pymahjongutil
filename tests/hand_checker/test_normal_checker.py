@@ -34,6 +34,7 @@ def test_check_agari(test_input, expected):
         ("19m149s18p1223456z", 8),
         ("69m5678p2789s344z7p", 3),
         ("9m5678p12789s344z7p", 2),
+        ("777789m2245p13s", 2),
     ],
 )
 def test_calculate_deficiency(test_input, expected):

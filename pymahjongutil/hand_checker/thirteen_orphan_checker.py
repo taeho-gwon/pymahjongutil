@@ -1,4 +1,4 @@
-from pymahjongutil.hand_checker.hand_checker import HandChecker
+from pymahjongutil.hand_checker.hand_checker import _IMPOSSIBLE_DEFICIENCY, HandChecker
 from pymahjongutil.schema.division import Division, DivisionPart
 from pymahjongutil.schema.tile import Tile, Tiles
 
@@ -6,7 +6,7 @@ from pymahjongutil.schema.tile import Tile, Tiles
 class ThirteenOrphanChecker(HandChecker):
     def calculate_deficiency(self) -> int:
         if self.hand.is_opened:
-            return 100
+            return _IMPOSSIBLE_DEFICIENCY
 
         tile_counts = self.hand_count.concealed_count.counts
         is_orphan_pair_exist = any(

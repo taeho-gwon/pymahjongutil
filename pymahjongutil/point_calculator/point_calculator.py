@@ -7,40 +7,49 @@ from pymahjongutil.rule.riichi_mahjong_rule import RiichiMahjongRule
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.hand import Hand
 from pymahjongutil.schema.point_info import PointInfo
-from pymahjongutil.schema.tile import Tiles
+
+
+_BASE_POINT_MANGAN = 2000
+_BASE_POINT_HANEMAN = 3000
+_BASE_POINT_BAIMAN = 4000
+_BASE_POINT_SANBAIMAN = 6000
+_BASE_POINT_YAKUMAN = 8000
+_NUM_PLAYERS = 4
 
 
 class PointCalculator:
     def __init__(self, rule: RiichiMahjongRule | None = None):
         self.rule = rule or RiichiMahjongRule()
-        self.fu_calculator = FuCalculator(self.rule)
+        self.fu_calculator = FuCalculator()
         self.han_calculator = HanCalculator(self.rule)
 
-    def calculate_base_point(self, fu: int, han: int, is_yakuman: bool = False):
+    def calculate_base_point(self, fu: int, han: int, is_yakuman: bool = False) -> int:
         if han < 3 or (han == 3 and fu < 70) or (han == 4 and fu < 40):
-            return fu * pow(2, 2 + han)
+            return int(fu * 2 ** (2 + han))
         elif han <= 5:
-            return 2000
+            return _BASE_POINT_MANGAN
         elif han <= 7:
-            return 3000
+            return _BASE_POINT_HANEMAN
         elif han <= 10:
-            return 4000
+            return _BASE_POINT_BAIMAN
         elif han <= 12:
-            return 6000
+            return _BASE_POINT_SANBAIMAN
         else:
-            return 8000 * (han // 13 if is_yakuman else 1)
+            return _BASE_POINT_YAKUMAN * (han // 13 if is_yakuman else 1)
 
-    def _calculate_point_diff(self, agari_info: AgariInfo, base_point: int):
+    def _calculate_point_diff(
+        self, agari_info: AgariInfo, base_point: int
+    ) -> list[int]:
         point1 = ceil(base_point / 100) * 100
         point2 = ceil(base_point * 2 / 100) * 100
         point4 = ceil(base_point * 4 / 100) * 100
         point6 = ceil(base_point * 6 / 100) * 100
 
-        player_idx = agari_info.player_wind_idx - Tiles.WINDS[0]
-        loser_idx = agari_info.loser_wind_idx - Tiles.WINDS[0]
-        point_diff = [0, 0, 0, 0]
+        player_idx = agari_info.player_seat
+        loser_idx = agari_info.loser_seat
+        point_diff = [0] * _NUM_PLAYERS
         if agari_info.is_tsumo_agari:
-            if agari_info.player_wind_idx == Tiles.WINDS[0]:
+            if agari_info.is_dealer:
                 point_diff[0] = 3 * point2
                 point_diff[1] = -point2
                 point_diff[2] = -point2
@@ -52,7 +61,7 @@ class PointCalculator:
                 point_diff[3] = -point1
                 point_diff[player_idx] += point1 * 3 + point2
         else:
-            point = point6 if agari_info.player_wind_idx == Tiles.WINDS[0] else point4
+            point = point6 if agari_info.is_dealer else point4
             point_diff[player_idx] += point
             point_diff[loser_idx] -= point
 

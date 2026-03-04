@@ -5,7 +5,7 @@ from pymahjongutil.enum.common import FuReasonEnum, YakuEnum
 
 @dataclass
 class PointInfo:
-    point_diff: tuple[int, int, int, int]
+    point_diff: list[int]
     han: int
     fu: int
     yakus: list[YakuEnum]

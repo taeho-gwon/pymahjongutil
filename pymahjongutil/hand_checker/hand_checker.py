@@ -5,12 +5,16 @@ from pymahjongutil.schema.division import Division
 from pymahjongutil.schema.efficiency_data import EfficiencyData
 from pymahjongutil.schema.hand import Hand
 from pymahjongutil.schema.tile import Tile, Tiles
+from pymahjongutil.schema.tile_index import TileIndex
+
+
+_IMPOSSIBLE_DEFICIENCY = 100
 
 
 class HandChecker(ABC):
-    def __init__(self, hand: Hand):
+    def __init__(self, hand: Hand, hand_count: HandCount | None = None):
         self.hand = hand
-        self.hand_count = HandCount.create_from_hand(hand)
+        self.hand_count = hand_count or HandCount.create_from_hand(hand)
         self.total_count = self.hand_count.total_count
 
     @abstractmethod
@@ -55,16 +59,16 @@ class HandChecker(ABC):
         efficiency.sort()
         return efficiency
 
-    def calculate_ukeire(self, deficiency: int) -> tuple[list[int], int]:
+    def calculate_ukeire(self, deficiency: int) -> tuple[list[TileIndex], int]:
         ukeire = []
         num_ukeire = 0
         for draw_candidate in filter(
-            lambda t: self.hand_count.concealed_count[t] < 4, Tiles.DEFAULTS
+            lambda t: self.total_count[t] < 4, Tiles.DEFAULTS
         ):
             self.hand_count.concealed_count[draw_candidate] += 1
             if deficiency - 1 == self.calculate_deficiency():
                 ukeire.append(draw_candidate)
-                num_ukeire += 5 - self.hand_count[draw_candidate]
+                num_ukeire += int(5 - self.hand_count[draw_candidate])
             self.hand_count.concealed_count[draw_candidate] -= 1
 
         return ukeire, num_ukeire

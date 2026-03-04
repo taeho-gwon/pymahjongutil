@@ -1,8 +1,7 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 
-from pymahjongutil.enum.common import TileTypeEnum, WindEnum
+from pymahjongutil.enum.common import TileTypeEnum
+from pymahjongutil.schema.tile_index import TileIndex
 
 
 @dataclass
@@ -30,34 +29,21 @@ class Tile:
 
 
 class Tiles:
-    MANS = [value for value in range(9)]
-    PINS = [value for value in range(9, 18)]
-    SOUS = [value for value in range(18, 27)]
-    WINDS = [value for value in range(27, 31)]
-    DRAGONS = [value for value in range(31, 34)]
-    ETCS = [value for value in range(34, 42)]
+    MANS = [TileIndex(i) for i in range(9)]
+    PINS = [TileIndex(i) for i in range(9, 18)]
+    SOUS = [TileIndex(i) for i in range(18, 27)]
+    WINDS = [TileIndex(i) for i in range(27, 31)]
+    DRAGONS = [TileIndex(i) for i in range(31, 34)]
 
     NUMBERS = MANS + PINS + SOUS
     HONORS = WINDS + DRAGONS
     DEFAULTS = NUMBERS + HONORS
-    ALLS = DEFAULTS + ETCS
 
     TERMINALS = [MANS[0], MANS[8], PINS[0], PINS[8], SOUS[0], SOUS[8]]
     TERMINALS_AND_HONORS = TERMINALS + HONORS
 
-    STRAIGHT_STARTS = MANS[0:7] + PINS[0:7] + SOUS[0:7]
-    PARTIAL_STRAIGHT_STARTS = MANS[0:8] + PINS[0:8] + SOUS[0:8]
+    STRAIGHT_STARTS = [t for t in DEFAULTS if t.is_sequence_start]
+    PARTIAL_STRAIGHT_STARTS = [t for t in DEFAULTS if t.is_side_wait_start]
 
-    SIMPLES = MANS[1:8] + PINS[1:8] + SOUS[1:8]
+    SIMPLES = [t for t in NUMBERS if not t.is_terminal]
     GREENS = [SOUS[1], SOUS[2], SOUS[3], SOUS[5], SOUS[7], DRAGONS[1]]
-
-    @classmethod
-    def get_tile_from_wind_enum(cls, wind: WindEnum):
-        if wind is WindEnum.EAST:
-            return cls.WINDS[0]
-        elif wind is WindEnum.SOUTH:
-            return cls.WINDS[1]
-        elif wind is WindEnum.WEST:
-            return cls.WINDS[2]
-        else:
-            return cls.WINDS[3]

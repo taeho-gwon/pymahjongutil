@@ -1,8 +1,12 @@
 from enum import Enum, auto
+from typing import TypeAlias
 
 
 class UpperStrEnum(str, Enum):
-    def _generate_next_value_(name, start, count, last_values):
+    @staticmethod
+    def _generate_next_value_(
+        name: str, start: int, count: int, last_values: list[str]
+    ) -> str:
         return name.upper()
 
 
@@ -66,7 +70,7 @@ class BodyFuReasonEnum(UpperStrEnum):
     CONCEALED_OUTSIDE_QUAD = auto()
 
 
-FuReasonEnum = (
+FuReasonEnum: TypeAlias = (
     HandShapeFuReasonEnum
     | WaitFuReasonEnum
     | HeadFuReasonEnum

@@ -12,8 +12,15 @@ class DivisionPart:
     counts: TileCount
     is_concealed: bool
 
+    @property
+    def is_triplet_or_quad(self) -> bool:
+        return (
+            self.type is DivisionPartTypeEnum.TRIPLE
+            or self.type is DivisionPartTypeEnum.QUAD
+        )
+
     @staticmethod
-    def create_head(tile: int, is_concealed: bool):
+    def create_head(tile: int, is_concealed: bool) -> "DivisionPart":
         return DivisionPart(
             type=DivisionPartTypeEnum.HEAD,
             counts=TileCount.create_from_indices([tile] * 2),
@@ -21,7 +28,7 @@ class DivisionPart:
         )
 
     @staticmethod
-    def create_triple(tile: int, is_concealed: bool):
+    def create_triple(tile: int, is_concealed: bool) -> "DivisionPart":
         return DivisionPart(
             type=DivisionPartTypeEnum.TRIPLE,
             counts=TileCount.create_from_indices([tile] * 3),
@@ -29,7 +36,7 @@ class DivisionPart:
         )
 
     @staticmethod
-    def create_straight(tile: int, is_concealed: bool):
+    def create_straight(tile: int, is_concealed: bool) -> "DivisionPart":
         return DivisionPart(
             type=DivisionPartTypeEnum.SEQUENCE,
             counts=TileCount.create_from_indices([tile, tile + 1, tile + 2]),
@@ -37,7 +44,7 @@ class DivisionPart:
         )
 
     @staticmethod
-    def create_thirteen_orphans(head_tile: int, is_concealed: bool):
+    def create_thirteen_orphans(head_tile: int, is_concealed: bool) -> "DivisionPart":
         return DivisionPart(
             type=DivisionPartTypeEnum.THIRTEEN_ORPHANS,
             counts=TileCount.create_from_indices(
@@ -47,7 +54,7 @@ class DivisionPart:
         )
 
     @staticmethod
-    def create_from_call(call: Call):
+    def create_from_call(call: Call) -> "DivisionPart":
         match call.type:
             case CallTypeEnum.CHII:
                 part_type = DivisionPartTypeEnum.SEQUENCE
@@ -78,11 +85,7 @@ class Division:
         return sum(
             1
             for part in self.parts
-            if part.is_concealed
-            and (
-                part.type is DivisionPartTypeEnum.TRIPLE
-                or part.type is DivisionPartTypeEnum.QUAD
-            )
+            if part.is_concealed and part.is_triplet_or_quad
         )
 
     @property

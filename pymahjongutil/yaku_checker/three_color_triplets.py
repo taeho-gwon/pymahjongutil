@@ -1,6 +1,6 @@
 from itertools import combinations
 
-from pymahjongutil.enum.common import DivisionPartTypeEnum, YakuEnum
+from pymahjongutil.enum.common import YakuEnum
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division
 from pymahjongutil.yaku_checker.base_yaku import BaseYaku
@@ -8,24 +8,13 @@ from pymahjongutil.yaku_checker.utils import is_three_color_index
 
 
 class ThreeColorTriplets(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.THREE_COLOR_TRIPLETS)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         for part1, part2, part3 in combinations(division.parts, 3):
-            if not (
-                part1.type is DivisionPartTypeEnum.TRIPLE
-                or part1.type is DivisionPartTypeEnum.QUAD
-            ):
-                continue
-            if not (
-                part2.type is DivisionPartTypeEnum.TRIPLE
-                or part2.type is DivisionPartTypeEnum.QUAD
-            ):
-                continue
-            if not (
-                part3.type is DivisionPartTypeEnum.TRIPLE
-                or part3.type is DivisionPartTypeEnum.QUAD
+            if not all(
+                p.is_triplet_or_quad for p in (part1, part2, part3)
             ):
                 continue
 

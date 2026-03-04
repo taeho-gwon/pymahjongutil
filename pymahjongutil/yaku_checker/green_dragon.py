@@ -1,20 +1,14 @@
-from pymahjongutil.enum.common import DivisionPartTypeEnum, YakuEnum
+from pymahjongutil.enum.common import YakuEnum
 from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division
 from pymahjongutil.schema.tile import Tiles
 from pymahjongutil.yaku_checker.base_yaku import BaseYaku
+from pymahjongutil.yaku_checker.utils import has_triplet_or_quad_of
 
 
 class GreenDragon(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.GREEN_DRAGON)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
-        return any(
-            (
-                part.type is DivisionPartTypeEnum.TRIPLE
-                or part.type is DivisionPartTypeEnum.QUAD
-            )
-            and part.counts.is_containing_only([Tiles.DRAGONS[1]])
-            for part in division.parts
-        )
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
+        return has_triplet_or_quad_of(division, Tiles.DRAGONS[1])

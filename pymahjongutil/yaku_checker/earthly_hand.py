@@ -5,10 +5,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class EarthlyHand(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.EARTHLY_HAND)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         return (
             agari_info.is_first_turn
             and agari_info.player_wind != WindEnum.EAST

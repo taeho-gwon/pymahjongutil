@@ -5,8 +5,8 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class DoubleReady(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.DOUBLE_READY)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         return agari_info.is_double_ready_hand

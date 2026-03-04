@@ -6,8 +6,8 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class AllGreens(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.ALL_GREENS)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         return division.tile_count.is_containing_only(Tiles.GREENS)

@@ -6,10 +6,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class SmallThreeDragons(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.SMALL_THREE_DRAGONS)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         is_dragon_head = any(
             part.type is DivisionPartTypeEnum.HEAD
             and part.counts.is_containing_only(Tiles.DRAGONS)
@@ -19,9 +19,6 @@ class SmallThreeDragons(BaseYaku):
             1
             for part in division.parts
             if part.counts.is_containing_only(Tiles.DRAGONS)
-            and (
-                part.type is DivisionPartTypeEnum.TRIPLE
-                or part.type is DivisionPartTypeEnum.QUAD
-            )
+            and part.is_triplet_or_quad
         )
         return is_dragon_head and num_dragon_triplets == 2

@@ -5,19 +5,19 @@ from pymahjongutil.schema.agari_info import AgariInfo
 from pymahjongutil.schema.division import Division
 from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
+_NINE_GATES_BASE = np.array([3, 1, 1, 1, 1, 1, 1, 1, 3])
+
 
 class NineGates(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.NINE_GATES)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         if division.is_opened:
             return False
 
         tile_count = division.tile_count
-        base_shape = np.array([3, 1, 1, 1, 1, 1, 1, 1, 3])
-        return (
-            sum(abs(tile_count[0:9] - base_shape)) == 1
-            or sum(abs(tile_count[9:18] - base_shape)) == 1
-            or sum(abs(tile_count[18:27] - base_shape)) == 1
+        return any(
+            sum(abs(tile_count[i : i + 9] - _NINE_GATES_BASE)) == 1
+            for i in (0, 9, 18)
         )

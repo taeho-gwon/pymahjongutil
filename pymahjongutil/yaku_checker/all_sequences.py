@@ -6,10 +6,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class AllSequences(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.ALL_SEQUENCES)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         if division.is_opened or division.parts[0].type is DivisionPartTypeEnum.HEAD:
             return False
 

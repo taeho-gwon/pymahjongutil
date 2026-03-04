@@ -5,7 +5,7 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class RobbingAQuad(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.ROBBING_A_QUAD)
 
     def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:

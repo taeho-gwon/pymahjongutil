@@ -6,10 +6,10 @@ from pymahjongutil.yaku_checker.base_yaku import BaseYaku
 
 
 class HalfOutsideHand(BaseYaku):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(YakuEnum.HALF_OUTSIDE_HAND)
 
-    def is_satisfied(self, division: Division, agari_info: AgariInfo):
+    def is_satisfied(self, division: Division, agari_info: AgariInfo) -> bool:
         return all(
             not part.counts.is_containing_only(Tiles.SIMPLES) for part in division.parts
         ) and not division.tile_count.is_containing_only(Tiles.NUMBERS)
