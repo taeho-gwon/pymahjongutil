@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = [{ name = "Taeho Gwon", email = "taehogwon96@gmail.com" }]
 requires-python = ">=3.13"
-dependencies = ["numpy>=1.24.3"]
+dependencies = []
 
 [dependency-groups]
 dev = [

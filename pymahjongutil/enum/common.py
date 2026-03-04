@@ -127,6 +127,31 @@ class YakuEnum(UpperStrEnum):
     FOUR_QUADS = auto()
 
 
+class ActionTypeEnum(UpperStrEnum):
+    DRAW = auto()
+    DISCARD = auto()
+    CHII = auto()
+    PON = auto()
+    CONCEALED_KAN = auto()
+    BIG_MELDED_KAN = auto()
+    SMALL_MELDED_KAN = auto()
+    RIICHI = auto()
+    TSUMO = auto()
+    RON = auto()
+    NINE_TILES_DRAW = auto()
+
+
+class RoundResultTypeEnum(UpperStrEnum):
+    TSUMO = auto()
+    RON = auto()
+    EXHAUSTIVE_DRAW = auto()
+    FOUR_WINDS_DRAW = auto()
+    FOUR_KANS_DRAW = auto()
+    FOUR_RIICHI_DRAW = auto()
+    NINE_TILES_DRAW = auto()
+    THREE_RON_DRAW = auto()
+
+
 class WindEnum(UpperStrEnum):
     EAST = auto()
     SOUTH = auto()

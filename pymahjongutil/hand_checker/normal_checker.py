@@ -11,7 +11,7 @@ from pymahjongutil.schema.tile_index import TileIndex
 class NormalChecker(HandChecker):
     def calculate_deficiency(self) -> int:
         concealed_count = TileCount(
-            counts=self.hand_count.concealed_count.counts.copy()
+            counts=self.hand_count.concealed_count.counts[:]
         )
         num_call = len(self.hand_count.call_counts)
         best_deficiency = [10]
@@ -52,11 +52,13 @@ class NormalChecker(HandChecker):
             and concealed_count[index + 1] > 0
             and concealed_count[index + 2] > 0
         ):
-            concealed_count[index : index + 3] -= 1
+            for i in range(index, index + 3):
+                concealed_count[i] -= 1
             self._erase_complete_set(
                 index, concealed_count, num_complete_sets + 1, num_pair, best_deficiency
             )
-            concealed_count[index : index + 3] += 1
+            for i in range(index, index + 3):
+                concealed_count[i] += 1
 
         self._erase_complete_set(
             index + 1, concealed_count, num_complete_sets, num_pair, best_deficiency
@@ -109,7 +111,8 @@ class NormalChecker(HandChecker):
                     or (index % 9 > 0 and self.total_count[index - 1] < 4)
                 )
             ):
-                concealed_count[index : index + 2] -= 1
+                for i in range(index, index + 2):
+                    concealed_count[i] -= 1
                 self._erase_partial_set(
                     index,
                     concealed_count,
@@ -118,14 +121,16 @@ class NormalChecker(HandChecker):
                     num_pair,
                     best_deficiency,
                 )
-                concealed_count[index : index + 2] += 1
+                for i in range(index, index + 2):
+                    concealed_count[i] += 1
 
             if (
                 index in Tiles.STRAIGHT_STARTS
                 and concealed_count[index + 2] > 0
                 and self.total_count[index + 1] < 4
             ):
-                concealed_count[index : index + 3 : 2] -= 1
+                concealed_count[index] -= 1
+                concealed_count[index + 2] -= 1
                 self._erase_partial_set(
                     index,
                     concealed_count,
@@ -134,7 +139,8 @@ class NormalChecker(HandChecker):
                     num_pair,
                     best_deficiency,
                 )
-                concealed_count[index : index + 3 : 2] += 1
+                concealed_count[index] += 1
+                concealed_count[index + 2] += 1
 
         self._erase_partial_set(
             index + 1,
